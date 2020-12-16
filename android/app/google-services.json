@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "427620386253",
+    "firebase_url": "https://qbksimple.firebaseio.com",
+    "project_id": "qbksimple",
+    "storage_bucket": "qbksimple.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427620386253:android:fa315d7fa2009020327084",
+        "android_client_info": {
+          "package_name": "qbksimpleapp.qbk_simple_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "427620386253-nelqi89agktjlc9pu4t51klnks29kmfg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCc0p88MJ8fvIzm1OSrQ2zQxI3YQ8cmio0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "427620386253-nelqi89agktjlc9pu4t51klnks29kmfg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,58 @@
+name: qbk_simple_app
+description: QBK Aplicacion simple sin 3D
+
+version: 1.0.0+3
+
+environment:
+  sdk: ">=2.6.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^0.1.2
+  table_calendar: ^2.2.3
+  keyboard_avoider: ^0.1.2
+
+  firebase_core: ^0.4.4+3
+  cloud_firestore: ^0.13.5
+  cloud_firestore_web: ^0.1.1+2
+  firebase_auth: ^0.16.0
+  firebase_auth_web: ^0.1.2
+
+  modal_progress_hud: ^0.1.3
+  firebase_database: ^3.1.6
+  provider: ^3.1.0
+
+  flutter_spinkit: ^4.1.2
+  intl: ^0.16.1
+  reorderables: ^0.3.2
+  connectivity: ^0.4.9
+  email_validator: ^1.0.5
+  responsive_builder: ^0.3.0
+
+
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+
+  uses-material-design: true
+  assets:
+    - images/
+
+  fonts:
+    - family: BioRhyme
+      fonts:
+        - asset: fonts/BioRhyme/BioRhyme-Bold.ttf
+        - asset: fonts/BioRhyme/BioRhyme-ExtraBold.ttf
+        - asset: fonts/BioRhyme/BioRhyme-ExtraLight.ttf
+        - asset: fonts/BioRhyme/BioRhyme-Regular.ttf
+
+analyzer:
+  enable-experiment:
+    -spread-collectoins
