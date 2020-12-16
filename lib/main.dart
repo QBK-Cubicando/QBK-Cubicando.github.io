@@ -18,6 +18,9 @@ import 'package:qbk_simple_app/a_screens_pages/a_new_gig_pages/create_gig_page.d
 import 'package:qbk_simple_app/a_screens_pages/a_new_gig_pages/create_load_page.dart';
 import 'package:qbk_simple_app/a_screens_pages/a_new_gig_pages/new_gig_page.dart';
 
+import 'a_screens_pages/registration_information_page.dart';
+import 'services/wrapper_widget.dart';
+
 ///Read but not Documentated
 void main() => runApp(QBKApp());
 

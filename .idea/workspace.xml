@@ -4,7 +4,21 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b783eb5c-309f-4dc3-b05a-e9f90b6318a5" name="Default Changelist" comment="" />
+    <list default="true" id="b783eb5c-309f-4dc3-b05a-e9f90b6318a5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/debug.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/home_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/home_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/registration_information_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/registration_information_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ab_created_widgets/a_buttons/new_gig_button.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ab_created_widgets/a_buttons/new_gig_button.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ab_created_widgets/text_field-widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ab_created_widgets/text_field-widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/generated_plugin_registrant.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/generated_plugin_registrant.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ui/sizes-helpers.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/sizes-helpers.dart" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -24,6 +38,7 @@
   <component name="IgnoredFileRootStore">
     <option name="generatedRoots">
       <set>
+        <option value="C:\Users\nils0\AndroidStudioProjects\QBK-Cubicando.github.io\.idea" />
         <option value="C:\Users\nils0\AndroidStudioProjects\qbk_web\.idea" />
       </set>
     </option>
@@ -39,7 +54,7 @@
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="dart.analysis.tool.window.force.activate" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../QBK-Cubicando.github.io" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../try_provider" />
     <property name="settings.editor.selected.configurable" value="Errors" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
@@ -67,53 +82,52 @@
     </task>
     <servers />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
   <component name="WindowStateProjectService">
-    <state x="204" y="-1119" key="FileChooserDialogImpl" timestamp="1608054335543">
+    <state x="204" y="-1119" key="FileChooserDialogImpl" timestamp="1608098916932">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
-    <state x="204" y="-1119" key="FileChooserDialogImpl/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608054335543" />
-    <state width="1648" height="272" key="GridCell.Tab.0.bottom" timestamp="1608052534530">
+    <state x="204" y="-1119" key="FileChooserDialogImpl/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608098916932" />
+    <state x="351" y="201" key="FileChooserDialogImpl/0.0.1280.720/-357.-1440.2048.1152@0.0.1280.720" timestamp="1606571824557" />
+    <state width="1557" height="267" key="GridCell.Tab.0.bottom" timestamp="1608100713274">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
-    <state width="1648" height="272" key="GridCell.Tab.0.bottom/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608052534530" />
-    <state width="1648" height="272" key="GridCell.Tab.0.center" timestamp="1608052534530">
+    <state width="1557" height="267" key="GridCell.Tab.0.bottom/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608100713274" />
+    <state width="1500" height="352" key="GridCell.Tab.0.bottom/0.0.1280.720/-357.-1440.2048.1152@0.0.1280.720" timestamp="1606452943880" />
+    <state width="1557" height="267" key="GridCell.Tab.0.center" timestamp="1608100713273">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
-    <state width="1648" height="272" key="GridCell.Tab.0.center/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608052534530" />
-    <state width="1648" height="272" key="GridCell.Tab.0.left" timestamp="1608052534530">
+    <state width="1557" height="267" key="GridCell.Tab.0.center/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608100713273" />
+    <state width="1500" height="352" key="GridCell.Tab.0.center/0.0.1280.720/-357.-1440.2048.1152@0.0.1280.720" timestamp="1606452943880" />
+    <state width="1557" height="267" key="GridCell.Tab.0.left" timestamp="1608100713273">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
-    <state width="1648" height="272" key="GridCell.Tab.0.left/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608052534530" />
-    <state width="1648" height="272" key="GridCell.Tab.0.right" timestamp="1608052534530">
+    <state width="1557" height="267" key="GridCell.Tab.0.left/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608100713273" />
+    <state width="1500" height="352" key="GridCell.Tab.0.left/0.0.1280.720/-357.-1440.2048.1152@0.0.1280.720" timestamp="1606452943879" />
+    <state width="1557" height="267" key="GridCell.Tab.0.right" timestamp="1608100713273">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
-    <state width="1648" height="272" key="GridCell.Tab.0.right/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608052534530" />
+    <state width="1557" height="267" key="GridCell.Tab.0.right/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608100713273" />
+    <state width="1500" height="352" key="GridCell.Tab.0.right/0.0.1280.720/-357.-1440.2048.1152@0.0.1280.720" timestamp="1606452943880" />
     <state x="-68" y="-1230" key="SettingsEditor" timestamp="1606401678752">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
     <state x="-68" y="-1230" key="SettingsEditor/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1606401678752" />
-    <state x="200" y="-1046" key="com.intellij.ide.util.TipDialog" timestamp="1608053398373">
+    <state x="-253" y="-1340" width="1560" height="952" key="com.android.tools.idea.avdmanager.AvdListDialog" timestamp="1607102926168">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
-    <state x="200" y="-1046" key="com.intellij.ide.util.TipDialog/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608053398373" />
+    <state x="-253" y="-1340" width="1560" height="952" key="com.android.tools.idea.avdmanager.AvdListDialog/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1607102926168" />
+    <state x="348" y="246" key="com.intellij.ide.util.TipDialog" timestamp="1608098464643">
+      <screen x="0" y="0" width="1280" height="720" />
+    </state>
+    <state x="310" y="204" key="com.intellij.ide.util.TipDialog/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608006046356" />
+    <state x="348" y="246" key="com.intellij.ide.util.TipDialog/0.0.1280.720/-357.-1440.2048.1152@0.0.1280.720" timestamp="1608098464643" />
     <state x="81" y="-454" key="run.anything.popup" timestamp="1606405192456">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
     <state x="81" y="-454" key="run.anything.popup/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1606405192456" />
-    <state x="86" y="-1184" width="672" height="678" key="search.everywhere.popup" timestamp="1608054209641">
+    <state x="86" y="-1183" width="672" height="678" key="search.everywhere.popup" timestamp="1606633761091">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
-    <state x="86" y="-1184" width="672" height="678" key="search.everywhere.popup/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608054209641" />
+    <state x="86" y="-1183" width="672" height="678" key="search.everywhere.popup/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1606633761091" />
   </component>
 </project>

@@ -19,7 +19,7 @@ class NewGigButton extends StatelessWidget {
       color: this.color,
       child: Container(
         alignment: Alignment.center,
-        height: displayHeight(context) * 0.13,
+        height: displayHeight(context) * 0.15,
         width: displayWidth(context) * 0.23,
         child: Text(
           this.text,

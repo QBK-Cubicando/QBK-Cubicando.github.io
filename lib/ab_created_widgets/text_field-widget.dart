@@ -53,7 +53,7 @@ class TextFieldQBK extends StatelessWidget {
 
         if (sizingInformation.deviceScreenType == DeviceScreenType.tablet) {
           return TextFormFieldChild(
-              width: width * 0.8,
+              width: width * 0.85,
               initialValue: initialValue,
               keyboardType: keyboardType,
               obscureText: obscureText,
@@ -82,7 +82,7 @@ class TextFieldQBK extends StatelessWidget {
         }
 
         return TextFormFieldChild(
-            width: width * 0.9,
+            width: width * 0.85,
             initialValue: initialValue,
             keyboardType: keyboardType,
             obscureText: obscureText,

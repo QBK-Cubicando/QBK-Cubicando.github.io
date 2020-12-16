@@ -72,15 +72,21 @@ class _QBKHomePageState extends State<QBKHomePage> {
                             SizedBox(
                               height: 10.0,
                             ),
-                            Text(
-                              userData.name,
-                              style: kButtonsTextStyle(context),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                userData.name,
+                                style: kButtonsTextStyle(context),
+                              ),
                             ),
                             //Name
-                            Text(
-                              userData.speciality ?? 'Random',
-                              style: kTextStyle(context)
-                                  .copyWith(color: Colors.black),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                userData.speciality ?? 'Random',
+                                style: kTextStyle(context)
+                                    .copyWith(color: Colors.black),
+                              ),
                             ),
                             // Speciality
                             SizedBox(
