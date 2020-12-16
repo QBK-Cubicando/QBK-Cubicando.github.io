@@ -18,7 +18,7 @@ class LoadSelectionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: height ?? displayHeight(context) * 0.06,
+        height: height ?? displayHeight(context) * 0.065,
         width: width ?? displayWidth(context) * 0.25,
         child: RaisedButton(
           shape:

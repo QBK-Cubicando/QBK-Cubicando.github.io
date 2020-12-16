@@ -16,6 +16,13 @@ import 'package:qbk_simple_app/a_screens_pages/a_new_gig_pages/create_load_page.
 import 'package:qbk_simple_app/utilities/loading_widget.dart';
 import 'package:qbk_simple_app/models/new_crew_member.dart';
 
+import '../../ui/sizes-helpers.dart';
+import '../../ui/sizes-helpers.dart';
+import '../../ui/sizes-helpers.dart';
+import '../../ui/sizes-helpers.dart';
+import '../../ui/sizes-helpers.dart';
+import '../../ui/sizes-helpers.dart';
+
 ///Documentated
 class CreateGigPage extends StatefulWidget {
   static const String id = 'create_gig_page';
@@ -153,6 +160,7 @@ class _CreateGigPageState extends State<CreateGigPage> {
                               ),
                               SelectionButton(
                                 text: 'Create Load',
+                                width: displayWidth(context) * 0.6,
                                 color: Colors.green,
                                 onPress: () {
                                   showDialog(
@@ -160,72 +168,80 @@ class _CreateGigPageState extends State<CreateGigPage> {
                                       builder: (context) {
                                         return Form(
                                           key: _formKey,
-                                          child: AlertDialog(
-                                            title: Column(
-                                              children: <Widget>[
-                                                Center(
-                                                    child: Text(
-                                                  'Name your new Load',
-                                                  textAlign: TextAlign.center,
-                                                  style: kTextStyle(context)
-                                                      .copyWith(
-                                                          color: Colors.black),
-                                                )),
-                                                SizedBox(height: 10.0),
-                                                TextFieldQBK(
-                                                  maxLength: 6,
-                                                  hintText: 'Name Load',
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      nameLoad = value;
-                                                    });
+                                          child: Container(
+                                            height:
+                                                displayHeight(context) * 0.5,
+                                            width: displayWidth(context) * 0.7,
+                                            child: AlertDialog(
+                                              title: Column(
+                                                children: <Widget>[
+                                                  Center(
+                                                      child: Text(
+                                                    'Name your new Load',
+                                                    textAlign: TextAlign.center,
+                                                    style: kTextStyle(context)
+                                                        .copyWith(
+                                                            color:
+                                                                Colors.black),
+                                                  )),
+                                                  SizedBox(height: 10.0),
+                                                  TextFieldQBK(
+                                                    maxLength: 6,
+                                                    hintText: 'Name Load',
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        nameLoad = value;
+                                                      });
+                                                    },
+                                                    validator: (value) => value
+                                                            .isEmpty
+                                                        ? 'Type a valid Name'
+                                                        : null,
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: <Widget>[
+                                                SelectionButton(
+                                                  text: 'Cancel',
+                                                  color: Colors.redAccent,
+                                                  onPress: () =>
+                                                      Navigator.pop(context),
+                                                ),
+                                                SelectionButton(
+                                                  text: 'Create',
+                                                  color: Colors.green,
+                                                  onPress: () async {
+                                                    if (_formKey.currentState
+                                                        .validate()) {
+                                                      await DatabaseService(
+                                                              userUid: user.uid,
+                                                              uidGig:
+                                                                  widget.uidGig,
+                                                              uidLoad:
+                                                                  '${user.uid}${widget.uidGig}$nameLoad')
+                                                          .setLoadData(
+                                                        nameLoad: nameLoad,
+                                                      );
+                                                      await Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder:
+                                                                  (context) {
+                                                        return CreateLoadPage(
+                                                          uidGig: widget.uidGig,
+                                                          nameGig:
+                                                              widget.nameGig,
+                                                          nameLoad: nameLoad,
+                                                          uidLoad:
+                                                              '${user.uid}${widget.uidGig}$nameLoad',
+                                                        );
+                                                      }));
+                                                      Navigator.pop(context);
+                                                    }
                                                   },
-                                                  validator: (value) =>
-                                                      value.isEmpty
-                                                          ? 'Type a valid Name'
-                                                          : null,
                                                 ),
                                               ],
                                             ),
-                                            actions: <Widget>[
-                                              SelectionButton(
-                                                text: 'Cancel',
-                                                color: Colors.redAccent,
-                                                onPress: () =>
-                                                    Navigator.pop(context),
-                                              ),
-                                              SelectionButton(
-                                                text: 'Create',
-                                                color: Colors.green,
-                                                onPress: () async {
-                                                  if (_formKey.currentState
-                                                      .validate()) {
-                                                    await DatabaseService(
-                                                            userUid: user.uid,
-                                                            uidGig:
-                                                                widget.uidGig,
-                                                            uidLoad:
-                                                                '${user.uid}${widget.uidGig}$nameLoad')
-                                                        .setLoadData(
-                                                      nameLoad: nameLoad,
-                                                    );
-                                                    await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) {
-                                                      return CreateLoadPage(
-                                                        uidGig: widget.uidGig,
-                                                        nameGig: widget.nameGig,
-                                                        nameLoad: nameLoad,
-                                                        uidLoad:
-                                                            '${user.uid}${widget.uidGig}$nameLoad',
-                                                      );
-                                                    }));
-                                                    Navigator.pop(context);
-                                                  }
-                                                },
-                                              ),
-                                            ],
                                           ),
                                         );
                                       });
@@ -254,6 +270,8 @@ class _CreateGigPageState extends State<CreateGigPage> {
                           ),
 
                           Container(
+                            width: displayWidth(context) * 0.85,
+                            height: displayHeight(context) * 0.2,
                             padding: EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               color: Colors.white,
@@ -275,11 +293,14 @@ class _CreateGigPageState extends State<CreateGigPage> {
 //                      ),//Where all the participants go
                           SelectionButton(
                             text: 'I\'m Ready !',
-                            width: double.infinity,
+                            width: displayWidth(context) * 0.85,
                             color: Colors.green,
                             onPress: () {
                               Navigator.pushNamed(context, QBKHomePage.id);
                             },
+                          ),
+                          SizedBox(
+                            height: 5.0,
                           ),
                         ],
                       ),

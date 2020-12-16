@@ -5,19 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b783eb5c-309f-4dc3-b05a-e9f90b6318a5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/debug.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/create_gig_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/create_gig_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/create_load_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/create_load_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/home_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/home_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/registration_information_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/registration_information_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ab_created_widgets/a_buttons/new_gig_button.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ab_created_widgets/a_buttons/new_gig_button.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ab_created_widgets/text_field-widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ab_created_widgets/text_field-widget.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/generated_plugin_registrant.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/generated_plugin_registrant.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/sizes-helpers.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/sizes-helpers.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/load_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/load_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ab_created_widgets/a_buttons/load_selection_button_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ab_created_widgets/a_buttons/load_selection_button_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/models/flight_case.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/flight_case.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/models/load.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/load.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

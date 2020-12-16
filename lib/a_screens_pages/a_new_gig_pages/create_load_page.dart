@@ -10,6 +10,9 @@ import 'package:keyboard_avoider/keyboard_avoider.dart';
 import 'package:qbk_simple_app/models/flight_case.dart';
 import 'package:reorderables/reorderables.dart';
 
+import '../../ui/sizes-helpers.dart';
+import '../../ui/sizes-helpers.dart';
+
 ///Documentated
 class CreateLoadPage extends StatefulWidget {
   static const String id = 'create_load_page';
@@ -108,7 +111,7 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
                             _scaffoldKey.currentState.openEndDrawer();
                             setState(() {});
                           },
-                          height: displayHeight(context) * 0.1,
+                          height: displayHeight(context) * 0.15,
                           width: displayWidth(context) * 0.3,
                         ),
                       ],
@@ -191,6 +194,7 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
                   //   },
                   // ),
                   LoadSelectionButton(
+                    height: displayHeight(context) * 0.08,
                     text: Text(
                       'Case',
                       style: kTextStyle(context).copyWith(color: Colors.black),
@@ -208,7 +212,7 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
               Container(
                   alignment: AlignmentDirectional.topStart,
                   padding: EdgeInsets.all(3),
-                  height: displayHeight(context) * 0.7,
+                  height: MediaQuery.of(context).size.height * 0.7,
                   width: displayWidth(context),
                   color: Colors.grey,
                   child: ReorderableWrap(
@@ -251,6 +255,7 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
               Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: LoadSelectionButton(
+                  height: displayHeight(context) * 0.09,
                   text: Text(
                     'I\'ve got everything',
                     style: kTextStyle(context).copyWith(color: Colors.black),
@@ -275,6 +280,9 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
                   },
                 ),
               ),
+              SizedBox(
+                height: 5.0,
+              )
             ],
           ),
         ),

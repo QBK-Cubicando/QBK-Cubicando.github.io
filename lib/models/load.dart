@@ -118,20 +118,16 @@ class LoadOnList extends StatelessWidget {
                   children: <Widget>[
                     Icon(
                       Icons.directions_bus,
-                      size: displayWidth(context) * 0.09,
+                      size: displayWidth(context) * 0.07,
                     ),
                     Card(
                       color: Colors.orangeAccent,
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 3, horizontal: 5),
-                          child: Text(
-                            loadOnList.nameLoad,
-                            style: TextStyle(
-                                fontSize: displayWidth(context) * 0.04),
-                          ),
+                        child: Text(
+                          loadOnList.nameLoad,
+                          style:
+                              TextStyle(fontSize: displayWidth(context) * 0.04),
                         ),
                       ),
                     ),
