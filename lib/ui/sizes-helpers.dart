@@ -9,12 +9,12 @@ double displayHeight(BuildContext context) {
   // debugPrint('Height = ' + displaySize(context).height.toString());
   double height = displaySize(context).height;
 
-  if (height > 600) {
-    height = 600;
+  if (height > 800) {
+    height = 800;
     return height;
   }
-  if (height < 350) {
-    height = 350;
+  if (height < 500) {
+    height = 500;
     return height;
   }
 
@@ -29,8 +29,8 @@ double displayWidth(BuildContext context) {
     width = 600;
     return width;
   }
-  if (width < 350) {
-    width = 350;
+  if (width < 400) {
+    width = 400;
     return width;
   }
   return width;

@@ -9,6 +9,7 @@ class UserData {
   final String phone;
   final String speciality;
   final Image profileImage;
+  final String email;
 
   UserData(
       {this.uid,
@@ -17,5 +18,6 @@ class UserData {
       this.city,
       this.phone,
       this.speciality,
-      this.profileImage});
+      this.profileImage,
+      this.email});
 }

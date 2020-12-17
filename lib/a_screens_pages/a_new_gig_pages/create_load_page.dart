@@ -84,77 +84,82 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
               color: Colors.grey,
               child: Padding(
                 padding: EdgeInsets.fromLTRB(8, 15, 5, 15),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Center(
-                          child: Text(
-                            'My Cases',
-                            textAlign: TextAlign.center,
-                            style: kButtonsTextStyle(context),
-                          ),
+                child: Center(
+                  child: Container(
+                    width: displayWidth(context),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Center(
+                              child: Text(
+                                'My Cases',
+                                textAlign: TextAlign.center,
+                                style: kButtonsTextStyle(context),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            LoadSelectionButton(
+                              text: Text(
+                                'Update & Close',
+                                textAlign: TextAlign.center,
+                                style: kTextStyle(context)
+                                    .copyWith(color: Colors.black),
+                              ),
+                              color: CupertinoColors.activeGreen,
+                              onPressed: () {
+                                _scaffoldKey.currentState.openEndDrawer();
+                                setState(() {});
+                              },
+                              height: displayHeight(context) * 0.15,
+                              width: displayWidth(context) * 0.3,
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          width: 10,
-                        ),
+                        SizedBox(height: 20),
                         LoadSelectionButton(
                           text: Text(
-                            'Update & Close',
-                            textAlign: TextAlign.center,
-                            style: kTextStyle(context)
-                                .copyWith(color: Colors.black),
+                            'New Own Case',
+                            style: kTextStyle(context).copyWith(
+                              color: Colors.black,
+                            ),
                           ),
-                          color: CupertinoColors.activeGreen,
-                          onPressed: () {
-                            _scaffoldKey.currentState.openEndDrawer();
-                            setState(() {});
+                          color: Colors.grey.shade400,
+                          height: displayHeight(context) * 0.07,
+                          width: displayWidth(context) * 0.5,
+                          onPressed: () async {
+                            final updatedList = await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return PopupCreateLoad(
+                                  title: 'Own',
+                                  uidGig: widget.uidGig,
+                                  uidLoad: widget.uidLoad,
+                                  flightCaseList: flightCaseCreateList,
+                                );
+                              },
+                              barrierDismissible: false,
+                            );
+                            setState(() => flightCaseCreateList = updatedList);
                           },
-                          height: displayHeight(context) * 0.15,
-                          width: displayWidth(context) * 0.3,
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Expanded(
+                          child: OwnCaseTileList(
+                            uidGig: widget.uidGig,
+                            uidLoad: widget.uidLoad,
+                            flightCaseList: flightCaseCreateList,
+                            isLoadPage: true,
+                          ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
-                    LoadSelectionButton(
-                      text: Text(
-                        'New Own Case',
-                        style: kTextStyle(context).copyWith(
-                          color: Colors.black,
-                        ),
-                      ),
-                      color: Colors.grey.shade400,
-                      height: displayHeight(context) * 0.07,
-                      width: displayWidth(context) * 0.5,
-                      onPressed: () async {
-                        final updatedList = await showDialog(
-                          context: context,
-                          builder: (context) {
-                            return PopupCreateLoad(
-                              title: 'Own',
-                              uidGig: widget.uidGig,
-                              uidLoad: widget.uidLoad,
-                              flightCaseList: flightCaseCreateList,
-                            );
-                          },
-                          barrierDismissible: false,
-                        );
-                        setState(() => flightCaseCreateList = updatedList);
-                      },
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Expanded(
-                      child: OwnCaseTileList(
-                        uidGig: widget.uidGig,
-                        uidLoad: widget.uidLoad,
-                        flightCaseList: flightCaseCreateList,
-                        isLoadPage: true,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),

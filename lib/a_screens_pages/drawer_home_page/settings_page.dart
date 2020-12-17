@@ -45,10 +45,12 @@ class _SettingsPageState extends State<SettingsPage> {
   String _phone;
   String _speciality;
   Image _profileImage;
+  String _email;
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserData>(context);
+    _email = user.email;
 
     return StreamBuilder<UserData>(
         stream: DatabaseService(userUid: user.uid).userData,
@@ -64,147 +66,167 @@ class _SettingsPageState extends State<SettingsPage> {
               text: 'User Info',
               body: KeyboardAvoider(
                 autoScroll: true,
-                child: SafeArea(
-                  child: Form(
-                    key: _formKey,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 10.0,
-                          ),
-                          TextFieldQBK(
-                            initialValue: userData.name,
-                            validator: (value) =>
-                                value.isEmpty ? 'Enter a Name' : null,
-                            maxLength: 10,
-                            icon: Icons.accessibility_new,
-                            hintText: 'Name',
-                            onChanged: (value) {
-                              _name = value;
-                            },
-                          ), //Name
-                          GestureDetector(
-                            onTap: () {
-                              showDatePicker(
-                                context: context,
-                                initialDate:
-                                    DateTime.now(), //userData.dateOfBirth
-                                firstDate: DateTime(1950),
-                                lastDate: DateTime.now(),
-                              ).then((date) {
-                                setState(() {
-                                  _dateOfBirth = date;
+                child: Center(
+                  child: SafeArea(
+                    child: Form(
+                      key: _formKey,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: <Widget>[
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            TextFieldQBK(
+                              initialValue: userData.name,
+                              validator: (value) =>
+                                  value.isEmpty ? 'Enter a Name' : null,
+                              maxLength: 10,
+                              icon: Icons.accessibility_new,
+                              hintText: 'Name',
+                              onChanged: (value) {
+                                _name = value;
+                              },
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ), //Name
+                            GestureDetector(
+                              onTap: () {
+                                showDatePicker(
+                                  context: context,
+                                  initialDate:
+                                      DateTime.now(), //userData.dateOfBirth
+                                  firstDate: DateTime(1950),
+                                  lastDate: DateTime.now(),
+                                ).then((date) {
+                                  setState(() {
+                                    _dateOfBirth = date;
+                                  });
                                 });
-                              });
-                            },
-                            child: Container(
-                              width: double.infinity,
+                              },
+                              child: Container(
+                                width: displayWidth(context) * 0.85,
+                                height: displayHeight(context) * 0.1,
+                                padding:
+                                    EdgeInsets.only(left: 10.0, right: 10.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade300,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15.0)),
+                                ),
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.calendar_today,
+                                      size: displayWidth(context) * 0.04,
+                                    ),
+                                    SizedBox(
+                                      width: displayWidth(context) * 0.02,
+                                    ),
+                                    Center(
+                                      child: Text(
+                                        DateFormat('yyyy-MM-dd').format(
+                                            _dateOfBirth ??
+                                                userData.dateOfBirth),
+                                        style: kTextStyle(context)
+                                            .copyWith(color: Colors.black),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ), //Birth
+                            TextFieldQBK(
+                              initialValue: userData.city,
+                              validator: (value) =>
+                                  value.isEmpty ? 'Enter a Country' : null,
+                              maxLines: 1,
+                              icon: Icons.location_city,
+                              hintText: 'City',
+                              onChanged: (value) {
+                                _city = value;
+                              },
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ), //Country
+                            TextFieldQBK(
+                              initialValue: userData.phone,
+                              maxLines: 1,
+                              icon: Icons.phone_android,
+                              hintText: 'Phone (optional)',
+                              onChanged: (value) {
+                                _phone = value;
+                              },
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ), //Phone
+                            Container(
+                              width: displayWidth(context) * 0.85,
+                              height: displayHeight(context) * 0.1,
                               padding: EdgeInsets.only(left: 10.0, right: 10.0),
                               decoration: BoxDecoration(
                                 color: Colors.grey.shade300,
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(15.0)),
                               ),
-                              child: Row(
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.calendar_today,
-                                    size: displayWidth(context) * 0.04,
-                                  ),
-                                  SizedBox(
-                                    width: displayWidth(context) * 0.02,
-                                  ),
-                                  Center(
+                              child: DropdownButtonFormField(
+                                value: userData.speciality,
+                                items: speciality.map((speciality) {
+                                  return DropdownMenuItem(
+                                    value: speciality,
                                     child: Text(
-                                      DateFormat('yyyy-MM-dd').format(
-                                          _dateOfBirth ?? userData.dateOfBirth),
+                                      speciality,
                                       style: kTextStyle(context)
                                           .copyWith(color: Colors.black),
                                     ),
-                                  ),
-                                ],
+                                  );
+                                }).toList(),
+                                onChanged: (value) =>
+                                    setState(() => _speciality = value),
+                                iconSize: displayWidth(context) * 0.08,
                               ),
+                            ), //Speciality
+                            SizedBox(
+                              height: 15.0,
                             ),
-                          ), //Birth
-                          TextFieldQBK(
-                            initialValue: userData.city,
-                            validator: (value) =>
-                                value.isEmpty ? 'Enter a Country' : null,
-                            maxLines: 1,
-                            icon: Icons.location_city,
-                            hintText: 'City',
-                            onChanged: (value) {
-                              _city = value;
-                            },
-                          ), //Country
-                          TextFieldQBK(
-                            initialValue: userData.phone,
-                            maxLines: 1,
-                            icon: Icons.phone_android,
-                            hintText: 'Phone (optional)',
-                            onChanged: (value) {
-                              _phone = value;
-                            },
-                          ), //Phone
-                          Container(
-                            width: double.infinity,
-                            height: displayHeight(context) * 0.08,
-                            padding: EdgeInsets.only(left: 10.0, right: 10.0),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15.0)),
-                            ),
-                            child: DropdownButtonFormField(
-                              value: userData.speciality,
-                              items: speciality.map((speciality) {
-                                return DropdownMenuItem(
-                                  value: speciality,
-                                  child: Text(
-                                    speciality,
-                                    style: kTextStyle(context)
-                                        .copyWith(color: Colors.black),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (value) =>
-                                  setState(() => _speciality = value),
-                              iconSize: displayWidth(context) * 0.08,
-                            ),
-                          ), //Speciality
-                          SizedBox(
-                            height: 15.0,
-                          ),
-                          //TODO: image selector
-                          SelectionButton(
-                              text: 'Done',
-                              width: double.infinity,
-                              color: Colors.green,
-                              onPress: () async {
-                                if (_formKey.currentState.validate()) {
-                                  try {
-                                    ///Update User's Data
-                                    await DatabaseService(userUid: userData.uid)
-                                        .updateUserData(
-                                      _name ?? userData.name,
-                                      _dateOfBirth ?? userData.dateOfBirth,
-                                      _city ?? userData.city,
-                                      _phone ?? userData.phone,
-                                      _speciality ?? userData.speciality,
-                                      _profileImage ?? userData.profileImage,
-                                    );
+                            //TODO: image selector
+                            SelectionButton(
+                                text: 'Done',
+                                width: displayWidth(context) * 0.85,
+                                color: Colors.green,
+                                onPress: () async {
+                                  if (_formKey.currentState.validate()) {
+                                    try {
+                                      ///Update User's Data
+                                      await DatabaseService(
+                                              userUid: userData.uid)
+                                          .updateUserData(
+                                              _name ?? userData.name,
+                                              _dateOfBirth ??
+                                                  userData.dateOfBirth,
+                                              _city ?? userData.city,
+                                              _phone ?? userData.phone,
+                                              _speciality ??
+                                                  userData.speciality,
+                                              _profileImage ??
+                                                  userData.profileImage,
+                                              _email ?? userData.email);
 
-                                    Navigator.pushNamed(
-                                        context, QBKHomePage.id);
-                                  } catch (e) {
-                                    print(e);
+                                      Navigator.pushNamed(
+                                          context, QBKHomePage.id);
+                                    } catch (e) {
+                                      print(e);
+                                    }
                                   }
-                                }
-                              }), //Create Gig Button
-                        ],
+                                }), //Create Gig Button
+                          ],
+                        ),
                       ),
                     ),
                   ),

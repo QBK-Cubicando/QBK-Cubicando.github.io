@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_cases.dart';
+import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_friends.dart';
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_gigs.dart';
 import 'package:qbk_simple_app/a_screens_pages/load_screen.dart';
 import 'package:flutter/services.dart';
@@ -52,6 +53,7 @@ class QBKApp extends StatelessWidget {
               RegistrationInformationPage(),
           MyGigs.id: (context) => MyGigs(),
           MyCases.id: (context) => MyCases(),
+          MyFriends.id: (context) => MyFriends(),
           LoadPage.id: (context) => LoadPage(),
         },
       ),

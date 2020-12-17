@@ -4,6 +4,7 @@ import 'package:qbk_simple_app/a_screens_pages/registration_information_page.dar
 import 'package:qbk_simple_app/a_screens_pages/sign_in_page.dart';
 import 'package:qbk_simple_app/services/auth.dart';
 import 'package:qbk_simple_app/services/connection_check.dart';
+import 'package:qbk_simple_app/services/database.dart';
 import 'package:qbk_simple_app/ui/sizes-helpers.dart';
 
 import 'package:qbk_simple_app/utilities/constants.dart';
@@ -159,10 +160,18 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                         .createUserWithEmailAndPassword(
                                             email, password);
 
+                                    await DatabaseService(userUid: newUser.uid)
+                                        .setUserData('Name', DateTime.now(),
+                                            'City', null, "Other", null, email);
+
                                     if (newUser != null) {
-                                      Navigator.pushNamed(
+                                      Navigator.push(
                                         context,
-                                        RegistrationInformationPage.id,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                RegistrationInformationPage(
+                                                  email: email,
+                                                )),
                                       );
                                     } else {
                                       setState(() {

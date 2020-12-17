@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_friends.dart';
 
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_gigs.dart';
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/settings_page.dart';
@@ -101,23 +102,25 @@ class _QBKHomePageState extends State<QBKHomePage> {
                                     MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: <Widget>[
-//TODO: Add friends sheet
                                   SelectionMenuButton(
                                     text: 'MY GIGS',
                                     onPress: () =>
                                         Navigator.pushNamed(context, MyGigs.id),
                                   ),
                                   //My Gigs
-                                  //TODO:Activate this two below
                                   SelectionMenuButton(
                                     text: 'MY CASES',
                                     onPress: () => Navigator.pushNamed(
                                         context, MyCases.id),
                                   ),
                                   //My Cases
-                                  //SelectionMenuButton(text: 'FRIENDS (Soon)',), // My Friends
+                                  SelectionMenuButton(
+                                    text: 'MY FRIENDS',
+                                    onPress: () => Navigator.pushNamed(
+                                        context, MyFriends.id),
+                                  ),
+                                  //My Friends
 //TODO: Invite Friends
-
                                   SelectionMenuButton(
                                     text: 'MODIFY PROFILE',
                                     onPress: () {
@@ -163,7 +166,7 @@ class _QBKHomePageState extends State<QBKHomePage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Container(
-                                height: displayHeight(context) * 0.8,
+                                height: displayHeight(context) * 0.7,
                                 width: displayWidth(context) * 0.8,
                                 color: Colors.white,
                                 child: QBKCalendar(),

@@ -25,6 +25,10 @@ class DatabaseService {
 
   /// email or uid of crew member
   final String uidCrewGig;
+  //TODO: Check This!
+
+  /// email or uid of crew member
+  final String uidCrewMember;
 
   /// Load + DateTime.now
   final String uidLoad;
@@ -45,41 +49,12 @@ class DatabaseService {
     this.loaded,
     this.uidGig,
     this.uidCrewGig,
+    this.uidCrewMember,
     this.uidLoad,
     this.uidFlightCase,
     this.dateGigForCalendar,
     this.uidMyCase,
   });
-
-  /// Check Test Codes
-
-//  Future<bool> checkIfCodeExists(insertedCode) {
-//    return Firestore.instance
-//        .collection('codigoPrueba')
-//        .document('codigoPrueba')
-//        .get()
-//        .then((code) async {
-//      bool exist = false;
-//
-//      Map mapOfCodesAndBool = await code['codigos'];
-//
-//      List<String> listOfCodes;
-//
-//      listOfCodes =
-//          mapOfCodesAndBool.entries.map((e) => e.key.toString()).toList();
-//
-//      for (String code in listOfCodes) {
-//        if (insertedCode == code) {
-//          exist = true;
-//          break;
-//        } else {
-//          exist = false;
-//        }
-//      }
-//      print(exist.toString());
-//      return exist;
-//    });
-//  }
 
   ///Users Collection
 
@@ -93,6 +68,7 @@ class DatabaseService {
     String phone,
     String speciality,
     Image profileImage,
+    String email,
   ) async {
     return await usersCollection.document(userUid).setData({
       'name': name,
@@ -101,6 +77,7 @@ class DatabaseService {
       'city': city,
       'phone': phone,
       'speciality': speciality,
+      'email': email,
     });
   }
 
@@ -112,13 +89,16 @@ class DatabaseService {
     String phone,
     String speciality,
     Image profileImage,
+    String email,
   ) async {
     return await usersCollection.document(userUid).updateData({
       'name': name,
+      'userUid': userUid,
       'dateOfBirth': DateFormat('yyyy-MM-dd').format(dateOfBirth),
       'city': city,
       'phone': phone,
       'speciality': speciality,
+      'email': email,
     });
   }
 
@@ -132,6 +112,7 @@ class DatabaseService {
       city: snapshot.data['city'],
       phone: snapshot.data['phone'] ?? '',
       speciality: snapshot.data['speciality'],
+      email: snapshot.data['email'],
       //profileImage: ,
     );
   }
@@ -316,8 +297,76 @@ class DatabaseService {
         .map(_calendarGigListFromSnapshot);
   }
 
-  /// Crew data
+  /// Crew data for Gig
 
+  //set crew data
+  Future<void> gigSetCrewData({
+    String nameCrew,
+    String permission,
+    int index,
+  }) async {
+    CollectionReference crewCollection = Firestore.instance
+        .collection('gigs')
+        .document(uidGig)
+        .collection('crew');
+
+    await crewCollection.document().setData({
+      'uidGig': uidGig,
+      'nameCrew': nameCrew,
+      'permission': permission,
+      'index': index,
+    });
+  }
+
+  // get crew member data
+  NewCrewMember _gigInfoNewCrewMemberFromSnapshot(DocumentSnapshot snapshot) {
+    return NewCrewMember(
+      uidCrewMember: snapshot.documentID,
+      nameCrew: snapshot.data['nameCrew'],
+      permission: snapshot.data['permission'],
+      index: snapshot.data['index'],
+    );
+  }
+
+  // get crew member stream
+  Stream<NewCrewMember> get gigCrewMemberData {
+    CollectionReference crewCollection = Firestore.instance
+        .collection('gigs')
+        .document(uidGig)
+        .collection('crew');
+
+    return crewCollection
+        .document(uidCrewGig)
+        .snapshots()
+        .map(_gigInfoNewCrewMemberFromSnapshot);
+  }
+
+  // crew member list
+  List<NewCrewMember> _gigListCrewMembers(QuerySnapshot snapshot) {
+    return snapshot.documents.map(_gigInfoNewCrewMemberFromSnapshot).toList();
+  }
+
+  // get crew member list stream
+  Stream<List<NewCrewMember>> get gigCrewMemberList {
+    CollectionReference crewCollection = Firestore.instance
+        .collection('gigs')
+        .document(uidGig)
+        .collection('crew');
+    return crewCollection.snapshots().map(_gigListCrewMembers);
+  }
+
+  // delete crew member
+  void gigDeleteCrewMember() async {
+    CollectionReference crewCollection = Firestore.instance
+        .collection('gigs')
+        .document(uidGig)
+        .collection('crew');
+
+    await crewCollection.document(uidCrewGig).delete();
+  }
+
+  /// Crew data for Friend
+  //
   // //set crew data
   // Future<void> setCrewData({
   //   String nameCrew,
@@ -336,44 +385,44 @@ class DatabaseService {
   //     'index': index,
   //   });
   // }
-
-  // get crew member data
-  NewCrewMember _infoNewCrewMemberFromSnapshot(DocumentSnapshot snapshot) {
-    return NewCrewMember(
-      uidCrewMember: snapshot.documentID,
-      nameCrew: snapshot.data['nameCrew'],
-      permission: snapshot.data['permission'],
-      index: snapshot.data['index'],
-    );
-  }
-
-  // get crew member stream
-  Stream<NewCrewMember> get crewMemberData {
-    CollectionReference crewCollection = Firestore.instance
-        .collection('gigs')
-        .document(uidGig)
-        .collection('crew');
-
-    return crewCollection
-        .document(uidCrewGig)
-        .snapshots()
-        .map(_infoNewCrewMemberFromSnapshot);
-  }
-
-  // crew member list
-  List<NewCrewMember> _listCrewMembers(QuerySnapshot snapshot) {
-    return snapshot.documents.map(_infoNewCrewMemberFromSnapshot).toList();
-  }
-
-  // get crew member list stream
-  Stream<List<NewCrewMember>> get crewMemberList {
-    CollectionReference crewCollection = Firestore.instance
-        .collection('gigs')
-        .document(uidGig)
-        .collection('crew');
-    return crewCollection.snapshots().map(_listCrewMembers);
-  }
-
+  //
+  // // get crew member data
+  // NewCrewMember _infoNewCrewMemberFromSnapshot(DocumentSnapshot snapshot) {
+  //   return NewCrewMember(
+  //     uidCrewMember: snapshot.documentID,
+  //     nameCrew: snapshot.data['nameCrew'],
+  //     permission: snapshot.data['permission'],
+  //     index: snapshot.data['index'],
+  //   );
+  // }
+  //
+  // // get crew member stream
+  // Stream<NewCrewMember> get crewMemberData {
+  //   CollectionReference crewCollection = Firestore.instance
+  //       .collection('gigs')
+  //       .document(uidGig)
+  //       .collection('crew');
+  //
+  //   return crewCollection
+  //       .document(uidCrewGig)
+  //       .snapshots()
+  //       .map(_gigInfoNewCrewMemberFromSnapshot);
+  // }
+  //
+  // // crew member list
+  // List<NewCrewMember> _listCrewMembers(QuerySnapshot snapshot) {
+  //   return snapshot.documents.map(_gigInfoNewCrewMemberFromSnapshot).toList();
+  // }
+  //
+  // // get crew member list stream
+  // Stream<List<NewCrewMember>> get crewMemberList {
+  //   CollectionReference crewCollection = Firestore.instance
+  //       .collection('gigs')
+  //       .where('userUid', isEqualTo: userUid)
+  //       .collection('crew');
+  //   return crewCollection.snapshots().map(_gigListCrewMembers);
+  // }
+  //
   // // delete crew member
   // void deleteCrewMember() async {
   //   CollectionReference crewCollection = Firestore.instance

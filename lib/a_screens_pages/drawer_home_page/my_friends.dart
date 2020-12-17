@@ -12,13 +12,13 @@ import 'package:qbk_simple_app/utilities/loading_widget.dart';
 import 'package:qbk_simple_app/utilities/constants.dart';
 
 ///READ but not Documentated
-class MyGigs extends StatefulWidget {
-  static const String id = 'my_gigs';
+class MyFriends extends StatefulWidget {
+  static const String id = 'my_friends';
   @override
-  _MyGigsState createState() => _MyGigsState();
+  _MyFriendsState createState() => _MyFriendsState();
 }
 
-class _MyGigsState extends State<MyGigs> {
+class _MyFriendsState extends State<MyFriends> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserData>(context);
@@ -33,16 +33,13 @@ class _MyGigsState extends State<MyGigs> {
 
             if (snapshot.hasData) {
               return UpperBar(
-                  text: 'My Gigs',
+                  text: 'My Friends',
                   onBackGoTo: QBKHomePage(),
                   body: snapshot.data.length != 0
                       ? Center(
                           child: Container(
                             width: displayWidth(context),
-                            child: GigList(
-                              isCopyLoad:
-                                  false, //Bool indicates that this is not Copy Load Page
-                            ),
+                            color: Colors.red,
                           ),
                         )
                       : Column(
@@ -52,7 +49,7 @@ class _MyGigsState extends State<MyGigs> {
                               child: Container(
                                 width: displayWidth(context) * 0.9,
                                 child: Text(
-                                  'No Gigs created yet !',
+                                  'No Friends added yet !',
                                   style: kTextStyle(context),
                                 ),
                               ),

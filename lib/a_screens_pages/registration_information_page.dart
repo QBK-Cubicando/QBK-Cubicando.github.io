@@ -24,6 +24,10 @@ import 'package:qbk_simple_app/ab_created_widgets/a_buttons/selection_button_wid
 class RegistrationInformationPage extends StatefulWidget {
   static const String id = 'registration_information_page';
 
+  RegistrationInformationPage({this.email});
+
+  final String email;
+
   @override
   _RegistrationInformationPageState createState() =>
       _RegistrationInformationPageState();
@@ -51,6 +55,7 @@ class _RegistrationInformationPageState
   String _phone;
   String _speciality;
   Image _profileImage;
+  String _email;
 
   bool _showSpinner = false;
 
@@ -75,6 +80,7 @@ class _RegistrationInformationPageState
   @override
   void initState() {
     _dateOfBirth = DateTime.now();
+    _email = widget.email;
     super.initState();
   }
 
@@ -240,13 +246,14 @@ class _RegistrationInformationPageState
                                           ///Set user's Data to Firebase
                                           await DatabaseService(
                                                   userUid: user.uid)
-                                              .setUserData(
+                                              .updateUserData(
                                                   _name,
                                                   _dateOfBirth,
                                                   _city,
                                                   _phone,
                                                   _speciality,
-                                                  _profileImage);
+                                                  _profileImage,
+                                                  _email);
 
                                           Navigator.pushNamed(
                                               context, QBKHomePage.id);

@@ -82,195 +82,216 @@ class _EditCasePopupState extends State<EditCasePopup> {
                 color: Colors.white10,
                 child: Form(
                   key: _formKeyEditOwnCase,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            TextFieldQBK(
-                              validator: (value) =>
-                                  value.isEmpty ? 'Enter a Case\'s Name' : null,
-                              initialValue: flightCaseName,
-                              maxLength: 10,
-                              hintText: 'Flight Case Name',
-                              onChanged: (valueName) {
-                                flightCaseName = valueName;
-                              },
-                            ), // Gig
-                            SizedBox(
-                              height: 8.0,
-                            ), // End Date
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Container(
-                                color: Colors.white70,
-                                height: displayHeight(context) * 0.45,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: [
-                                      CheckBoxCreateLoad(
-                                        text: 'Wheels',
-                                        icon: Icons.blur_circular,
-                                        checkboxValue: wheels,
-                                        onChanged: (value) {
-                                          tilt == true ? tilt = false : null;
-                                          stack == true ? stack = false : null;
-                                          setState(() => wheels = value);
-                                        },
-                                      ), //Wheels
-                                      CheckBoxCreateLoad(
-                                          text: 'Tiltable',
-                                          icon: Icons.file_upload,
-                                          checkboxValue: tilt,
-                                          onChanged: (value) {
-                                            wheels == true
-                                                ? wheels = false
-                                                : null;
-                                            setState(() => tilt = value);
-                                          }), //Tilt
-                                      CheckBoxCreateLoad(
-                                        text: 'Stakable',
-                                        icon: Icons.category,
-                                        checkboxValue: stack,
-                                        onChanged: (value) {
-                                          wheels == true
-                                              ? wheels = false
-                                              : null;
-                                          setState(() => stack = value);
-                                        },
-                                      ),
-                                      SizedBox(
-                                        height: displayHeight(context) * 0.03,
-                                      ),
-                                      DropdownButton<String>(
-                                        value: color,
-                                        icon: Icon(Icons.arrow_downward),
-                                        iconSize: 24,
-                                        elevation: 16,
-                                        style: TextStyle(color: Colors.black),
-                                        onChanged: (String newValue) {
-                                          setState(() {
-                                            color = newValue;
-                                          });
-                                        },
-                                        items: <String>[
-                                          'Red',
-                                          'Blue',
-                                          'Green',
-                                          'Purple',
-                                          'Orange'
-                                        ].map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Container(
-                                              child: Center(
-                                                  child: Text(
-                                                value,
-                                                style: kTextStyle(context)
-                                                    .copyWith(
-                                                        color: Colors.black),
-                                              )),
-                                              decoration: BoxDecoration(
-                                                  color:
-                                                      _flightCaseColor(value),
-                                                  borderRadius:
-                                                      BorderRadius.circular(8)),
-                                              width:
-                                                  displayWidth(context) * 0.6,
-                                            ),
-                                          );
-                                        }).toList(),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ), // Location
-                            SizedBox(
-                              height: 5.0,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Center(
+                    child: Container(
+                      width: displayWidth(context) * 0.9,
+                      height: displayHeight(context) * 0.9,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          SelectionButton(
-                            text: 'OK',
-                            color: Colors.green,
-                            width: displayWidth(context) * 0.4,
-                            onPress: () async {
-                              if (_formKeyEditOwnCase.currentState.validate()) {
-                                ///Update Gig's Data
-                                await DatabaseService(
-                                        userUid: user.uid,
-                                        uidFlightCase: flightCase.uidFlightCase)
-                                    .updateOwnCaseData(
-                                        nameFlightCase: flightCaseName,
-                                        wheels: wheels,
-                                        tilt: tilt,
-                                        stack: stack,
-                                        color: color);
+                          SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                TextFieldQBK(
+                                  validator: (value) => value.isEmpty
+                                      ? 'Enter a Case\'s Name'
+                                      : null,
+                                  initialValue: flightCaseName,
+                                  maxLength: 10,
+                                  hintText: 'Flight Case Name',
+                                  onChanged: (valueName) {
+                                    flightCaseName = valueName;
+                                  },
+                                ), // Gig
+                                SizedBox(
+                                  height: 8.0,
+                                ), // End Date
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Container(
+                                    color: Colors.white70,
+                                    width: displayWidth(context),
+                                    height: displayHeight(context) * 0.45,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          CheckBoxCreateLoad(
+                                            text: 'Wheels',
+                                            icon: Icons.blur_circular,
+                                            checkboxValue: wheels,
+                                            onChanged: (value) {
+                                              tilt == true
+                                                  ? tilt = false
+                                                  : null;
+                                              stack == true
+                                                  ? stack = false
+                                                  : null;
+                                              setState(() => wheels = value);
+                                            },
+                                          ), //Wheels
+                                          CheckBoxCreateLoad(
+                                              text: 'Tiltable',
+                                              icon: Icons.file_upload,
+                                              checkboxValue: tilt,
+                                              onChanged: (value) {
+                                                wheels == true
+                                                    ? wheels = false
+                                                    : null;
+                                                setState(() => tilt = value);
+                                              }), //Tilt
+                                          CheckBoxCreateLoad(
+                                            text: 'Stakable',
+                                            icon: Icons.category,
+                                            checkboxValue: stack,
+                                            onChanged: (value) {
+                                              wheels == true
+                                                  ? wheels = false
+                                                  : null;
+                                              setState(() => stack = value);
+                                            },
+                                          ),
+                                          SizedBox(
+                                            height:
+                                                displayHeight(context) * 0.03,
+                                          ),
+                                          DropdownButton<String>(
+                                            value: color,
+                                            icon: Icon(Icons.arrow_downward),
+                                            iconSize: 24,
+                                            elevation: 16,
+                                            style:
+                                                TextStyle(color: Colors.black),
+                                            onChanged: (String newValue) {
+                                              setState(() {
+                                                color = newValue;
+                                              });
+                                            },
+                                            items: <String>[
+                                              'Red',
+                                              'Blue',
+                                              'Green',
+                                              'Purple',
+                                              'Orange'
+                                            ].map<DropdownMenuItem<String>>(
+                                                (String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Container(
+                                                  width: displayWidth(context) *
+                                                      0.6,
+                                                  height:
+                                                      displayHeight(context) *
+                                                          0.05,
+                                                  child: Center(
+                                                      child: Text(
+                                                    value,
+                                                    style: kTextStyle(context)
+                                                        .copyWith(
+                                                            color:
+                                                                Colors.black),
+                                                  )),
+                                                  decoration: BoxDecoration(
+                                                      color: _flightCaseColor(
+                                                          value),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8)),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ), // Location
+                                SizedBox(
+                                  height: 5.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              SelectionButton(
+                                text: 'OK',
+                                color: Colors.green,
+                                width: displayWidth(context) * 0.4,
+                                onPress: () async {
+                                  if (_formKeyEditOwnCase.currentState
+                                      .validate()) {
+                                    ///Update Gig's Data
+                                    await DatabaseService(
+                                            userUid: user.uid,
+                                            uidFlightCase:
+                                                flightCase.uidFlightCase)
+                                        .updateOwnCaseData(
+                                            nameFlightCase: flightCaseName,
+                                            wheels: wheels,
+                                            tilt: tilt,
+                                            stack: stack,
+                                            color: color);
 
-                                Navigator.pop(context);
-                              } else {}
-                            },
-                          ), //Update Gig Button
+                                    Navigator.pop(context);
+                                  } else {}
+                                },
+                              ), //Update Gig Button
+                              SizedBox(
+                                height: 5.0,
+                              ),
+                              SelectionButton(
+                                width: displayWidth(context) * 0.4,
+                                text: 'Cancel',
+                                color: Colors.blueAccent,
+                                onPress: () {
+                                  Navigator.pop(context);
+                                },
+                              )
+                            ],
+                          ),
                           SizedBox(
                             height: 5.0,
                           ),
                           SelectionButton(
-                            width: displayWidth(context) * 0.4,
-                            text: 'Cancel',
-                            color: Colors.blueAccent,
+                            text: 'Delete',
+                            width: double.infinity,
+                            color: Colors.redAccent,
                             onPress: () {
-                              Navigator.pop(context);
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Center(
+                                          child: Text(
+                                        'Are you sure you want to delete $flightCaseName?',
+                                        style: kTextStyle(context)
+                                            .copyWith(color: Colors.black),
+                                      )),
+                                      actions: <Widget>[
+                                        SelectionButton(
+                                          text: 'Cancel',
+                                          color: Colors.blueAccent,
+                                          onPress: () => Navigator.pop(context),
+                                        ),
+                                        SelectionButton(
+                                          text: 'Delete',
+                                          color: Colors.redAccent,
+                                          onPress: () {
+                                            Navigator.pop(context);
+                                            _deleteOwnCase();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
                             },
-                          )
+                          ), //Delete Gig Button //Buttons
                         ],
                       ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                      SelectionButton(
-                        text: 'Delete',
-                        width: double.infinity,
-                        color: Colors.redAccent,
-                        onPress: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Center(
-                                      child: Text(
-                                    'Are you sure you want to delete $flightCaseName?',
-                                    style: kTextStyle(context)
-                                        .copyWith(color: Colors.black),
-                                  )),
-                                  actions: <Widget>[
-                                    SelectionButton(
-                                      text: 'Cancel',
-                                      color: Colors.blueAccent,
-                                      onPress: () => Navigator.pop(context),
-                                    ),
-                                    SelectionButton(
-                                      text: 'Delete',
-                                      color: Colors.redAccent,
-                                      onPress: () {
-                                        Navigator.pop(context);
-                                        _deleteOwnCase();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              });
-                        },
-                      ), //Delete Gig Button //Buttons
-                    ],
+                    ),
                   ),
                 ),
               ),
