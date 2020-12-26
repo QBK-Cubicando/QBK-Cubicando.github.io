@@ -118,7 +118,7 @@ class FlightCaseOnLoadList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(5.0),
-      height: displayHeight(context) * 0.26,
+      height: displayHeight(context) * 0.25,
       width: displayWidth(context) * 0.225,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),

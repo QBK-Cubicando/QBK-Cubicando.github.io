@@ -162,12 +162,15 @@ class Dot extends StatelessWidget {
 class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black38,
-      child: SpinKitCubeGrid(
-        color: Colors.green,
-        size: displayWidth(context) * 0.25,
+    return Center(
+      child: Container(
+        child: SpinKitCubeGrid(
+          color: Colors.green,
+          size: displayWidth(context) * 0.25,
+        ),
       ),
     );
   }
 }
+//TODO: A RenderFlex overflowed by 6.4 pixels on the bottom. When appears
+//TODO: in the crew and load list

@@ -168,11 +168,12 @@ class NewGigTile extends StatelessWidget {
 
 class GigList extends StatefulWidget {
   final bool isCopyLoad;
+  final bool sharedGigs;
 
   /// ONLY FOR COPY LOAD PAGE
   final String uidThisGig;
 
-  GigList({this.isCopyLoad, this.uidThisGig});
+  GigList({this.isCopyLoad, this.sharedGigs, this.uidThisGig});
 
   @override
   _GigListState createState() => _GigListState();
@@ -183,30 +184,39 @@ class _GigListState extends State<GigList> {
   Widget build(BuildContext context) {
     UserData user = Provider.of<UserData>(context);
 
-    return StreamBuilder<List<NewGig>>(
-        stream: DatabaseService(userUid: user.uid).gigList,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            print(snapshot.error.toString());
-          }
+    try {
+      return StreamBuilder<List<NewGig>>(
+          stream: DatabaseService(
+                  userUid: user.uid,
+                  sharedGigs: widget.sharedGigs,
+                  crewMemberData: user.uid)
+              .gigList,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              print(snapshot.error.toString());
+            }
 
-          if (snapshot.hasData) {
-            List<NewGig> gigs = snapshot.data;
+            if (snapshot.hasData) {
+              List<NewGig> gigs = snapshot.data;
 
-            return ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: gigs.length,
-              itemBuilder: (context, index) {
-                return NewGigTile(
-                  gig: gigs[index],
-                  isCopyPage: widget.isCopyLoad,
-                  uidThisGig: widget.uidThisGig,
-                );
-              },
-            );
-          } else {
-            return Loading();
-          }
-        });
+              return ListView.builder(
+                scrollDirection: Axis.vertical,
+                itemCount: gigs.length,
+                itemBuilder: (context, index) {
+                  return NewGigTile(
+                    gig: gigs[index],
+                    isCopyPage: widget.isCopyLoad,
+                    uidThisGig: widget.uidThisGig,
+                  );
+                },
+              );
+            } else {
+              return Loading();
+            }
+          });
+    } catch (e) {
+      print(e);
+      return Container(color: Colors.black, child: Loading());
+    }
   }
 }

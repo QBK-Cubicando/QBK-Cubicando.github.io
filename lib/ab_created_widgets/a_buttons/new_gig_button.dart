@@ -5,10 +5,10 @@ import 'package:qbk_simple_app/utilities/constants.dart';
 
 ///Documentated
 class NewGigButton extends StatelessWidget {
-  NewGigButton({@required this.text, this.color, this.onPressGoTo});
+  NewGigButton({@required this.text, this.color, this.onPress});
 
   final String text;
-  final String onPressGoTo;
+  final Function onPress;
   final Color color;
 
   @override
@@ -27,9 +27,7 @@ class NewGigButton extends StatelessWidget {
           style: kButtonsTextStyle(context),
         ),
       ),
-      onPressed: () {
-        Navigator.pushNamed(context, onPressGoTo);
-      },
+      onPressed: onPress,
     );
   }
 }

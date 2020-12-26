@@ -1,7 +1,7 @@
 name: qbk_simple_app
 description: QBK Aplicacion simple sin 3D
 
-version: 1.0.0+3
+version: 1.0.0+10
 
 environment:
   sdk: ">=2.6.0 <3.0.0"
@@ -30,6 +30,7 @@ dependencies:
   connectivity: ^0.4.9
   email_validator: ^1.0.5
   responsive_builder: ^0.3.0
+  boardview: ^0.1.2
 
 
 

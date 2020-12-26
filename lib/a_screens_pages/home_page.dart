@@ -5,6 +5,7 @@ import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_friends.dart'
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_gigs.dart';
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/settings_page.dart';
 import 'package:qbk_simple_app/ab_created_widgets/calendar.dart';
+import 'package:qbk_simple_app/models/new_crew_member.dart';
 import 'package:qbk_simple_app/services/auth.dart';
 import 'package:qbk_simple_app/services/database.dart';
 import 'package:qbk_simple_app/ui/sizes-helpers.dart';
@@ -116,10 +117,14 @@ class _QBKHomePageState extends State<QBKHomePage> {
                                   //My Cases
                                   SelectionMenuButton(
                                     text: 'MY FRIENDS',
-                                    onPress: () => Navigator.pushNamed(
-                                        context, MyFriends.id),
+                                    onPress: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              MyFriends(userUid: userData.uid)),
+                                    ),
                                   ),
-                                  //My Friends
+                                  // My Friends
 //TODO: Invite Friends
                                   SelectionMenuButton(
                                     text: 'MODIFY PROFILE',
@@ -180,9 +185,16 @@ class _QBKHomePageState extends State<QBKHomePage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               NewGigButton(
-                                text: 'New   Gig',
+                                text: 'New Gig',
                                 color: Colors.green,
-                                onPressGoTo: NewGigPage.id,
+                                onPress: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => NewGigPage(
+                                            userName: userData.name)),
+                                  );
+                                },
                               ),
 //TODO: implement Tour Button
 //                        SizedBox(width: 70.0,),

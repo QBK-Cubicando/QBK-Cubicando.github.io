@@ -270,6 +270,7 @@ class _EditGigPopupState extends State<EditGigPopup> {
                                     return CreateGigPage(
                                       uidGig: uidGig,
                                       nameGig: nameGig,
+                                      userUid: user.uid,
                                       startDate: DateFormat('yyyy-MM-dd')
                                           .format(startDate),
                                     );

@@ -11,7 +11,7 @@ import 'package:qbk_simple_app/models/flight_case.dart';
 import 'package:reorderables/reorderables.dart';
 
 import '../../ui/sizes-helpers.dart';
-import '../../ui/sizes-helpers.dart';
+import 'package:boardview/boardview.dart';
 
 ///Documentated
 class CreateLoadPage extends StatefulWidget {
@@ -225,7 +225,6 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
                     runSpacing: 4,
                     onReorderStarted: (index) {
                       setState(() {});
-                      // ignore: deprecated_member_use
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         duration: Duration(seconds: 30),
                         content: BinForFlightCases(
@@ -257,6 +256,7 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
               SizedBox(
                 height: 8.0,
               ),
+
               Padding(
                 padding: const EdgeInsets.all(3.0),
                 child: LoadSelectionButton(
@@ -279,6 +279,7 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
                         .updateNewLoadListData(
                       loadName: widget.nameLoad,
                       flightCasesOnList: flightCaseCreateList,
+                      flightCasesLoaded: 0,
                     );
 
                     Navigator.pop(context);

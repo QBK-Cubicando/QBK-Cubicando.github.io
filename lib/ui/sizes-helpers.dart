@@ -29,8 +29,8 @@ double displayWidth(BuildContext context) {
     width = 600;
     return width;
   }
-  if (width < 400) {
-    width = 400;
+  if (width < 300) {
+    width = 300;
     return width;
   }
   return width;

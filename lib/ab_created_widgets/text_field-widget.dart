@@ -16,7 +16,9 @@ class TextFieldQBK extends StatelessWidget {
       this.maxLength,
       this.obscureText,
       this.keyboardType,
-      this.initialValue});
+      this.initialValue,
+      this.width,
+      this.height});
 
   final String initialValue;
   final keyboardType;
@@ -28,12 +30,14 @@ class TextFieldQBK extends StatelessWidget {
   final IconData icon;
   final Function onChanged;
   final String Function(String) validator;
+  final double width;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: displayWidth(context) * 0.85,
-      height: displayHeight(context) * 0.12,
+      width: width ?? displayWidth(context) * 0.85,
+      height: height ?? displayHeight(context) * 0.12,
       child: TextFormField(
         initialValue: initialValue,
         keyboardType: keyboardType == null ? TextInputType.text : keyboardType,

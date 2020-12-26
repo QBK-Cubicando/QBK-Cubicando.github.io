@@ -186,6 +186,7 @@ class CalendarGig extends StatefulWidget {
 class _CalendarGigState extends State<CalendarGig> {
   @override
   Widget build(BuildContext context) {
+    UserData user = Provider.of<UserData>(context);
     return ListTile(
       title: Text(
         widget.calendarGig.calendarGigName,
@@ -198,6 +199,7 @@ class _CalendarGigState extends State<CalendarGig> {
         return CreateGigPage(
           nameGig: widget.calendarGig.calendarGigName,
           uidGig: widget.calendarGig.uidGig,
+          userUid: user.uid,
           startDate:
               DateFormat('dd-MM-yyyy').format(widget.calendarGig.startDate),
           //startDate: widget.calendarGig.startDate,

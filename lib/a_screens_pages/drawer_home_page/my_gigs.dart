@@ -25,7 +25,11 @@ class _MyGigsState extends State<MyGigs> {
 
     try {
       return StreamBuilder<List<NewGig>>(
-          stream: DatabaseService(userUid: user.uid).gigList,
+          stream: DatabaseService(
+                  userUid: user.uid,
+                  sharedGigs: false,
+                  crewMemberData: user.uid)
+              .gigList,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               print(snapshot.error);
@@ -35,37 +39,66 @@ class _MyGigsState extends State<MyGigs> {
               return UpperBar(
                   text: 'My Gigs',
                   onBackGoTo: QBKHomePage(),
-                  body: snapshot.data.length != 0
-                      ? Center(
-                          child: Container(
+                  body: Center(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Container(
                             width: displayWidth(context),
+                            height: displayHeight(context) * 0.50,
+                            child: snapshot.data.length != 0
+                                ? GigList(
+                                    sharedGigs: false,
+                                    isCopyLoad:
+                                        false, //Bool indicates that this is not Copy Load Page
+                                  )
+                                : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Center(
+                                        child: Container(
+                                          width: displayWidth(context) * 0.9,
+                                          child: Center(
+                                            child: Text(
+                                              'No Gigs created yet !',
+                                              style: kTextStyle(context),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: displayHeight(context) * 0.08,
+                              child: Text(
+                                'Shared with you',
+                                style: kTextStyle(context),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: displayWidth(context),
+                            height: displayHeight(context) * 0.3,
                             child: GigList(
+                              sharedGigs: true,
                               isCopyLoad:
                                   false, //Bool indicates that this is not Copy Load Page
                             ),
                           ),
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Center(
-                              child: Container(
-                                width: displayWidth(context) * 0.9,
-                                child: Text(
-                                  'No Gigs created yet !',
-                                  style: kTextStyle(context),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ));
+                        ],
+                      ),
+                    ),
+                  ));
             } else {
               return Loading();
             }
           });
     } catch (e) {
+      // print(e);
       return Center(child: Loading());
-      print(e);
     }
   }
 }

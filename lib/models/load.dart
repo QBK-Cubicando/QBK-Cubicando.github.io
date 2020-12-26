@@ -29,6 +29,7 @@ class LoadOnList extends StatelessWidget {
   final Load loadOnList;
   final bool isCopyPage;
   final String uidThisGig;
+  final String permission;
 
   /// JUST FOR COPY LOAD SCREEN
   LoadOnList(
@@ -37,7 +38,8 @@ class LoadOnList extends StatelessWidget {
       this.nameLoad,
       this.loadOnList,
       this.isCopyPage,
-      this.uidThisGig});
+      this.uidThisGig,
+      this.permission});
 
   @override
   Widget build(BuildContext context) {
@@ -58,52 +60,55 @@ class LoadOnList extends StatelessWidget {
                 return LoadPage(
                   uidGig: uidGig,
                   uidLoad: loadOnList.uidLoad,
+                  permission: permission,
                 );
               }));
             },
             onLongPress: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Center(
-                          child: Text(
-                        'Are you sure you want to delete ${loadOnList.nameLoad}?',
-                        style:
-                            kTextStyle(context).copyWith(color: Colors.black),
-                      )),
-                      actions: <Widget>[
-                        SelectionButton(
-                          text: 'Cancel',
-                          color: Colors.blueAccent,
-                          onPress: () => Navigator.pop(context),
-                        ),
-                        SelectionButton(
-                            text: 'Edit',
-                            color: Colors.orangeAccent,
-                            onPress: () async {
-                              await Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return CreateLoadPage(
-                                  uidGig: uidGig,
-                                  uidLoad: loadOnList.uidLoad,
-                                  nameGig: 'Edit Load',
-                                  nameLoad: loadOnList.nameLoad,
-                                );
-                              }));
+              if (permission == 'Admin') {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Center(
+                            child: Text(
+                          'Are you sure you want to delete ${loadOnList.nameLoad}?',
+                          style:
+                              kTextStyle(context).copyWith(color: Colors.black),
+                        )),
+                        actions: <Widget>[
+                          SelectionButton(
+                            text: 'Cancel',
+                            color: Colors.blueAccent,
+                            onPress: () => Navigator.pop(context),
+                          ),
+                          SelectionButton(
+                              text: 'Edit',
+                              color: Colors.orangeAccent,
+                              onPress: () async {
+                                await Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return CreateLoadPage(
+                                    uidGig: uidGig,
+                                    uidLoad: loadOnList.uidLoad,
+                                    nameGig: 'Edit Load',
+                                    nameLoad: loadOnList.nameLoad,
+                                  );
+                                }));
+                                Navigator.pop(context);
+                              }),
+                          SelectionButton(
+                            text: 'Delete',
+                            color: Colors.redAccent,
+                            onPress: () {
                               Navigator.pop(context);
-                            }),
-                        SelectionButton(
-                          text: 'Delete',
-                          color: Colors.redAccent,
-                          onPress: () {
-                            Navigator.pop(context);
-                            _deleteLoad();
-                          },
-                        ),
-                      ],
-                    );
-                  });
+                              _deleteLoad();
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              }
             },
             child: Container(
               padding: EdgeInsets.all(3.0),
@@ -184,8 +189,14 @@ class LoadList extends StatefulWidget {
   final String nameLoad;
   final bool isCopyPage;
   final String uidThisGig;
+  final String permission;
 
-  LoadList({this.uidGig, this.nameLoad, this.isCopyPage, this.uidThisGig});
+  LoadList(
+      {this.uidGig,
+      this.nameLoad,
+      this.isCopyPage,
+      this.uidThisGig,
+      this.permission});
 
   @override
   _LoadListState createState() => _LoadListState();
@@ -223,6 +234,7 @@ class _LoadListState extends State<LoadList> {
                     nameLoad: widget.nameLoad,
                     isCopyPage: widget.isCopyPage,
                     uidThisGig: widget.uidThisGig,
+                    permission: widget.permission,
                   );
                 });
           } else {
