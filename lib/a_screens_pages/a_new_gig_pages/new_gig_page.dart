@@ -231,7 +231,7 @@ class _NewGigPageState extends State<NewGigPage> {
                               ).gigSetCrewData(
                                 nameCrew: widget.userName,
                                 permission: 'Admin',
-                                index: null,
+                                index: 1,
                               );
 
                               ///Set the CalendarGig info to firebase

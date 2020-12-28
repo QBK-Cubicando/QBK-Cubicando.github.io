@@ -30,6 +30,7 @@ class LoadOnList extends StatelessWidget {
   final bool isCopyPage;
   final String uidThisGig;
   final String permission;
+  final int index;
 
   /// JUST FOR COPY LOAD SCREEN
   LoadOnList(
@@ -39,7 +40,8 @@ class LoadOnList extends StatelessWidget {
       this.loadOnList,
       this.isCopyPage,
       this.uidThisGig,
-      this.permission});
+      this.permission,
+      this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +60,11 @@ class LoadOnList extends StatelessWidget {
             onTap: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) {
                 return LoadPage(
+                  userUid: userUid,
                   uidGig: uidGig,
                   uidLoad: loadOnList.uidLoad,
                   permission: permission,
+                  index: index,
                 );
               }));
             },
@@ -108,6 +112,15 @@ class LoadOnList extends StatelessWidget {
                         ],
                       );
                     });
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  duration: Duration(seconds: 4),
+                  content: Text(
+                    'Only Admin Crew can Edit the Gig',
+                    style: kTextStyle(context)
+                        .copyWith(color: Colors.redAccent.shade100),
+                  ),
+                ));
               }
             },
             child: Container(
@@ -190,13 +203,15 @@ class LoadList extends StatefulWidget {
   final bool isCopyPage;
   final String uidThisGig;
   final String permission;
+  final int index;
 
   LoadList(
       {this.uidGig,
       this.nameLoad,
       this.isCopyPage,
       this.uidThisGig,
-      this.permission});
+      this.permission,
+      this.index});
 
   @override
   _LoadListState createState() => _LoadListState();
@@ -235,10 +250,13 @@ class _LoadListState extends State<LoadList> {
                     isCopyPage: widget.isCopyPage,
                     uidThisGig: widget.uidThisGig,
                     permission: widget.permission,
+                    index: widget.index,
                   );
                 });
           } else {
-            return Loading();
+            return Loading(
+              size: displayHeight(context) * 0.09,
+            );
           }
         });
   }

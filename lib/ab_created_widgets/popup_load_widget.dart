@@ -499,7 +499,7 @@ class _PopupOwnCasesState extends State<PopupOwnCases> {
                   children: <Widget>[
                     LoadSelectionButton(
                       text: Text(
-                        'Cancel',
+                        'Back',
                         style: kTextStyle(context)
                             .copyWith(color: Colors.black), //TODO: Reducir Font
                       ),

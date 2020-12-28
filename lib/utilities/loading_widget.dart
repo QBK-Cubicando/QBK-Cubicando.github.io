@@ -160,13 +160,17 @@ class Dot extends StatelessWidget {
 }
 
 class Loading extends StatelessWidget {
+  final double size;
+
+  const Loading({Key key, this.size});
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
         child: SpinKitCubeGrid(
           color: Colors.green,
-          size: displayWidth(context) * 0.25,
+          size: size == null ? displayWidth(context) * 0.25 : size,
         ),
       ),
     );

@@ -48,24 +48,28 @@ class _CreateGigPageState extends State<CreateGigPage> {
 
   String nameLoad;
   String permission = 'Admin';
-  var futurePermission;
+  int index = 1;
+  List permissionAndIndex;
+  var futurePermissionAndIndex;
 
-  _setPermission() async {
-    if (futurePermission != null) {
-      permission = await futurePermission;
+  _setPermissionAndIndex() async {
+    if (futurePermissionAndIndex != null) {
+      permissionAndIndex = await futurePermissionAndIndex;
+      permission = await permissionAndIndex[0];
+      index = await permissionAndIndex[1];
     } else {
       permission = 'Admin';
+      index = 1;
     }
-
     setState(() {});
   }
 
   @override
   void initState() {
-    futurePermission =
+    futurePermissionAndIndex =
         DatabaseService(crewMemberData: widget.userUid, uidGig: widget.uidGig)
             .getCrewPermission();
-    _setPermission();
+    _setPermissionAndIndex();
     super.initState();
   }
 
@@ -94,7 +98,7 @@ class _CreateGigPageState extends State<CreateGigPage> {
               ).gigSetCrewData(
                 nameCrew: 'Admin',
                 permission: 'Admin',
-                index: null,
+                index: 1,
               );
             }
 
@@ -146,6 +150,7 @@ class _CreateGigPageState extends State<CreateGigPage> {
                           uidGig: widget.uidGig,
                           isCopyPage: false,
                           permission: permission,
+                          index: index,
                         );
                       } else {
                         return Column(
@@ -209,6 +214,7 @@ class _CreateGigPageState extends State<CreateGigPage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => CrewQBK(
+                                                  userPermission: permission,
                                                   uidGig: widget.uidGig,
                                                   userUid: user.uid),
                                             ),

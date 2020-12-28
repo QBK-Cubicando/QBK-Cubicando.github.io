@@ -5,54 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b783eb5c-309f-4dc3-b05a-e9f90b6318a5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/android/.idea/libraries/Gradle__io_flutter_arm64_v8a_debug_1_0_0_07c1eed46b9d9b58df78566e9b8b2e42e80d3380_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/android/.idea/libraries/Gradle__io_flutter_armeabi_v7a_debug_1_0_0_07c1eed46b9d9b58df78566e9b8b2e42e80d3380_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/android/.idea/libraries/Gradle__io_flutter_flutter_embedding_debug_1_0_0_07c1eed46b9d9b58df78566e9b8b2e42e80d3380_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/android/.idea/libraries/Gradle__io_flutter_x86_64_debug_1_0_0_07c1eed46b9d9b58df78566e9b8b2e42e80d3380_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/android/.idea/libraries/Gradle__io_flutter_x86_debug_1_0_0_07c1eed46b9d9b58df78566e9b8b2e42e80d3380_jar.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/libraries/Gradle__io_flutter_arm64_v8a_debug_1_0_0_9d5b21729ff53dbf8eadd8bc97e0e30d77abec95_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/libraries/Gradle__io_flutter_armeabi_v7a_debug_1_0_0_9d5b21729ff53dbf8eadd8bc97e0e30d77abec95_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/libraries/Gradle__io_flutter_flutter_embedding_debug_1_0_0_9d5b21729ff53dbf8eadd8bc97e0e30d77abec95_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/libraries/Gradle__io_flutter_x86_64_debug_1_0_0_9d5b21729ff53dbf8eadd8bc97e0e30d77abec95_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/libraries/Gradle__io_flutter_x86_debug_1_0_0_9d5b21729ff53dbf8eadd8bc97e0e30d77abec95_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/modules/-1799765807/firebase_auth_web.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/modules/-1799765807/firebase_auth_web.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/modules/-257340054/connectivity.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/modules/-257340054/connectivity.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/modules/-41513199/cloud_firestore_web.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/modules/-41513199/cloud_firestore_web.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/modules/-474863190/cloud_firestore.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/modules/-474863190/cloud_firestore.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/modules/121109191/firebase_core_web.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/modules/121109191/firebase_core_web.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/modules/1227960687/firebase_database.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/modules/1227960687/firebase_database.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/modules/2145460552/firebase_auth.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/modules/2145460552/firebase_auth.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/modules/844562386/firebase_core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/modules/844562386/firebase_core.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/modules/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/modules/app/app.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/release/app-release.aab" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/release/app-release.aab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/debug.log" beforeDir="false" afterPath="$PROJECT_DIR$/debug.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/000_todo_tasks.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/000_todo_tasks.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/copy_load_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/copy_load_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/create_gig_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/create_gig_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/create_load_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/create_load_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/crew_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/crew_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/new_gig_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/a_new_gig_pages/new_gig_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/drawer_home_page/edit_gig_popup.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/drawer_home_page/edit_gig_popup.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/drawer_home_page/my_friends.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/drawer_home_page/my_friends.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/drawer_home_page/my_gigs.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/drawer_home_page/my_gigs.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/home_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/home_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/a_screens_pages/load_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/a_screens_pages/load_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ab_created_widgets/a_buttons/new_gig_button.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ab_created_widgets/a_buttons/new_gig_button.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ab_created_widgets/calendar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ab_created_widgets/calendar.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ab_created_widgets/text_field-widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ab_created_widgets/text_field-widget.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/generated_plugin_registrant.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/generated_plugin_registrant.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/flight_case.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/flight_case.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ab_created_widgets/popup_load_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ab_created_widgets/popup_load_widget.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/models/load.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/load.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/models/new_crew_member.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/new_crew_member.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/new_gig.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/new_gig.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/services/database.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/services/database.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/sizes-helpers.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/sizes-helpers.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/utilities/loading_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utilities/loading_widget.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,30 +91,30 @@
     </state>
     <state x="204" y="-1119" key="FileChooserDialogImpl/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608300816744" />
     <state x="351" y="201" key="FileChooserDialogImpl/0.0.1280.720/-357.-1440.2048.1152@0.0.1280.720" timestamp="1606571824557" />
-    <state width="1712" height="106" key="GridCell.Tab.0.bottom" timestamp="1608995538978">
+    <state width="1766" height="176" key="GridCell.Tab.0.bottom" timestamp="1609138195572">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
-    <state width="1712" height="106" key="GridCell.Tab.0.bottom/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608995538978" />
+    <state width="1766" height="176" key="GridCell.Tab.0.bottom/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1609138195572" />
     <state width="1500" height="352" key="GridCell.Tab.0.bottom/0.0.1280.720/-357.-1440.2048.1152@0.0.1280.720" timestamp="1606452943880" />
-    <state width="1712" height="106" key="GridCell.Tab.0.center" timestamp="1608995538978">
+    <state width="1766" height="176" key="GridCell.Tab.0.center" timestamp="1609138195572">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
-    <state width="1712" height="106" key="GridCell.Tab.0.center/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608995538978" />
+    <state width="1766" height="176" key="GridCell.Tab.0.center/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1609138195572" />
     <state width="1500" height="352" key="GridCell.Tab.0.center/0.0.1280.720/-357.-1440.2048.1152@0.0.1280.720" timestamp="1606452943880" />
-    <state width="1712" height="106" key="GridCell.Tab.0.left" timestamp="1608995538977">
+    <state width="1766" height="176" key="GridCell.Tab.0.left" timestamp="1609138195572">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
-    <state width="1712" height="106" key="GridCell.Tab.0.left/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608995538977" />
+    <state width="1766" height="176" key="GridCell.Tab.0.left/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1609138195572" />
     <state width="1500" height="352" key="GridCell.Tab.0.left/0.0.1280.720/-357.-1440.2048.1152@0.0.1280.720" timestamp="1606452943879" />
-    <state width="1712" height="106" key="GridCell.Tab.0.right" timestamp="1608995538978">
+    <state width="1766" height="176" key="GridCell.Tab.0.right" timestamp="1609138195572">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
-    <state width="1712" height="106" key="GridCell.Tab.0.right/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608995538978" />
+    <state width="1766" height="176" key="GridCell.Tab.0.right/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1609138195572" />
     <state width="1500" height="352" key="GridCell.Tab.0.right/0.0.1280.720/-357.-1440.2048.1152@0.0.1280.720" timestamp="1606452943880" />
-    <state x="41" y="-1143" key="IDE.errors.dialog" timestamp="1608960028798">
+    <state x="41" y="-1143" key="IDE.errors.dialog" timestamp="1609129264677">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
-    <state x="41" y="-1143" key="IDE.errors.dialog/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608960028798" />
+    <state x="41" y="-1143" key="IDE.errors.dialog/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1609129264677" />
     <state x="-68" y="-1230" key="SettingsEditor" timestamp="1608790738336">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
@@ -159,18 +123,18 @@
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
     <state x="-253" y="-1340" width="1560" height="952" key="com.android.tools.idea.avdmanager.AvdListDialog/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608980558014" />
-    <state x="310" y="204" key="com.intellij.ide.util.TipDialog" timestamp="1608960032737">
+    <state x="310" y="204" key="com.intellij.ide.util.TipDialog" timestamp="1609081906257">
       <screen x="0" y="0" width="1280" height="720" />
     </state>
-    <state x="310" y="204" key="com.intellij.ide.util.TipDialog/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608960032737" />
+    <state x="310" y="204" key="com.intellij.ide.util.TipDialog/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1609081906257" />
     <state x="348" y="246" key="com.intellij.ide.util.TipDialog/0.0.1280.720/-357.-1440.2048.1152@0.0.1280.720" timestamp="1608098464643" />
     <state x="81" y="-454" key="run.anything.popup" timestamp="1608299841430">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
     <state x="81" y="-454" key="run.anything.popup/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608299841430" />
-    <state x="86" y="-1183" width="672" height="678" key="search.everywhere.popup" timestamp="1608981044884">
+    <state x="86" y="-1183" width="672" height="678" key="search.everywhere.popup" timestamp="1609056987561">
       <screen x="-357" y="-1440" width="2048" height="1152" />
     </state>
-    <state x="86" y="-1183" width="672" height="678" key="search.everywhere.popup/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1608981044884" />
+    <state x="86" y="-1183" width="672" height="678" key="search.everywhere.popup/0.0.1280.720/-357.-1440.2048.1152@-357.-1440.2048.1152" timestamp="1609056987560" />
   </component>
 </project>

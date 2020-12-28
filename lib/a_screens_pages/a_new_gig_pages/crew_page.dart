@@ -9,23 +9,20 @@ import 'package:qbk_simple_app/services/database.dart';
 import 'package:qbk_simple_app/ab_created_widgets/text_field-widget.dart';
 import 'package:qbk_simple_app/ab_created_widgets/upper_bar_widget.dart';
 import 'package:qbk_simple_app/ab_created_widgets/a_buttons/selection_button_widget.dart';
-import 'package:qbk_simple_app/ab_created_widgets/a_buttons/selection_menu_button.dart';
 
 import 'package:qbk_simple_app/models/new_crew_member.dart';
 import 'package:qbk_simple_app/ui/sizes-helpers.dart';
 import 'package:qbk_simple_app/utilities/constants.dart';
 import 'package:qbk_simple_app/utilities/loading_widget.dart';
 
-//TODO: NO RESETEAR LA CARGA (Preguntar)
-//TODO: Crear LOADER (Como just read pero puede cargar el camión)
-
 class CrewQBK extends StatefulWidget {
   static const String id = 'crew_page';
 
-  CrewQBK({this.uidGig, this.userUid});
+  CrewQBK({this.uidGig, this.userUid, this.userPermission});
 
   final String uidGig;
   final String userUid;
+  final String userPermission;
 
   @override
   CrewQBKState createState() => CrewQBKState();
@@ -40,10 +37,10 @@ class CrewQBKState extends State<CrewQBK> {
   var friendsList = [];
   NewFriend newCrewMember;
 
-  int indexOfCrew;
+  // int indexOfCrew;
   TextEditingController _controller = TextEditingController();
 
-  List<String> permissions = ['Just Read', 'Admin'];
+  List<String> permissions = ['Just Read', 'Admin', 'Loader'];
 
   _setFriendList() async {
     if (futureFriendsList != null) {
@@ -93,7 +90,7 @@ class CrewQBKState extends State<CrewQBK> {
                         Container(
                           padding: EdgeInsets.only(left: 25),
                           width: displayWidth(context) * 0.85,
-                          height: displayHeight(context) * 0.1,
+                          height: displayHeight(context) * 0.08,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -112,9 +109,7 @@ class CrewQBKState extends State<CrewQBK> {
                               );
                             }).toList(),
                             validator: (value) =>
-                                value == 'Please Select Permission'
-                                    ? 'Please Select Permission'
-                                    : null,
+                                value == 'Just Read' ? 'Just Read' : null,
                           ),
                         ),
                         SizedBox(
@@ -140,6 +135,10 @@ class CrewQBKState extends State<CrewQBK> {
                                 backgroundColor: Colors.grey,
                                 child: Icon(Icons.search),
                                 onPressed: () async {
+                                  bool isLoader = await DatabaseService(
+                                          uidGig: widget.uidGig)
+                                      .checkForLoaderToAdd();
+
                                   if (crewMember.length < 5) {
                                     newCrewMember = await showDialog(
                                       context: context,
@@ -157,7 +156,9 @@ class CrewQBKState extends State<CrewQBK> {
                                               uidGig: widget.uidGig,
                                               userUid: user.uid,
                                               permission: selectedPermission,
-                                              indexOfCrew: indexOfCrew,
+                                              indexOfCrew:
+                                                  crewMember.length + 1,
+                                              isLoader: isLoader,
                                             ),
                                           ),
                                         );
@@ -190,6 +191,7 @@ class CrewQBKState extends State<CrewQBK> {
                                   }
                                   setState(() {});
                                   _controller.clear();
+                                  selectedPermission = 'Just Read';
                                 },
                               ),
                             )
@@ -211,6 +213,7 @@ class CrewQBKState extends State<CrewQBK> {
 //TODO: Create a list which shows all the loads in the Gig
                             child: CrewMembersList(
                               uidGig: widget.uidGig,
+                              userPermission: widget.userPermission,
                             )), //Where all the participants go
                         SizedBox(
                           height: 15,

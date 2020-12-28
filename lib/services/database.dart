@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:qbk_simple_app/ab_created_widgets/calendar.dart';
@@ -419,11 +420,12 @@ class DatabaseService {
           .get()
           .then((val) {
         var permission = val.data['permission'];
+        var index = val.data['index'];
 
-        return permission;
+        return [permission, index];
       });
     } else {
-      return 'Admin';
+      return ['Admin', 1];
     }
   }
 
@@ -489,6 +491,49 @@ class DatabaseService {
         crewMemberData: FieldValue.delete(),
       });
     }
+  }
+
+  // check for Loader and refresh Loader from Gig
+  checkForIsLoader() async {
+    await Firestore.instance
+        .collection('gigs')
+        .document(uidGig)
+        .collection('crew')
+        .where('permission', isEqualTo: 'Loader')
+        .getDocuments()
+        .then((val) async {
+      if (val.documents.length > 0) {
+        await Firestore.instance
+            .collection('gigs')
+            .document(uidGig)
+            .updateData({
+          'isLoader': true,
+        });
+      } else {
+        await Firestore.instance
+            .collection('gigs')
+            .document(uidGig)
+            .updateData({
+          'isLoader': false,
+        });
+      }
+    });
+  }
+
+  Future<bool> checkForLoaderToAdd() async {
+    return await Firestore.instance
+        .collection('gigs')
+        .document(uidGig)
+        .collection('crew')
+        .where('permission', isEqualTo: 'Loader')
+        .getDocuments()
+        .then((val) async {
+      if (val.documents.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    });
   }
 
   /// Crew data for Friend

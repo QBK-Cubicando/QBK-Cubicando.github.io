@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -50,6 +51,7 @@ class NewCrewMemberOnList extends StatelessWidget {
 
   ///This is the permission of the person interacting
   ///in the Create Gig Page
+
   //TODO: Add picture of Crew Member
 
   Color _colorCrewMember(String permission) {
@@ -57,6 +59,8 @@ class NewCrewMemberOnList extends StatelessWidget {
       return Colors.green;
     } else if (permission == 'Just Read') {
       return Colors.redAccent;
+    } else if (permission == 'Loader') {
+      return Colors.orangeAccent;
     } else {
       return Colors.grey;
     }
@@ -100,15 +104,32 @@ class NewCrewMemberOnList extends StatelessWidget {
                         SelectionButton(
                           text: 'Delete',
                           color: Colors.redAccent,
-                          onPress: () {
+                          onPress: () async {
                             Navigator.pop(context);
                             _deleteCrewMember();
+                            if (newCrewMember.permission == 'Loader') {
+                              await Firestore.instance
+                                  .collection('gigs')
+                                  .document(uidGig)
+                                  .updateData({
+                                'isLoader': false,
+                              });
+                            }
                           },
                         ),
                       ],
                     ),
                   );
                 });
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              duration: Duration(seconds: 5),
+              content: Text(
+                'Only Admin Crew can Edit the Gig',
+                style: kTextStyle(context)
+                    .copyWith(color: Colors.redAccent.shade100),
+              ),
+            ));
           }
         },
         child: Column(
@@ -122,7 +143,9 @@ class NewCrewMemberOnList extends StatelessWidget {
               //TODO: Give a font and size
               child: Center(
                 child: Text(
-                  newCrewMember.nameCrew.substring(0, 5),
+                  newCrewMember.nameCrew.length > 5
+                      ? newCrewMember.nameCrew.substring(0, 5)
+                      : newCrewMember.nameCrew,
                   style: TextStyle(fontSize: 18),
                 ),
               ),
@@ -152,37 +175,46 @@ class _CrewMembersListState extends State<CrewMembersList> {
   Widget build(BuildContext context) {
     UserData user = Provider.of<UserData>(context);
 
-    return StreamBuilder<List<NewCrewMember>>(
-        stream: DatabaseService(userUid: user.uid, uidGig: widget.uidGig)
-            .gigCrewMemberList,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            print(snapshot.error);
-          }
+    try {
+      return StreamBuilder<List<NewCrewMember>>(
+          stream: DatabaseService(userUid: user.uid, uidGig: widget.uidGig)
+              .gigCrewMemberList,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              print(snapshot.error);
+            }
 
-          if (snapshot.hasData) {
-            List<NewCrewMember> crewMember = snapshot.data;
+            if (snapshot.hasData) {
+              List<NewCrewMember> crewMember = snapshot.data;
 
-            return GridView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                itemCount: crewMember.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 4,
-                ),
-                itemBuilder: (context, index) {
-                  return NewCrewMemberOnList(
-                    newCrewMember: crewMember[index],
-                    userUid: user.uid,
-                    uidGig: widget.uidGig,
-                    userPermission: widget.userPermission,
-                  );
-                });
-          } else {
-            return Loading();
-          }
-        });
+              return GridView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  itemCount: crewMember.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 4,
+                  ),
+                  itemBuilder: (context, index) {
+                    return NewCrewMemberOnList(
+                      newCrewMember: crewMember[index],
+                      userUid: user.uid,
+                      uidGig: widget.uidGig,
+                      userPermission: widget.userPermission,
+                    );
+                  });
+            } else {
+              return Loading(
+                size: displayHeight(context) * 0.09,
+              );
+            }
+          });
+    } catch (e) {
+      print(e);
+      return Loading(
+        size: displayHeight(context) * 0.09,
+      );
+    }
   }
 }
 
@@ -197,6 +229,7 @@ class FriendList extends StatefulWidget {
   final String uidGig;
   final String permission;
   final int indexOfCrew;
+  final bool isLoader;
 
   FriendList(
       {this.friendsList,
@@ -206,7 +239,8 @@ class FriendList extends StatefulWidget {
       this.userUid,
       this.uidGig,
       this.permission,
-      this.indexOfCrew});
+      this.indexOfCrew,
+      this.isLoader});
 
   @override
   _FriendListState createState() => _FriendListState();
@@ -247,6 +281,7 @@ class _FriendListState extends State<FriendList> {
                   permission: widget.permission,
                   indexOfCrew: widget.indexOfCrew,
                   friendsList: widget.friendsList,
+                  isLoader: widget.isLoader,
                 );
               },
             );
@@ -267,6 +302,7 @@ class NewFriendTile extends StatelessWidget {
   final String permission;
   final int indexOfCrew;
   final List friendsList;
+  final bool isLoader;
 
   NewFriendTile(
       {this.friend,
@@ -276,16 +312,18 @@ class NewFriendTile extends StatelessWidget {
       this.uidGig,
       this.permission,
       this.indexOfCrew,
-      this.friendsList});
+      this.friendsList,
+      this.isLoader});
 
   @override
   Widget build(BuildContext context) {
-    void _deleteFriend() {
+    void _deleteFriend() async {
       friendsList.remove(friend.uid);
       DatabaseService(userUid: userUid)
           .setFriendsList(friendsList: friendsList);
       DatabaseService(userUid: userUid, uidGig: uidGig, uidCrewGig: friend.uid)
           .gigDeleteCrewMember();
+      DatabaseService(uidGig: uidGig).checkForIsLoader();
     }
 
     return Padding(
@@ -328,19 +366,32 @@ class NewFriendTile extends StatelessWidget {
                     );
                   });
             },
-            onTap: () {
+            onTap: () async {
               try {
+                if (isLoader == true && permission == 'Loader') {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    duration: Duration(seconds: 3),
+                    content: Text(
+                      'Just one Loader allowed',
+                      style: kTextStyle(context)
+                          .copyWith(color: Colors.redAccent.shade100),
+                    ),
+                  ));
+                }
                 if (isCrewPage) {
-                  DatabaseService(
+                  await DatabaseService(
                     userUid: userUid,
                     uidGig: uidGig,
                     uidCrewGig: friend.uid,
                     crewMemberData: friend.uid,
                   ).gigSetCrewData(
                     nameCrew: friend.name,
-                    permission: permission,
+                    permission: isLoader == true && permission == 'Loader'
+                        ? 'Just Read'
+                        : permission,
                     index: indexOfCrew,
                   );
+                  DatabaseService(uidGig: uidGig).checkForIsLoader();
                   Navigator.pop(context, friend);
                 } else {
                   if (searchingFriends == true) {
