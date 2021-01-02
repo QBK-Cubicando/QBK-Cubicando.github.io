@@ -24,7 +24,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="/private/var/folders/hg/z16sqxsd4qg_bn7k_hlc8wtm0000gp/T/ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="C:\Users\nils0\AppData\Local\Temp\ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -68,7 +68,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="/private/var/folders/hg/z16sqxsd4qg_bn7k_hlc8wtm0000gp/T/ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="C:\Users\nils0\AppData\Local\Temp\ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -80,8 +80,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="$USER_HOME$/Desktop/QBK/LOGO QBK/logoQBK_negro.jpg" />
-                                                <entry key="scalingPercent" value="71" />
+                                                <entry key="imagePath" value="C:\Users\nils0\Documents\QBK\LOGO QBK\Transparente\logo_qbk.png" />
+                                                <entry key="scalingPercent" value="42" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -111,6 +111,11 @@
                                       </entry>
                                     </map>
                                   </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="outputName" value="logo_qbk" />
+                                    </map>
+                                  </option>
                                 </PersistentState>
                               </value>
                             </entry>
@@ -125,7 +130,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="/private/var/folders/hg/z16sqxsd4qg_bn7k_hlc8wtm0000gp/T/ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="C:\Users\nils0\AppData\Local\Temp\ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -169,7 +174,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="/private/var/folders/hg/z16sqxsd4qg_bn7k_hlc8wtm0000gp/T/ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="C:\Users\nils0\AppData\Local\Temp\ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -233,7 +238,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="imagePath" value="/private/var/folders/hg/z16sqxsd4qg_bn7k_hlc8wtm0000gp/T/ic_android_black_24dp.xml" />
+                                                <entry key="imagePath" value="C:\Users\nils0\AppData\Local\Temp\ic_android_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qbk_simple_app/ab_created_widgets/a_buttons/selection_button_widget.dart';
@@ -71,12 +72,10 @@ class _MyFriendsState extends State<MyFriends> {
             if (snapshot.hasData) {
               Widget _friendsListIsEmpty() {
                 return snapshot.data.length != 0
-                    ? SingleChildScrollView(
-                        child: FriendList(
-                          friendsList: friendsList,
-                          isCrewPage: false,
-                          searchingFriends: false,
-                        ),
+                    ? FriendList(
+                        friendsList: friendsList,
+                        isCrewPage: false,
+                        searchingFriends: false,
                       )
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -96,69 +95,103 @@ class _MyFriendsState extends State<MyFriends> {
                       );
               }
 
-              return UpperBar(
-                  text: 'My Friends',
-                  onBackGoTo: QBKHomePage(),
-                  body: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: TextFieldQBK(
-                                width: displayWidth(context) * 0.6,
-                                validator: (value) =>
-                                    value.isEmpty ? 'Enter valid email' : null,
-                                controller: _controller,
-                                hintText: 'email',
-                                maxLines: 1,
-                              ),
-                            ),
-                            SizedBox(
-                              width: displayWidth(context) * 0.05,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 20),
-                              child: FloatingActionButton(
-                                backgroundColor: Colors.grey,
-                                child: Icon(Icons.search),
-                                onPressed: () async {
-                                  await showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return Center(
-                                        child: Container(
-                                          color: Colors.grey,
-                                          height: displayHeight(context) * 0.3,
-                                          width: displayWidth(context) * 0.7,
-                                          child: FriendList(
-                                            friendsList: friendsList,
-                                            isCrewPage: false,
-                                            searchingFriends: true,
-                                            crewMember: _controller.text,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                  setState(() {});
-                                  _controller.clear();
-                                },
-                              ),
-                            ),
-                          ],
+              return DefaultTabController(
+                length: 2,
+                child: UpperBar(
+                    text: 'My Friends',
+                    onBackGoTo: QBKHomePage(),
+                    tabBar: TabBar(
+                      tabs: [
+                        Text(
+                          'Friends',
+                          style: kTextStyle(context),
                         ),
-                        Center(
-                          child: Container(
-                            width: displayWidth(context),
-                            child: _friendsListIsEmpty(),
-                          ),
+                        Text(
+                          'Pending',
+                          style: kTextStyle(context),
                         ),
-                        SizedBox()
                       ],
                     ),
-                  ));
+                    body: Container(
+                      height: displayHeight(context) * 0.8,
+                      child: TabBarView(
+                        children: [
+                          SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: TextFieldQBK(
+                                        width: displayWidth(context) * 0.6,
+                                        validator: (value) => value.isEmpty
+                                            ? 'Enter valid email'
+                                            : null,
+                                        controller: _controller,
+                                        hintText: 'email',
+                                        maxLines: 1,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: displayWidth(context) * 0.05,
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 20),
+                                      child: FloatingActionButton(
+                                        backgroundColor: Colors.grey,
+                                        child: Icon(Icons.search),
+                                        onPressed: () async {
+                                          await showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return Center(
+                                                child: Container(
+                                                  color: Colors.grey,
+                                                  height:
+                                                      displayHeight(context) *
+                                                          0.3,
+                                                  width: displayWidth(context) *
+                                                      0.7,
+                                                  child: FriendList(
+                                                    friendsList: friendsList,
+                                                    isCrewPage: false,
+                                                    searchingFriends: true,
+                                                    crewMember:
+                                                        _controller.text,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                          setState(() {});
+                                          _controller.clear();
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Center(
+                                  child: Container(
+                                    height: displayHeight(context) * 0.65,
+                                    width: displayWidth(context),
+                                    child: _friendsListIsEmpty(),
+                                  ),
+                                ),
+                                SizedBox()
+                              ],
+                            ),
+                          ),
+                          Container(
+                            height: 300,
+                            color: Colors.red,
+                          ),
+                        ],
+                      ),
+                    )),
+              );
             } else {
               return Container(
                 child: Loading(),

@@ -600,7 +600,7 @@ class DatabaseService {
       return Firestore.instance
           .collection('users')
           .where('userUid', whereIn: friendsList)
-          .where('name', isEqualTo: crewMemberData)
+          .where('name', isLessThanOrEqualTo: crewMemberData)
           .snapshots()
           .map(_crewListFromSnapshot);
     } else {
@@ -623,7 +623,7 @@ class DatabaseService {
       } else {
         return Firestore.instance
             .collection('users')
-            .where('email', isEqualTo: crewMemberData)
+            .where('email', isGreaterThanOrEqualTo: crewMemberData)
             .snapshots()
             .map(_crewListFromSnapshot);
       }

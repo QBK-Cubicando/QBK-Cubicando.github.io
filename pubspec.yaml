@@ -31,6 +31,8 @@ dependencies:
   email_validator: ^1.0.5
   responsive_builder: ^0.3.0
   boardview: ^0.1.2
+  firebase_messaging: ^6.0.9
+  google_sign_in: ^4.5.6
 
 
 

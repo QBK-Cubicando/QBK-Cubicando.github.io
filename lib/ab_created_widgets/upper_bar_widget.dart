@@ -4,11 +4,13 @@ import 'package:qbk_simple_app/utilities/constants.dart';
 
 ///Documentated
 class UpperBar extends StatelessWidget {
-  UpperBar({@required this.text, @required this.body, this.onBackGoTo});
+  UpperBar(
+      {@required this.text, @required this.body, this.onBackGoTo, this.tabBar});
 
   final String text;
   final Widget body;
   final Widget onBackGoTo;
+  final TabBar tabBar;
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +18,7 @@ class UpperBar extends StatelessWidget {
       backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        bottom: tabBar,
         // leadingWidth: displayWidth(context),
         centerTitle: true,
         automaticallyImplyLeading: false,

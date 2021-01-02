@@ -15,6 +15,7 @@ import 'package:qbk_simple_app/services/auth.dart';
 //TODO: error when writes with keyboard of the computer on the phone
 
 ///Documentated
+
 class SignInPage extends StatefulWidget {
   static const String id = 'sign_in_page';
 
