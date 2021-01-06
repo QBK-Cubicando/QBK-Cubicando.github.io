@@ -1,0 +1,46 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Moto G 5S",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart"
+        },
+
+        {
+            "name": "Telefono Grande",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "Telefono Pequeño",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "Tablet",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart"
+        },
+    
+        {
+            "name": "Flutter for web",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main.dart",
+            "args": [
+              "-d",
+              "chrome"
+            ]
+          },
+
+       
+    ]
+}

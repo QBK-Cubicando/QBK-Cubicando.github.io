@@ -73,7 +73,8 @@ class NewCrewMemberOnList extends StatelessWidget {
               userUid: userUid,
               uidGig: uidGig,
               uidCrewGig: newCrewMember.uidCrewMember,
-              crewMemberData: newCrewMember.uidCrewMember)
+              crewMemberData: newCrewMember.uidCrewMember,
+              isCrewPage: true)
           .gigDeleteCrewMember();
     }
 
@@ -177,7 +178,8 @@ class _CrewMembersListState extends State<CrewMembersList> {
 
     try {
       return StreamBuilder<List<NewCrewMember>>(
-          stream: DatabaseService(userUid: user.uid, uidGig: widget.uidGig)
+          stream: DatabaseService(
+                  userUid: user.uid, uidGig: widget.uidGig, isCrewPage: true)
               .gigCrewMemberList,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -221,7 +223,6 @@ class _CrewMembersListState extends State<CrewMembersList> {
 /// ------------------------------------------////
 
 class FriendList extends StatefulWidget {
-  final List friendsList;
   final bool isCrewPage;
   final bool searchingFriends;
   final String crewMember;
@@ -230,17 +231,20 @@ class FriendList extends StatefulWidget {
   final String permission;
   final int indexOfCrew;
   final bool isLoader;
+  final bool pending;
+  final bool waitingFriendsAnswer;
 
   FriendList(
-      {this.friendsList,
-      this.isCrewPage,
+      {this.isCrewPage,
       this.searchingFriends,
       this.crewMember,
       this.userUid,
       this.uidGig,
       this.permission,
       this.indexOfCrew,
-      this.isLoader});
+      this.isLoader,
+      this.pending,
+      this.waitingFriendsAnswer});
 
   @override
   _FriendListState createState() => _FriendListState();
@@ -253,12 +257,13 @@ class _FriendListState extends State<FriendList> {
 
     return StreamBuilder<List<NewFriend>>(
         stream: DatabaseService(
-                userUid: user.uid,
-                friendsList: widget.friendsList,
-                isCrewPage: widget.isCrewPage,
-                crewMemberData: widget.crewMember,
-                searchingFriends: widget.searchingFriends)
-            .crewMemberList,
+          userUid: user.uid,
+          isCrewPage: widget.isCrewPage,
+          crewMemberData: widget.crewMember,
+          searchingFriends: widget.searchingFriends,
+          pending: widget.pending,
+          waitingFriendsAnswer: widget.waitingFriendsAnswer,
+        ).crewMemberList,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             print(snapshot.error.toString());
@@ -280,8 +285,9 @@ class _FriendListState extends State<FriendList> {
                   uidGig: widget.uidGig,
                   permission: widget.permission,
                   indexOfCrew: widget.indexOfCrew,
-                  friendsList: widget.friendsList,
                   isLoader: widget.isLoader,
+                  pending: widget.pending,
+                  waitingFriendsAnswer: widget.waitingFriendsAnswer,
                 );
               },
             );
@@ -301,8 +307,9 @@ class NewFriendTile extends StatelessWidget {
   final String uidGig;
   final String permission;
   final int indexOfCrew;
-  final List friendsList;
   final bool isLoader;
+  final bool pending;
+  final bool waitingFriendsAnswer;
 
   NewFriendTile(
       {this.friend,
@@ -312,18 +319,29 @@ class NewFriendTile extends StatelessWidget {
       this.uidGig,
       this.permission,
       this.indexOfCrew,
-      this.friendsList,
-      this.isLoader});
+      this.isLoader,
+      this.pending,
+      this.waitingFriendsAnswer});
 
   @override
   Widget build(BuildContext context) {
-    void _deleteFriend() async {
-      friendsList.remove(friend.uid);
-      DatabaseService(userUid: userUid)
-          .setFriendsList(friendsList: friendsList);
-      DatabaseService(userUid: userUid, uidGig: uidGig, uidCrewGig: friend.uid)
+    void _deleteFriend(bool isCrew) async {
+      ///Delete friend for you
+      DatabaseService(
+              userUid: userUid,
+              uidGig: uidGig,
+              uidCrewGig: friend.uid,
+              isCrewPage: isCrew,
+              crewMemberData: friend.uid)
           .gigDeleteCrewMember();
-      DatabaseService(uidGig: uidGig).checkForIsLoader();
+
+      ///Delete friend for your friend
+      DatabaseService(
+              userUid: friend.uid, isCrewPage: false, crewMemberData: userUid)
+          .gigDeleteCrewMember();
+      if (isCrew) {
+        DatabaseService(uidGig: uidGig).checkForIsLoader();
+      }
     }
 
     return Padding(
@@ -333,38 +351,88 @@ class NewFriendTile extends StatelessWidget {
 
         child: ListTile(
             onLongPress: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                      height: displayHeight(context) * 0.6,
-                      width: displayWidth(context) * 0.8,
-                      child: AlertDialog(
-                        title: Center(
-                            child: Text(
-                          'Are you sure you want to delete ${friend.name}?',
-                          style: kTextStyle(context).copyWith(
-                              color: Colors.black,
-                              fontSize: displayWidth(context) * 0.05),
-                        )),
-                        actions: <Widget>[
-                          SelectionButton(
-                            text: 'Cancel',
-                            color: Colors.blueAccent,
-                            onPress: () => Navigator.pop(context),
-                          ),
-                          SelectionButton(
-                            text: 'Delete',
-                            color: Colors.redAccent,
-                            onPress: () {
-                              Navigator.pop(context);
-                              _deleteFriend();
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  });
+              if (!isCrewPage && !pending) {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Container(
+                        height: displayHeight(context) * 0.6,
+                        width: displayWidth(context) * 0.8,
+                        child: AlertDialog(
+                          title: Center(
+                              child: Text(
+                            'Are you sure you want to delete ${friend.name}?',
+                            style: kTextStyle(context).copyWith(
+                                color: Colors.black,
+                                fontSize: displayWidth(context) * 0.05),
+                          )),
+                          actions: <Widget>[
+                            SelectionButton(
+                              text: 'Cancel',
+                              color: Colors.blueAccent,
+                              onPress: () => Navigator.pop(context),
+                            ),
+                            SelectionButton(
+                              text: 'Delete',
+                              color: Colors.redAccent,
+                              onPress: () {
+                                Navigator.pop(context);
+                                _deleteFriend(false);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+              }
+              if (!isCrewPage && pending) {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Container(
+                        height: displayHeight(context) * 0.6,
+                        width: displayWidth(context) * 0.8,
+                        child: AlertDialog(
+                          title: Center(
+                              child: Text(
+                            'Are you sure you want to delete this request?',
+                            style: kTextStyle(context).copyWith(
+                                color: Colors.black,
+                                fontSize: displayWidth(context) * 0.05),
+                          )),
+                          actions: <Widget>[
+                            SelectionButton(
+                              text: 'Cancel',
+                              color: Colors.blueAccent,
+                              onPress: () => Navigator.pop(context),
+                            ),
+                            SelectionButton(
+                              text: 'Delete',
+                              color: Colors.redAccent,
+                              onPress: () async {
+                                ///Delete pending for you
+                                    await Firestore.instance
+                                        .collection('users')
+                                        .document(userUid)
+                                        .collection('pending')
+                                        .document(friend.uid)
+                                        .delete();
+
+                                    ///Delete pending for your friend
+                                    await Firestore.instance
+                                        .collection('users')
+                                        .document(friend.uid)
+                                        .collection('pending')
+                                        .document(userUid)
+                                        .delete();
+                                    Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+              }
             },
             onTap: () async {
               try {
@@ -384,6 +452,7 @@ class NewFriendTile extends StatelessWidget {
                     uidGig: uidGig,
                     uidCrewGig: friend.uid,
                     crewMemberData: friend.uid,
+                    isCrewPage: true,
                   ).gigSetCrewData(
                     nameCrew: friend.name,
                     permission: isLoader == true && permission == 'Loader'
@@ -395,10 +464,79 @@ class NewFriendTile extends StatelessWidget {
                   Navigator.pop(context, friend);
                 } else {
                   if (searchingFriends == true) {
-                    friendsList.add(friend.uid);
-                    DatabaseService(userUid: userUid)
-                        .setFriendsList(friendsList: friendsList);
+                    if (userUid != friend.uid) {
+                      DatabaseService(
+                              userUid: userUid,
+                              isCrewPage: false,
+                              crewMemberData: friend.uid,
+                              pending: true,
+                              waitingFriendsAnswer: true)
+                          .gigSetCrewData(
+                        nameCrew: friend.name,
+                        speciality: friend.speciality,
+                        city: friend.city,
+                      );
+                    }
                     Navigator.pop(context);
+                  }
+                  if (pending && !waitingFriendsAnswer) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            height: displayHeight(context) * 0.6,
+                            width: displayWidth(context) * 0.8,
+                            child: AlertDialog(
+                              title: Center(
+                                  child: Text(
+                                'Accept ${friend.name} friend request?',
+                                style: kTextStyle(context).copyWith(
+                                    color: Colors.black,
+                                    fontSize: displayWidth(context) * 0.05),
+                              )),
+                              actions: <Widget>[
+                                SelectionButton(
+                                  text: 'No',
+                                  color: Colors.redAccent,
+                                  onPress: () async {
+                                    ///Delete pending for you
+                                    await Firestore.instance
+                                        .collection('users')
+                                        .document(userUid)
+                                        .collection('pending')
+                                        .document(friend.uid)
+                                        .delete();
+
+                                    ///Delete pending for your friend
+                                    await Firestore.instance
+                                        .collection('users')
+                                        .document(friend.uid)
+                                        .collection('pending')
+                                        .document(userUid)
+                                        .delete();
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                SelectionButton(
+                                  text: 'Yes',
+                                  color: Colors.greenAccent,
+                                  onPress: () async {
+                                    DatabaseService(
+                                            userUid: userUid,
+                                            crewMemberData: friend.uid)
+                                        .gigAddFriend(
+                                      name: friend.name,
+                                      city: friend.city,
+                                      speciality: friend.speciality,
+                                    );
+
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        });
                   }
                 }
               } catch (e) {

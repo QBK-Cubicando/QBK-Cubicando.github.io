@@ -31,12 +31,13 @@ class DatabaseService {
   /// name, email or uid of crew member
   final String crewMemberData;
 
-  /// list of uid friends
-  final List friendsList;
-
   final bool isCrewPage;
 
   final bool searchingFriends;
+
+  final bool pending;
+
+  final bool waitingFriendsAnswer;
 
   /// Load + DateTime.now
   final String uidLoad;
@@ -61,9 +62,10 @@ class DatabaseService {
     this.uidGig,
     this.uidCrewGig,
     this.crewMemberData,
-    this.friendsList,
     this.isCrewPage,
     this.searchingFriends,
+    this.pending,
+    this.waitingFriendsAnswer,
     this.uidLoad,
     this.uidFlightCase,
     this.sharedGigs,
@@ -216,21 +218,10 @@ class DatabaseService {
   // get gigs stream
   Stream<List<NewGig>> get gigList {
     if (sharedGigs) {
-      // return Firestore.instance
-      //     .collection('gigs')
-      //     .where(
-      //         Firestore.instance
-      //             .collection('gigs')
-      //             .document()
-      //             .collection('crew'),
-      //         isEqualTo: userUid)
-      //     .orderBy('startDate', descending: true)
-      //     .snapshots()
-      //     .map(_gigListFromSnapshot);
 
       return Firestore.instance
           .collection('gigs')
-          .where(crewMemberData, isEqualTo: true)
+          .where(crewMemberData, isEqualTo: !pending)
           .snapshots()
           .map(_gigListFromSnapshot);
     } else {
@@ -364,39 +355,163 @@ class DatabaseService {
   Future<void> gigSetCrewData({
     String nameCrew,
     String permission,
+    String speciality,
+    String city,
     int index,
   }) async {
-    String uidCreator;
-    await Firestore.instance
-        .collection('gigs')
-        .document(uidGig)
-        .get()
-        .then((val) {
-      var value = val.data['userUid'];
-      uidCreator = value;
+    if (isCrewPage == true) {
+      String uidCreator;
+      await Firestore.instance
+          .collection('gigs')
+          .document(uidGig)
+          .get()
+          .then((val) {
+        var value = val.data['userUid'];
+        uidCreator = value;
+      });
+
+      CollectionReference crewCollection = Firestore.instance
+          .collection('gigs')
+          .document(uidGig)
+          .collection('crew');
+
+      await crewCollection.document(uidCrewGig).setData({
+        'uidGig': uidGig,
+        'nameCrew': nameCrew,
+        'permission': permission,
+        'city': city,
+        'index': index,
+      });
+
+      ///Sets a field in the gig with crew members uid to search
+      uidCreator != uidCrewGig
+          ? await Firestore.instance
+              .collection('gigs')
+              .document(uidGig)
+              .updateData({
+              crewMemberData: false,
+            })
+          : null;
+    } else {
+      if (!pending) {
+        CollectionReference friendCollection = Firestore.instance
+            .collection('users')
+            .document(userUid)
+            .collection('friends');
+
+        await friendCollection.document(crewMemberData).setData({
+          'name': nameCrew,
+          'speciality': speciality,
+          'friendUid': crewMemberData,
+          'city': city,
+          'userUid': userUid,
+        });
+        // DELETE PENDING
+        Firestore.instance
+            .collection('users')
+            .document(userUid)
+            .collection('pending')
+            .document(crewMemberData)
+            .delete();
+      } else {
+        CollectionReference pendingCollection = Firestore.instance
+            .collection('users')
+            .document(userUid)
+            .collection('pending');
+
+        ///Set a "Pending Response" Friend
+        await pendingCollection.document(crewMemberData).setData({
+          'name': nameCrew,
+          'speciality': speciality,
+          'waitingFriendsAnswer': waitingFriendsAnswer,
+          'friendUid': crewMemberData,
+          'userUid': userUid,
+          'city': city,
+        });
+
+        ///Set a "Friend Request" to a Friend
+        await Firestore.instance
+            .collection('users')
+            .document(userUid)
+            .get()
+            .then((val) async {
+          await Firestore.instance
+              .collection('users')
+              .document(crewMemberData)
+              .collection('pending')
+              .document(userUid)
+              .setData({
+            'name': val['name'],
+            'speciality': val['speciality'],
+            'waitingFriendsAnswer': false,
+            'friendUid': userUid,
+            'userUid': crewMemberData,
+            'city': val['city'],
+          });
+        });
+      }
+    }
+  }
+
+  //Accept Friend
+  Future<void> gigAddFriend({
+  String name,
+  String city,
+  String speciality,
+  }) 
+  
+  async {
+
+     ///Add Friend own 
+await Firestore.instance
+    .collection('users')
+    .document(userUid)
+    .collection('friends')
+    .document(crewMemberData)
+    .setData({
+      'name': name,
+      'city' : city,
+      'friendUid': crewMemberData,
+      'useruid': userUid,
+      'speciality': speciality,
     });
+     ///Add Friend to Friend
+     await Firestore.instance
+            .collection('users')
+            .document(userUid)
+            .get()
+            .then((val) async {
+                await Firestore.instance
+                    .collection('users')
+                    .document(crewMemberData)
+                    .collection('friends')
+                    .document(userUid)
+                    .setData({
+                      'name': val['name'],
+                      'city' : val['city'],
+                      'friendUid': crewMemberData,
+                      'useruid': userUid,
+                      'speciality': val['speciality'],
+                      });
+                  });
 
-    CollectionReference crewCollection = Firestore.instance
-        .collection('gigs')
-        .document(uidGig)
-        .collection('crew');
+    /// Delete Pending own
+  await Firestore.instance
+      .collection('users')
+      .document(userUid)
+      .collection('pending')
+      .document(crewMemberData)
+      .delete();
 
-    await crewCollection.document(uidCrewGig).setData({
-      'uidGig': uidGig,
-      'nameCrew': nameCrew,
-      'permission': permission,
-      'index': index,
-    });
 
-    ///Sets a field in the gig with crew members uid to search
-    uidCreator != uidCrewGig
-        ? await Firestore.instance
-            .collection('gigs')
-            .document(uidGig)
-            .updateData({
-            crewMemberData: true,
-          })
-        : null;
+  /// Delete Pending for Friend
+  await Firestore.instance
+      .collection('users')
+      .document(crewMemberData)
+      .collection('pending')
+      .document(userUid)
+      .delete();
+
   }
 
   /// get crew permission for a gig
@@ -469,27 +584,39 @@ class DatabaseService {
 
   // delete crew member
   void gigDeleteCrewMember() async {
-    String uidCreator;
-    await Firestore.instance
-        .collection('gigs')
-        .document(uidGig)
-        .get()
-        .then((val) {
-      var value = val.data['userUid'];
-      uidCreator = value;
-    });
-
-    CollectionReference crewCollection = Firestore.instance
-        .collection('gigs')
-        .document(uidGig)
-        .collection('crew');
-
-    if (uidCreator != uidCrewGig) {
-      await crewCollection.document(uidCrewGig).delete();
-
-      await Firestore.instance.collection('gigs').document(uidGig).updateData({
-        crewMemberData: FieldValue.delete(),
+    if (isCrewPage) {
+      String uidCreator;
+      await Firestore.instance
+          .collection('gigs')
+          .document(uidGig)
+          .get()
+          .then((val) {
+        var value = val.data['userUid'];
+        uidCreator = value;
       });
+
+      CollectionReference crewCollection = Firestore.instance
+          .collection('gigs')
+          .document(uidGig)
+          .collection('crew');
+
+      if (uidCreator != uidCrewGig) {
+        await crewCollection.document(uidCrewGig).delete();
+
+        await Firestore.instance
+            .collection('gigs')
+            .document(uidGig)
+            .updateData({
+          crewMemberData: FieldValue.delete(),
+        });
+      }
+    } else {
+      Firestore.instance
+          .collection('users')
+          .document(userUid)
+          .collection('friends')
+          .document(crewMemberData)
+          .delete();
     }
   }
 
@@ -575,48 +702,31 @@ class DatabaseService {
     return snapshot.documents.map(_infoNewCrewMemberFromSnapshot).toList();
   }
 
-  // get list of friends uid
-  getFriendsListOnce() {
-    return Firestore.instance
-        .collection('users')
-        .document(userUid)
-        .collection('friends')
-        .getDocuments()
-        .then((val) {
-      if (val.documents.length > 0) {
-        var friendsList = val.documents[0].data['friendsList'];
-        return friendsList;
-      } else {
-        return [];
-      }
-    });
-
-    //then(_loadListInfoFromSnapshot)
-  }
-
   // get friends stream
   Stream<List<NewFriend>> get crewMemberList {
     if (isCrewPage == true) {
       return Firestore.instance
           .collection('users')
-          .where('userUid', whereIn: friendsList)
-          .where('name', isLessThanOrEqualTo: crewMemberData)
+          .document(userUid)
+          .collection('friends')
+          .where('name', isGreaterThanOrEqualTo: crewMemberData)
           .snapshots()
           .map(_crewListFromSnapshot);
     } else {
       if (searchingFriends == false) {
-        if (friendsList.length > 0 || friendsList == null) {
-          return Firestore.instance
+        if (!pending) {
+          CollectionReference friendsCollection = Firestore.instance
               .collection('users')
-              .where('userUid', whereIn: friendsList)
-              .orderBy('name', descending: true)
-              .snapshots()
-              .map(_crewListFromSnapshot);
+              .document(userUid)
+              .collection('friends');
+
+          return friendsCollection.snapshots().map(_crewListFromSnapshot);
         } else {
-          //TODO: Find another way to return a "null" list
           return Firestore.instance
               .collection('users')
-              .where('userUid', isEqualTo: '1')
+              .document(userUid)
+              .collection('pending')
+              .where('waitingFriendsAnswer', isEqualTo: waitingFriendsAnswer)
               .snapshots()
               .map(_crewListFromSnapshot);
         }
@@ -631,22 +741,22 @@ class DatabaseService {
   }
 
   // get friends stream
-  Stream<List<NewFriend>> get searchCrewMemberList {
-    if (crewMemberData != null) {
-      return Firestore.instance
-          .collection('users')
-          .where('email', isEqualTo: crewMemberData)
-          .snapshots()
-          .map(_crewListFromSnapshot);
-    } else {
-      //TODO: Find another way to return a "null" list
-      return Firestore.instance
-          .collection('users')
-          .where('userUid', isEqualTo: '1')
-          .snapshots()
-          .map(_crewListFromSnapshot);
-    }
-  }
+  // Stream<List<NewFriend>> get searchCrewMemberList {
+  //   if (crewMemberData != null) {
+  //     return Firestore.instance
+  //         .collection('users')
+  //         .where('email', isEqualTo: crewMemberData)
+  //         .snapshots()
+  //         .map(_crewListFromSnapshot);
+  //   } else {
+  //     //TODO: Find another way to return a "null" list
+  //     return Firestore.instance
+  //         .collection('users')
+  //         .where('userUid', isEqualTo: '1')
+  //         .snapshots()
+  //         .map(_crewListFromSnapshot);
+  //   }
+  // }
 
   ///List of FlightCases Created
 

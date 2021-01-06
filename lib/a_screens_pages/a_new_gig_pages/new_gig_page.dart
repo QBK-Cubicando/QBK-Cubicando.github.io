@@ -228,6 +228,7 @@ class _NewGigPageState extends State<NewGigPage> {
                                 uidGig: '${user.uid}$nameGig$startDate',
                                 uidCrewGig: user.uid,
                                 crewMemberData: user.uid,
+                                isCrewPage: true,
                               ).gigSetCrewData(
                                 nameCrew: widget.userName,
                                 permission: 'Admin',

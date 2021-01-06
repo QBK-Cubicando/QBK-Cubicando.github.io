@@ -216,7 +216,7 @@ class _SignInPageState extends State<SignInPage> {
                                 },
                               ),
                               SizedBox(
-                                height: 50.0,
+                                height: 10.0,
                               ),
                               SelectionButton(
                                   text: 'Sign In',

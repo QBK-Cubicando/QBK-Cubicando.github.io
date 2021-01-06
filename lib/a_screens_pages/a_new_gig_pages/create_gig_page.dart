@@ -78,7 +78,10 @@ class _CreateGigPageState extends State<CreateGigPage> {
     UserData user = Provider.of<UserData>(context);
 
     return StreamBuilder<List<NewCrewMember>>(
-        stream: DatabaseService(userUid: user.uid, uidGig: widget.uidGig)
+        stream: DatabaseService(
+          userUid: user.uid, 
+          uidGig: widget.uidGig,
+          isCrewPage: true)
             .gigCrewMemberList,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -95,6 +98,7 @@ class _CreateGigPageState extends State<CreateGigPage> {
                 uidGig: widget.uidGig,
                 uidCrewGig: user.uid,
                 crewMemberData: user.uid,
+                isCrewPage: true,
               ).gigSetCrewData(
                 nameCrew: 'Admin',
                 permission: 'Admin',

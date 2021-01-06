@@ -19,7 +19,13 @@ class WrapperQBK extends StatelessWidget {
     if (user == null) {
       return SignInPage();
     } else {
-      return QBKHomePage();
+      try {
+        return QBKHomePage();
+      } catch (e) {
+        print(e);
+        return SignInPage();
+      }
     }
   }
 }
+//TODO: Fix gray page when autentification on QBK Web

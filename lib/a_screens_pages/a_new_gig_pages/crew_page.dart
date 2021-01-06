@@ -37,28 +37,27 @@ class CrewQBKState extends State<CrewQBK> {
   var friendsList = [];
   NewFriend newCrewMember;
 
-  // int indexOfCrew;
   TextEditingController _controller = TextEditingController();
 
   List<String> permissions = ['Just Read', 'Admin', 'Loader'];
 
-  _setFriendList() async {
-    if (futureFriendsList != null) {
-      friendsList = await futureFriendsList;
-    } else {
-      friendsList = [];
-    }
+  // _setFriendList() async {
+  //   if (futureFriendsList != null) {
+  //     friendsList = await futureFriendsList;
+  //   } else {
+  //     friendsList = [];
+  //   }
 
-    setState(() {});
-  }
+  //   setState(() {});
+  // }
 
-  @override
-  void initState() {
-    futureFriendsList =
-        DatabaseService(userUid: widget.userUid).getFriendsListOnce();
-    _setFriendList();
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   futureFriendsList =
+  //       DatabaseService(userUid: widget.userUid).getFriendsListOnce();
+  //   _setFriendList();
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +65,10 @@ class CrewQBKState extends State<CrewQBK> {
 
     try {
       return StreamBuilder<List<NewCrewMember>>(
-          stream: DatabaseService(userUid: user.uid, uidGig: widget.uidGig)
+          stream: DatabaseService(
+            userUid: user.uid, 
+            uidGig: widget.uidGig,
+            isCrewPage: true,)
               .gigCrewMemberList,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
@@ -150,7 +152,6 @@ class CrewQBKState extends State<CrewQBK> {
                                                 displayHeight(context) * 0.3,
                                             width: displayWidth(context) * 0.9,
                                             child: FriendList(
-                                              friendsList: friendsList,
                                               isCrewPage: true,
                                               crewMember: _controller.text,
                                               uidGig: widget.uidGig,
