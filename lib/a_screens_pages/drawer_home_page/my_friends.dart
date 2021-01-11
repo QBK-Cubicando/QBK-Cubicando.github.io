@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qbk_simple_app/ab_created_widgets/notification_stack.dart';
 import 'package:qbk_simple_app/ab_created_widgets/text_field-widget.dart';
 import 'package:qbk_simple_app/models/new_crew_member.dart';
 import 'package:qbk_simple_app/services/database.dart';
@@ -82,13 +83,24 @@ class _MyFriendsState extends State<MyFriends> {
                     onBackGoTo: QBKHomePage(),
                     tabBar: TabBar(
                       tabs: [
-                        Text(
-                          'Friends',
-                          style: kTextStyle(context),
-                        ),
-                        Text(
-                          'Pending',
-                          style: kTextStyle(context),
+                        Container(
+                            margin: EdgeInsets.fromLTRB(0, 10, 15, 0),
+                            child: Text(
+                              'Friends',
+                              style: kTextStyle(context),
+                            ),
+                          ),
+                        NotificationStack(
+                          
+                          userUid: user.uid,
+                          notificationType: 'friends',
+                          icon: Container(
+                            margin: EdgeInsets.fromLTRB(0, 10, 15, 0),
+                            child: Text(
+                              'Pending',
+                              style: kTextStyle(context),
+                            ),
+                          ),
                         ),
                       ],
                     ),

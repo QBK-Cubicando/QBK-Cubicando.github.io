@@ -218,7 +218,6 @@ class DatabaseService {
   // get gigs stream
   Stream<List<NewGig>> get gigList {
     if (sharedGigs) {
-
       return Firestore.instance
           .collection('gigs')
           .where(crewMemberData, isEqualTo: !pending)
@@ -237,41 +236,72 @@ class DatabaseService {
   // delete gig
 
   void deleteGig() async {
-    ///Delete Gig Crew
+    String uidCreator;
     await Firestore.instance
         .collection('gigs')
         .document(uidGig)
-        .collection('crew')
-        .getDocuments()
-        .then((snapshot) {
-      for (DocumentSnapshot ds in snapshot.documents) {
-        ds.reference.delete();
-      }
+        .get()
+        .then((val) {
+      var value = val.data['userUid'];
+      uidCreator = value;
     });
+    if (userUid == uidCreator) {
+      ///Delete Gig Crew
+      await Firestore.instance
+          .collection('gigs')
+          .document(uidGig)
+          .collection('crew')
+          .getDocuments()
+          .then((snapshot) {
+        for (DocumentSnapshot ds in snapshot.documents) {
+          ds.reference.delete();
+        }
+      });
 
-    ///Delete Gig Loads
-    await Firestore.instance
-        .collection('loads')
-        .getDocuments()
-        .then((snapshot) {
-      List<DocumentSnapshot> allLoads = snapshot.documents;
-      List<DocumentSnapshot> filteredLoads = allLoads
-          .where((document) => document.data['uidGig'] == uidGig)
-          .toList();
-      for (DocumentSnapshot ds in filteredLoads) {
-        ds.reference.delete();
-      }
-    });
+      ///Delete Gig Loads
+      await Firestore.instance
+          .collection('loads')
+          .getDocuments()
+          .then((snapshot) {
+        List<DocumentSnapshot> allLoads = snapshot.documents;
+        List<DocumentSnapshot> filteredLoads = allLoads
+            .where((document) => document.data['uidGig'] == uidGig)
+            .toList();
+        for (DocumentSnapshot ds in filteredLoads) {
+          ds.reference.delete();
+        }
+      });
 
-    ///Delete Gig
-    await Firestore.instance.collection('gigs').document(uidGig).delete();
+      ///Delete Gig
+      await Firestore.instance.collection('gigs').document(uidGig).delete();
 
-    /// Delete calendar gig
-    await usersCollection
-        .document(userUid)
-        .collection('calendarGigs')
-        .document(uidGig)
-        .delete();
+      /// Delete calendar gig
+      await usersCollection
+          .document(userUid)
+          .collection('calendarGigs')
+          .document(uidGig)
+          .delete();
+    } else {
+      /// Delete calendar gig
+      await usersCollection
+          .document(userUid)
+          .collection('calendarGigs')
+          .document(uidGig)
+          .delete();
+
+      ///Delete crew name from gig
+      await Firestore.instance.collection('gigs').document(uidGig).updateData({
+        crewMemberData: FieldValue.delete(),
+      });
+
+      ///Delete crew name from crew gig
+      await Firestore.instance
+          .collection('gigs')
+          .document(uidGig)
+          .collection('crew')
+          .document(crewMemberData)
+          .delete();
+    }
   }
 
   ///Calendar Data
@@ -455,63 +485,59 @@ class DatabaseService {
 
   //Accept Friend
   Future<void> gigAddFriend({
-  String name,
-  String city,
-  String speciality,
-  }) 
-  
-  async {
-
-     ///Add Friend own 
-await Firestore.instance
-    .collection('users')
-    .document(userUid)
-    .collection('friends')
-    .document(crewMemberData)
-    .setData({
+    String name,
+    String city,
+    String speciality,
+  }) async {
+    ///Add Friend own
+    await Firestore.instance
+        .collection('users')
+        .document(userUid)
+        .collection('friends')
+        .document(crewMemberData)
+        .setData({
       'name': name,
-      'city' : city,
+      'city': city,
       'friendUid': crewMemberData,
       'useruid': userUid,
       'speciality': speciality,
     });
-     ///Add Friend to Friend
-     await Firestore.instance
-            .collection('users')
-            .document(userUid)
-            .get()
-            .then((val) async {
-                await Firestore.instance
-                    .collection('users')
-                    .document(crewMemberData)
-                    .collection('friends')
-                    .document(userUid)
-                    .setData({
-                      'name': val['name'],
-                      'city' : val['city'],
-                      'friendUid': crewMemberData,
-                      'useruid': userUid,
-                      'speciality': val['speciality'],
-                      });
-                  });
+
+    ///Add Friend to Friend
+    await Firestore.instance
+        .collection('users')
+        .document(userUid)
+        .get()
+        .then((val) async {
+      await Firestore.instance
+          .collection('users')
+          .document(crewMemberData)
+          .collection('friends')
+          .document(userUid)
+          .setData({
+        'name': val['name'],
+        'city': val['city'],
+        'friendUid': crewMemberData,
+        'useruid': userUid,
+        'speciality': val['speciality'],
+      });
+    });
 
     /// Delete Pending own
-  await Firestore.instance
-      .collection('users')
-      .document(userUid)
-      .collection('pending')
-      .document(crewMemberData)
-      .delete();
+    await Firestore.instance
+        .collection('users')
+        .document(userUid)
+        .collection('pending')
+        .document(crewMemberData)
+        .delete();
 
-
-  /// Delete Pending for Friend
-  await Firestore.instance
-      .collection('users')
-      .document(crewMemberData)
-      .collection('pending')
-      .document(userUid)
-      .delete();
-
+    /// Delete Pending for Friend
+    await Firestore.instance
+        .collection('users')
+        .document(crewMemberData)
+        .collection('pending')
+        .document(userUid)
+        .delete();
   }
 
   /// get crew permission for a gig
@@ -585,6 +611,7 @@ await Firestore.instance
   // delete crew member
   void gigDeleteCrewMember() async {
     if (isCrewPage) {
+      //Get creators uid
       String uidCreator;
       await Firestore.instance
           .collection('gigs')
@@ -601,14 +628,23 @@ await Firestore.instance
           .collection('crew');
 
       if (uidCreator != uidCrewGig) {
+        //Delete from Gig's Crew
         await crewCollection.document(uidCrewGig).delete();
-
+        //Delete from Gig
         await Firestore.instance
             .collection('gigs')
             .document(uidGig)
             .updateData({
           crewMemberData: FieldValue.delete(),
         });
+        //Delete Calendar Gig for friend
+        
+        await Firestore.instance
+            .collection('users')
+            .document(uidCrewGig)
+            .collection('calendarGigs')
+            .document(uidGig)
+            .delete();
       }
     } else {
       Firestore.instance
@@ -883,7 +919,7 @@ await Firestore.instance
         .map(_loadsList);
   }
 
-  // delete load member
+  // delete load
   void deleteLoad() async {
     CollectionReference loadCollection = Firestore.instance.collection('loads');
 

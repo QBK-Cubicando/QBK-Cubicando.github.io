@@ -62,7 +62,10 @@ class _EditGigPopupState extends State<EditGigPopup> {
     final _formKeyEditGig = GlobalKey<FormState>();
 
     void _deleteGig() async {
-      DatabaseService(userUid: user.uid, uidGig: uidGig).deleteGig();
+      DatabaseService(
+        userUid: user.uid, 
+        uidGig: uidGig, 
+        crewMemberData: user.uid).deleteGig();
       Navigator.pop(context);
     }
 

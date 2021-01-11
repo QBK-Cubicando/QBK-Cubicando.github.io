@@ -1,4 +1,3 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_friends.dart';
@@ -6,10 +5,11 @@ import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_friends.dart'
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_gigs.dart';
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/settings_page.dart';
 import 'package:qbk_simple_app/ab_created_widgets/calendar.dart';
+import 'package:qbk_simple_app/ab_created_widgets/notification_stack.dart';
 import 'package:qbk_simple_app/models/new_crew_member.dart';
 import 'package:qbk_simple_app/services/auth.dart';
 import 'package:qbk_simple_app/services/database.dart';
-import 'package:qbk_simple_app/services/push_notification_service.dart';
+
 import 'package:qbk_simple_app/ui/sizes-helpers.dart';
 import 'package:qbk_simple_app/utilities/constants.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +25,6 @@ import 'drawer_home_page/my_gigs.dart';
 
 import 'package:qbk_simple_app/ab_created_widgets/a_buttons/selection_menu_button.dart';
 import 'a_new_gig_pages/new_gig_page.dart';
-import 'package:qbk_simple_app/services/push_notification_service.dart';
 
 ///Documentated
 class QBKHomePage extends StatefulWidget {
@@ -51,77 +50,82 @@ class _QBKHomePageState extends State<QBKHomePage> {
             }
             if (snapshot.hasData) {
               UserData userData = snapshot.data;
-              return PushNotificationMessage(
-                child: SafeArea(
-                  child: Scaffold(
-                    backgroundColor: Colors.grey.shade900,
-                    drawer: Container(
-                      width: displayWidth(context) * 0.7,
-                      child: Drawer(
+
+              return SafeArea(
+                child: Scaffold(
+                  backgroundColor: Colors.grey.shade900,
+                  drawer: Container(
+                    width: displayWidth(context) * 0.7,
+                    child: Drawer(
 //TODO: Create a recommend to a friend
-                        child: Container(
-                          color: Colors.grey,
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(
-                                height: displayHeight(context) * 0.02,
-                              ),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(100.0),
-                                child: Container(
-                                  color: Colors.black,
-                                  height: displayHeight(context) * 0.2,
-                                  child:
-                                      Image.asset('images/logoQBK_negro.jpg'),
-                                ),
-                              ),
-                              // Profile Picture
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  userData.name,
-                                  style: kButtonsTextStyle(context),
-                                ),
-                              ),
-                              //Name
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  userData.speciality ?? 'Random',
-                                  style: kTextStyle(context)
-                                      .copyWith(color: Colors.black),
-                                ),
-                              ),
-                              // Speciality
-                              SizedBox(
-                                height: displayHeight(context) * 0.05,
-                              ),
-                              Container(
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 20.0, horizontal: 15.0),
+                      child: Container(
+                        color: Colors.grey,
+                        child: Column(
+                          children: <Widget>[
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(100.0),
+                              child: Container(
                                 color: Colors.black,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: <Widget>[
-                                    SelectionMenuButton(
+                                height: displayHeight(context) * 0.2,
+                                child: Image.asset('images/logoQBK_negro.jpg'),
+                              ),
+                            ),
+                            // Profile Picture
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                userData.name,
+                                style: kButtonsTextStyle(context),
+                              ),
+                            ),
+                            //Name
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                userData.speciality ?? 'Random',
+                                style: kTextStyle(context)
+                                    .copyWith(color: Colors.black),
+                              ),
+                            ),
+                            // Speciality
+                            SizedBox(
+                              height: displayHeight(context) * 0.05,
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 20.0, horizontal: 15.0),
+                              color: Colors.black,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: <Widget>[
+                                  NotificationStack(
+                                    userUid: user.uid,
+                                    notificationType: 'gigs',
+                                    icon: SelectionMenuButton(
                                       text: 'MY GIGS',
                                       onPress: () => Navigator.pushNamed(
                                           context, MyGigs.id),
                                     ),
-                                    //My Gigs
-                                    SelectionMenuButton(
-                                      text: 'MY CASES',
-                                      onPress: () => Navigator.pushNamed(
-                                          context, MyCases.id),
-                                    ),
-                                    //My Cases
-                                    SelectionMenuButton(
+                                  ),
+                                  //My Gigs
+                                  SelectionMenuButton(
+                                    text: 'MY CASES',
+                                    onPress: () => Navigator.pushNamed(
+                                        context, MyCases.id),
+                                  ),
+                                  //My Cases
+                                  NotificationStack(
+                                    userUid: user.uid,
+                                    notificationType: 'friends',
+                                    icon: SelectionMenuButton(
                                       text: 'MY FRIENDS',
                                       onPress: () => Navigator.push(
                                         context,
@@ -130,87 +134,87 @@ class _QBKHomePageState extends State<QBKHomePage> {
                                                 userUid: userData.uid)),
                                       ),
                                     ),
-                                    // My Friends
+                                  ),
+                                  // My Friends
 //TODO: Invite Friends
-                                    SelectionMenuButton(
-                                      text: 'MODIFY PROFILE',
-                                      onPress: () {
-                                        Navigator.pushNamed(
-                                            context, SettingsPage.id);
-                                      },
-                                    ),
-                                    //Modify Profile
-                                  ],
-                                ),
-                              ), //Menu Drawer Options
-                            ],
-                          ),
+                                  SelectionMenuButton(
+                                    text: 'MODIFY PROFILE',
+                                    onPress: () {
+                                      Navigator.pushNamed(
+                                          context, SettingsPage.id);
+                                    },
+                                  ),
+                                  //Modify Profile
+                                ],
+                              ),
+                            ), //Menu Drawer Options
+                          ],
                         ),
                       ),
                     ),
-                    appBar: AppBar(
-                      toolbarHeight: displayHeight(context) * 0.1,
-                      backgroundColor: Colors.grey.shade800,
-                      leading: PerfilIconButton(),
-                      title: Center(
-                        child: Text(
-                          'QBK',
-                          style: kTitleTextStile(context)
-                              .copyWith(fontSize: displayWidth(context) * 0.1),
-                        ),
+                  ),
+                  appBar: AppBar(
+                    toolbarHeight: displayHeight(context) * 0.1,
+                    backgroundColor: Colors.grey.shade800,
+                    leading: PerfilIconButton(),
+                    title: Center(
+                      child: Text(
+                        'QBK',
+                        style: kTitleTextStile(context)
+                            .copyWith(fontSize: displayWidth(context) * 0.1),
                       ),
-                      actions: <Widget>[
-                        PopupMenuQBK(
+                    ),
+                    actions: <Widget>[
+                      PopupMenuQBK(
 //TODO: Create send list and print list function
 //TODO: Create a send gig and print gig option
-                            ),
-                      ],
-                    ),
-                    body: SafeArea(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: <Widget>[
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  height: displayHeight(context) * 0.7,
-                                  width: displayWidth(context) * 0.8,
-                                  color: Colors.white,
-                                  child: QBKCalendar(),
-                                ), //Calendar
-                              ],
-                            ), //Calendar
-                            SizedBox(
-                              height: 20.0,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                NewGigButton(
-                                  text: 'New Gig',
-                                  color: Colors.green,
-                                  onPress: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => NewGigPage(
-                                              userName: userData.name)),
-                                    );
-                                  },
-                                ),
+                          ),
+                    ],
+                  ),
+                  body: SafeArea(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                height: displayHeight(context) * 0.7,
+                                width: displayWidth(context) * 0.8,
+                                color: Colors.white,
+                                child: QBKCalendar(),
+                              ), //Calendar
+                            ],
+                          ), //Calendar
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              NewGigButton(
+                                text: 'New Gig',
+                                color: Colors.green,
+                                onPress: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => NewGigPage(
+                                            userName: userData.name)),
+                                  );
+                                },
+                              ),
 //TODO: implement Tour Button
 //                        SizedBox(width: 70.0,),
 //                        NewGigButton(text: 'New Tour',
 //                          color: Colors.orange,
 //                          onPressGoTo: NewTourPage.id,),
-                              ],
-                            ), //Buttons New Gig & New Tour
-                          ],
-                        ),
+                            ],
+                          ), //Buttons New Gig & New Tour
+                        ],
                       ),
                     ),
                   ),

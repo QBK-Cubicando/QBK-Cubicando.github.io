@@ -11,7 +11,6 @@ import 'package:qbk_simple_app/models/flight_case.dart';
 import 'package:reorderables/reorderables.dart';
 
 import '../../ui/sizes-helpers.dart';
-import 'package:boardview/boardview.dart';
 
 ///Documentated
 class CreateLoadPage extends StatefulWidget {

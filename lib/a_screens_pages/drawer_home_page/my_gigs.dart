@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qbk_simple_app/ab_created_widgets/notification_stack.dart';
 import 'package:qbk_simple_app/services/database.dart';
 
 import 'package:qbk_simple_app/a_screens_pages/home_page.dart';
@@ -43,10 +44,25 @@ class _MyGigsState extends State<MyGigs> {
                     onBackGoTo: QBKHomePage(),
                     tabBar: TabBar(
                       tabs: [
-                        Text('My Gigs',
-                        style: kTextStyle(context),),
-                        Text('Pending',
-                        style: kTextStyle(context),),
+                        Container(
+                            margin: EdgeInsets.fromLTRB(0, 10, 15, 0),
+                            child: Text(
+                              'My gigs',
+                              style: kTextStyle(context),
+                            ),
+                          ),
+                        NotificationStack(
+                         
+                          userUid: user.uid,
+                          notificationType: 'gigs',
+                          icon: Container(
+                            margin: EdgeInsets.fromLTRB(0, 10, 15, 0),
+                            child: Text(
+                              'Pending',
+                              style: kTextStyle(context),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     body: Container(
