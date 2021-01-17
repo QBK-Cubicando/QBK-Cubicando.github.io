@@ -40,8 +40,10 @@ class QBKApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     return StreamProvider<UserData>.value(
+    
       value: AuthService().user,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
             scaffoldBackgroundColor: Colors.black, fontFamily: 'BioRhyme'),
         initialRoute: WrapperQBK.id,

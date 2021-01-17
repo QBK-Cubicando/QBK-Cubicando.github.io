@@ -163,32 +163,50 @@ class _LoadPageState extends State<LoadPage> {
 
   ///Checks if firebase load is larger and replaces it
   _refreshLoad() async {
-    if (fetchedLoadedCasesLength < flightCaseLoadedList.length &&
-        fetchedLoadedCasesLength != flightCaseTotalList.length) {
       if (loader == widget.userUid) {
         flightCaseTotalList = flightCaseLoadedList + flightCaseNotLoadedList;
         await DatabaseService(uidLoad: widget.uidLoad).updateNewLoadListData(
           flightCasesOnList: flightCaseTotalList,
           flightCasesLoaded: flightCaseLoadedList.length,
         );
-      }
-      await Firestore.instance
-          .collection('loads')
-          .document(widget.uidLoad)
-          .updateData({'refresh': true});
-    } else if ((fetchedLoadedCasesLength > flightCaseLoadedList.length &&
-            fetchedLoadedCasesLength != flightCaseTotalList.length) ||
-        fetchedLoadedCasesLength == flightCaseTotalList.length &&
-            loader != widget.userUid) {
-      flightCaseLoadedList.clear();
-      flightCaseNotLoadedList.clear();
-      _fetchLoadListFromFirebase();
-
-      await Firestore.instance
+        await Firestore.instance
           .collection('loads')
           .document(widget.uidLoad)
           .updateData({'refresh': false});
-    }
+      } else {
+              flightCaseLoadedList.clear(); 
+              flightCaseNotLoadedList.clear(); 
+              _fetchLoadListFromFirebase();
+      }
+
+    ///This is used if you want to implement simultaneous loaders
+
+    // if (fetchedLoadedCasesLength < flightCaseLoadedList.length &&
+    //     fetchedLoadedCasesLength != flightCaseTotalList.length) {
+    //   if (loader == widget.userUid) {
+    //     flightCaseTotalList = flightCaseLoadedList + flightCaseNotLoadedList;
+    //     await DatabaseService(uidLoad: widget.uidLoad).updateNewLoadListData(
+    //       flightCasesOnList: flightCaseTotalList,
+    //       flightCasesLoaded: flightCaseLoadedList.length,
+    //     );
+    //   }
+    //   await Firestore.instance
+    //       .collection('loads')
+    //       .document(widget.uidLoad)
+    //       .updateData({'refresh': true});
+    // } else if ((fetchedLoadedCasesLength > flightCaseLoadedList.length &&
+    //         fetchedLoadedCasesLength != flightCaseTotalList.length) ||
+    //     fetchedLoadedCasesLength == flightCaseTotalList.length &&
+    //         loader != widget.userUid) {
+    //   flightCaseLoadedList.clear(); don't do this, replace the list don't clear. 
+    //   flightCaseNotLoadedList.clear(); don't do this, replace the list don't clear. 
+      // _fetchLoadListFromFirebase();
+
+    //   await Firestore.instance
+    //       .collection('loads')
+    //       .document(widget.uidLoad)
+    //       .updateData({'refresh': false});
+    // }
   }
 
   ///Gets the loader
@@ -308,9 +326,13 @@ class _LoadPageState extends State<LoadPage> {
                     if (snapshot.hasData) {
                       refresh = snapshot.data['refresh'];
                       if (refresh == true) {
-                        Timer(Duration(milliseconds: 500 * widget.index), () {
-                          _refreshLoad();
-                        });
+                        _refreshLoad();
+
+                        ///This is used if you want to implement simultaneus loaders
+
+                        // Timer(Duration(milliseconds: 500 * widget.index), () {
+                        //   _refreshLoad();
+                        // });
                       }
                       return UpperBar(
                         text: widget.nameGig ?? 'Load Page',
@@ -519,8 +541,8 @@ class _LoadPageState extends State<LoadPage> {
                                       width: displayWidth(context) * 0.85,
                                       color: Colors.green,
                                       onPressed: () async {
-                                        if (widget.permission == 'Admin' ||
-                                            widget.permission == 'Loader') {
+                                        if ((widget.permission == 'Admin' ||
+                                            widget.permission == 'Loader' ) && loader == widget.userUid) {
                                           ///Reads and Organizes the loaded and unloaded cases in different lists to check them.
                                           for (FlightCase element
                                               in flightCaseTotalList) {

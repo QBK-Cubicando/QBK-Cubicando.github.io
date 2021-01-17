@@ -12,6 +12,7 @@ import 'package:qbk_simple_app/utilities/loading_widget.dart';
 import 'package:qbk_simple_app/utilities/constants.dart';
 
 //TODO: When you edit a case this page should refresh and show the new date
+// TODO: Check the widget showed when no cases
 
 ///READ but not Documentated
 class MyCases extends StatefulWidget {
@@ -45,22 +46,19 @@ class _MyCasesState extends State<MyCases> {
                           ),
                         ),
                       )
-                    : UpperBar(
-                        text: 'My Gigs',
-                        onBackGoTo: QBKHomePage(),
-                        body: Column(
+                    : Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Center(
                               child: Container(
                                 child: Text(
-                                  'No Gigs created yet !',
+                                  'No Cases created yet !',
                                   style: kTextStyle(context),
                                 ),
                               ),
                             ),
                           ],
-                        )));
+                        ));
           } else {
             return Center(child: Loading());
           }

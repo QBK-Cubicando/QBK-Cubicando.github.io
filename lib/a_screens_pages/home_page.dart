@@ -19,6 +19,7 @@ import 'package:qbk_simple_app/ab_created_widgets/perfil_icon_widget.dart';
 import 'package:qbk_simple_app/ab_created_widgets/menu_widget.dart';
 import 'package:qbk_simple_app/models/user.dart';
 import 'package:qbk_simple_app/utilities/loading_widget.dart';
+import 'package:share/share.dart';
 
 import 'drawer_home_page/my_cases.dart';
 import 'drawer_home_page/my_gigs.dart';
@@ -35,6 +36,18 @@ class QBKHomePage extends StatefulWidget {
 }
 
 class _QBKHomePageState extends State<QBKHomePage> {
+
+void share(BuildContext context) {
+    final RenderBox box = context.findRenderObject();
+    final String text = 'A friend wants to invite you to QBK-App, follow this link to download the App: ' + 'https://www.getqbk.com';
+
+    Share.share(
+      text,
+      subject: 'Invitation to QBK-App',
+      sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     UserData user = Provider.of<UserData>(context);
@@ -148,6 +161,28 @@ class _QBKHomePageState extends State<QBKHomePage> {
                                 ],
                               ),
                             ), //Menu Drawer Options
+                            SizedBox(
+                                height: displayHeight(context) * 0.01,
+                              ),
+                              Container(
+                                height: displayHeight(context) * 0.06,
+                                width: displayWidth(context) * 0.6,
+                                decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        border: Border.all(),
+                                        borderRadius: BorderRadius.all(Radius.circular(20))
+                                      ),
+                                child: Center(
+                                  child: InkWell(
+                                  child: Text(
+                                        'Share with a friend',
+                                        style: kTextStyle(context)
+                                            .copyWith(color: Colors.blueAccent),
+                                  ),
+                                  onTap: () => share(context),
+                                ),
+                                ),
+                                ),
                           ],
                         ),
                       ),
