@@ -1,2 +1,10 @@
 # Default ignored files
 /workspace.xml
+gradle-wrapper.jar
+/.gradle
+/captures/
+/gradlew
+/gradlew.bat
+/local.properties
+/key.properties
+GeneratedPluginRegistrant.java
