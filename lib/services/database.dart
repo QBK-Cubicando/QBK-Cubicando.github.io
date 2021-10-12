@@ -2,13 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:qbk_simple_app/a_screens_pages/a_new_gig_pages/copy_load_page.dart';
+import 'package:qbk_simple_app/a_screens_pages/a_new_gig_pages/crew_page.dart';
 
 import 'package:qbk_simple_app/ab_created_widgets/calendar.dart';
+import 'package:qbk_simple_app/models/BlocRow.dart';
 import 'package:qbk_simple_app/models/flight_case.dart';
 import 'package:qbk_simple_app/models/load.dart';
 import 'package:qbk_simple_app/models/user.dart';
 import 'package:qbk_simple_app/models/new_gig.dart';
 import 'package:qbk_simple_app/models/new_crew_member.dart';
+import 'package:qbk_simple_app/services/global_variables.dart';
 
 class DatabaseService {
   final String userUid;
@@ -153,6 +157,8 @@ class DatabaseService {
     DateTime endDate,
     String location,
     String notes,
+    String color,
+    int crew,
   }) async {
     return await Firestore.instance
         .collection('gigs')
@@ -165,6 +171,37 @@ class DatabaseService {
       'endDate': DateFormat('yyyy-MM-dd').format(endDate),
       'location': location,
       'notes': notes,
+      'color': color,
+      'crew': crew,
+    });
+  }
+
+  //Update crew number Gig
+  Future<void> updateCrewNumberCalendarGig({
+    String user,
+    int crew,
+    String gig,
+  }) async {
+    return await Firestore.instance
+        .collection('users')
+        .document(user)
+        .collection('calendarGigs')
+        .document(gig)
+        .updateData({
+      'crew': crew,
+    });
+  }
+
+  Future<void> updateCrewNumberGig({
+    int crew,
+    String user,
+  }) async {
+    await updateCrewNumberCalendarGig(crew: crew, user: user, gig: uidGig);
+    return await Firestore.instance
+        .collection('gigs')
+        .document(uidGig)
+        .updateData({
+      'crew': crew,
     });
   }
 
@@ -175,6 +212,8 @@ class DatabaseService {
     DateTime endDate,
     String location,
     String notes,
+    String color,
+    int crew,
   }) async {
     return await Firestore.instance
         .collection('gigs')
@@ -185,6 +224,8 @@ class DatabaseService {
       'endDate': DateFormat('yyyy-MM-dd').format(endDate),
       'location': location,
       'notes': notes,
+      'color': color,
+      'crew': crew,
     });
   }
 
@@ -197,6 +238,8 @@ class DatabaseService {
       endDate: DateFormat('yyyy-MM-dd').parse(snapshot.data['endDate']),
       location: snapshot.data['location'],
       notes: snapshot.data['notes'] ?? 'No notes',
+      color: snapshot.data['color'],
+      crew: snapshot.data['crew'] != null ? snapshot.data['crew'] : 1,
     );
   }
 
@@ -218,7 +261,6 @@ class DatabaseService {
   // get gigs stream
   Stream<List<NewGig>> get gigList {
     if (sharedGigs) {
-
       return Firestore.instance
           .collection('gigs')
           .where(crewMemberData, isEqualTo: !pending)
@@ -237,41 +279,72 @@ class DatabaseService {
   // delete gig
 
   void deleteGig() async {
-    ///Delete Gig Crew
+    String uidCreator;
     await Firestore.instance
         .collection('gigs')
         .document(uidGig)
-        .collection('crew')
-        .getDocuments()
-        .then((snapshot) {
-      for (DocumentSnapshot ds in snapshot.documents) {
-        ds.reference.delete();
-      }
+        .get()
+        .then((val) {
+      var value = val.data['userUid'];
+      uidCreator = value;
     });
+    if (userUid == uidCreator) {
+      ///Delete Gig Crew
+      await Firestore.instance
+          .collection('gigs')
+          .document(uidGig)
+          .collection('crew')
+          .getDocuments()
+          .then((snapshot) {
+        for (DocumentSnapshot ds in snapshot.documents) {
+          ds.reference.delete();
+        }
+      });
 
-    ///Delete Gig Loads
-    await Firestore.instance
-        .collection('loads')
-        .getDocuments()
-        .then((snapshot) {
-      List<DocumentSnapshot> allLoads = snapshot.documents;
-      List<DocumentSnapshot> filteredLoads = allLoads
-          .where((document) => document.data['uidGig'] == uidGig)
-          .toList();
-      for (DocumentSnapshot ds in filteredLoads) {
-        ds.reference.delete();
-      }
-    });
+      ///Delete Gig Loads
+      await Firestore.instance
+          .collection('loads')
+          .getDocuments()
+          .then((snapshot) {
+        List<DocumentSnapshot> allLoads = snapshot.documents;
+        List<DocumentSnapshot> filteredLoads = allLoads
+            .where((document) => document.data['uidGig'] == uidGig)
+            .toList();
+        for (DocumentSnapshot ds in filteredLoads) {
+          ds.reference.delete();
+        }
+      });
 
-    ///Delete Gig
-    await Firestore.instance.collection('gigs').document(uidGig).delete();
+      ///Delete Gig
+      await Firestore.instance.collection('gigs').document(uidGig).delete();
 
-    /// Delete calendar gig
-    await usersCollection
-        .document(userUid)
-        .collection('calendarGigs')
-        .document(uidGig)
-        .delete();
+      /// Delete calendar gig
+      await usersCollection
+          .document(userUid)
+          .collection('calendarGigs')
+          .document(uidGig)
+          .delete();
+    } else {
+      /// Delete calendar gig
+      await usersCollection
+          .document(userUid)
+          .collection('calendarGigs')
+          .document(uidGig)
+          .delete();
+
+      ///Delete crew name from gig
+      await Firestore.instance.collection('gigs').document(uidGig).updateData({
+        crewMemberData: FieldValue.delete(),
+      });
+
+      ///Delete crew name from crew gig
+      await Firestore.instance
+          .collection('gigs')
+          .document(uidGig)
+          .collection('crew')
+          .document(crewMemberData)
+          .delete();
+    }
   }
 
   ///Calendar Data
@@ -282,6 +355,9 @@ class DatabaseService {
     String nameGig,
     DateTime startDate,
     DateTime endDate,
+    String location,
+    String color,
+    int crew,
   }) async {
     return await usersCollection
         .document(userUid)
@@ -292,6 +368,9 @@ class DatabaseService {
       'calendarGigName': nameGig,
       'startDate': DateFormat('yyyy-MM-dd').format(startDate),
       'endDate': DateFormat('yyyy-MM-dd').format(endDate),
+      'location': location,
+      'color': color,
+      'crew': crew,
     });
   }
 
@@ -301,6 +380,9 @@ class DatabaseService {
     String nameGig,
     DateTime startDate,
     DateTime endDate,
+    String location,
+    String color,
+    int crew,
   }) async {
     return await usersCollection
         .document(userUid)
@@ -311,6 +393,9 @@ class DatabaseService {
       'calendarGigName': nameGig,
       'startDate': DateFormat('yyyy-MM-dd').format(startDate),
       'endDate': DateFormat('yyyy-MM-dd').format(endDate),
+      'location': location,
+      'color': color,
+      'crew': crew,
     });
   }
 
@@ -321,6 +406,11 @@ class DatabaseService {
       calendarGigName: snapshot.data['calendarGigName'],
       startDate: DateFormat('yyyy-MM-dd').parse(snapshot.data['startDate']),
       endDate: DateFormat('yyyy-MM-dd').parse(snapshot.data['endDate']),
+      location: snapshot.data['location'] != null
+          ? snapshot.data['location']
+          : 'Location',
+      crew: snapshot.data['crew'] != null ? snapshot.data['crew'] : 1,
+      color: snapshot.data['color'],
     );
   }
 
@@ -340,14 +430,55 @@ class DatabaseService {
 
   //stream gigs for list Calendar Gig
   Stream<List<CalendarGig>> get gigListForListCalendarsGig {
+    // Set Date to first day of the month
+    DateTime s = DateTime(dateGigForCalendar.year, dateGigForCalendar.month, 1);
+    // Deal with December
+    int mo = dateGigForCalendar.month == 12 ? 1 : dateGigForCalendar.month + 1;
+    int ye = dateGigForCalendar.month == 12
+        ? dateGigForCalendar.year + 1
+        : dateGigForCalendar.year;
+    // Set Date to first day of the next month
+    DateTime e = DateTime(ye, mo, 1);
+
     return usersCollection
         .document(userUid)
         .collection('calendarGigs')
         .where('startDate',
-            isEqualTo: DateFormat('yyyy-MM-dd').format(dateGigForCalendar))
+            isGreaterThanOrEqualTo: DateFormat('yyyy-MM-dd').format(s),
+            isLessThan: DateFormat('yyyy-MM-dd').format(e))
         .snapshots()
         .map(_calendarGigListFromSnapshot);
   }
+
+  // /// Get Crew Number Once
+  // Future totalCrewOnce(gigUid) async {
+  //   var respectsQuery = Firestore.instance
+  //       .collection('gig')
+  //       .document(gigUid)
+  //       .collection('crew');
+  //   var querySnapshot = await respectsQuery.getDocuments();
+  //   var totalEquals = querySnapshot.documents.length;
+  //   return totalEquals;
+  // }
+
+  ///Crew List Data Fetch Once
+
+  // Future getCrewListOnce({
+  //   String uidGig,
+  // }) async {
+  //   try {
+  //     final QuerySnapshot qSnap = await Firestore.instance
+  //         .collection('gigs')
+  //         .document(uidGig)
+  //         .collection('crew')
+  //         .getDocuments();
+  //     final int documents = qSnap.documents.length;
+
+  //     return documents;
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
 
   /// Crew data for Gig
 
@@ -379,6 +510,7 @@ class DatabaseService {
         'uidGig': uidGig,
         'nameCrew': nameCrew,
         'permission': permission,
+        'speciality': speciality,
         'city': city,
         'index': index,
       });
@@ -455,63 +587,59 @@ class DatabaseService {
 
   //Accept Friend
   Future<void> gigAddFriend({
-  String name,
-  String city,
-  String speciality,
-  }) 
-  
-  async {
-
-     ///Add Friend own 
-await Firestore.instance
-    .collection('users')
-    .document(userUid)
-    .collection('friends')
-    .document(crewMemberData)
-    .setData({
+    String name,
+    String city,
+    String speciality,
+  }) async {
+    ///Add Friend own
+    await Firestore.instance
+        .collection('users')
+        .document(userUid)
+        .collection('friends')
+        .document(crewMemberData)
+        .setData({
       'name': name,
-      'city' : city,
+      'city': city,
       'friendUid': crewMemberData,
       'useruid': userUid,
       'speciality': speciality,
     });
-     ///Add Friend to Friend
-     await Firestore.instance
-            .collection('users')
-            .document(userUid)
-            .get()
-            .then((val) async {
-                await Firestore.instance
-                    .collection('users')
-                    .document(crewMemberData)
-                    .collection('friends')
-                    .document(userUid)
-                    .setData({
-                      'name': val['name'],
-                      'city' : val['city'],
-                      'friendUid': crewMemberData,
-                      'useruid': userUid,
-                      'speciality': val['speciality'],
-                      });
-                  });
+
+    ///Add Friend to Friend
+    await Firestore.instance
+        .collection('users')
+        .document(userUid)
+        .get()
+        .then((val) async {
+      await Firestore.instance
+          .collection('users')
+          .document(crewMemberData)
+          .collection('friends')
+          .document(userUid)
+          .setData({
+        'name': val['name'],
+        'city': val['city'],
+        'friendUid': crewMemberData,
+        'useruid': userUid,
+        'speciality': val['speciality'],
+      });
+    });
 
     /// Delete Pending own
-  await Firestore.instance
-      .collection('users')
-      .document(userUid)
-      .collection('pending')
-      .document(crewMemberData)
-      .delete();
+    await Firestore.instance
+        .collection('users')
+        .document(userUid)
+        .collection('pending')
+        .document(crewMemberData)
+        .delete();
 
-
-  /// Delete Pending for Friend
-  await Firestore.instance
-      .collection('users')
-      .document(crewMemberData)
-      .collection('pending')
-      .document(userUid)
-      .delete();
-
+    /// Delete Pending for Friend
+    await Firestore.instance
+        .collection('users')
+        .document(crewMemberData)
+        .collection('pending')
+        .document(userUid)
+        .delete();
   }
 
   /// get crew permission for a gig
@@ -551,6 +679,10 @@ await Firestore.instance
       nameCrew: snapshot.data['nameCrew'],
       permission: snapshot.data['permission'],
       index: snapshot.data['index'],
+      city: snapshot.data['city'],
+      speciality: snapshot.data['speciality'] == null
+          ? 'RANDOM'
+          : snapshot.data['speciality'],
     );
   }
 
@@ -585,6 +717,8 @@ await Firestore.instance
   // delete crew member
   void gigDeleteCrewMember() async {
     if (isCrewPage) {
+      int crew;
+      //Get creators uid
       String uidCreator;
       await Firestore.instance
           .collection('gigs')
@@ -593,7 +727,11 @@ await Firestore.instance
           .then((val) {
         var value = val.data['userUid'];
         uidCreator = value;
+        crew = val.data['crew'];
       });
+
+      //Substract one from crew
+      updateCrewNumberGig(crew: crew - 1, user: userUid);
 
       CollectionReference crewCollection = Firestore.instance
           .collection('gigs')
@@ -601,14 +739,23 @@ await Firestore.instance
           .collection('crew');
 
       if (uidCreator != uidCrewGig) {
+        //Delete from Gig's Crew
         await crewCollection.document(uidCrewGig).delete();
-
+        //Delete from Gig
         await Firestore.instance
             .collection('gigs')
             .document(uidGig)
             .updateData({
           crewMemberData: FieldValue.delete(),
         });
+        //Delete Calendar Gig for friend
+
+        await Firestore.instance
+            .collection('users')
+            .document(uidCrewGig)
+            .collection('calendarGigs')
+            .document(uidGig)
+            .delete();
       }
     } else {
       Firestore.instance
@@ -790,29 +937,169 @@ await Firestore.instance
   ///Load List Data Fetch Once
 
   Future<List<FlightCase>> getLoadListOnce() {
+    try {
+      return Firestore.instance
+          .collection('loads')
+          .document(uidLoad)
+          .get()
+          .then((data) async {
+        List loadListOfMaps = data['loadList'];
+
+        List<FlightCase> loadList = loadListOfMaps
+            .map((element) => FlightCase(
+                  index: element['index'],
+                  nameFlightCase: element['name'],
+                  quantity: element['quantity'],
+                  typeFlightCase: element['type'],
+                  loaded: element['loaded'],
+                  stack: element['stack'],
+                  wheels: element['wheels'],
+                  tilt: element['tilt'],
+                  color: element['color'],
+                  //TODO: add category: snapshot.data['category'],
+                ))
+            .toList();
+
+        return loadList;
+      });
+    } catch (e) {
+      return null;
+    }
+  }
+
+  ///List of FlightCases Created
+
+  Future<void> updateNewLoadListDataPRUEBA({
+    Map<String, List<FlightCase>> mapOfFlightCasesOnList,
+    List<BlocRow> listBlocRow,
+    Map<String, dynamic> idAndBlockRow,
+    int flightCasesLoaded,
+    String loadName,
+  }) async {
+    int totalFlightCases = 0;
+    Map testMap = {};
+
+    flightCasesToMap(FlightCase flightCaseForMap) {
+      return {
+        'index': flightCaseForMap.index,
+        'name': flightCaseForMap.nameFlightCase,
+        'quantity': flightCaseForMap.quantity,
+        'type': flightCaseForMap.typeFlightCase,
+        'loaded': flightCaseForMap.loaded,
+        'stack': flightCaseForMap.stack,
+        'wheels': flightCaseForMap.wheels,
+        'tilt': flightCaseForMap.tilt,
+        'color': flightCaseForMap.color
+        //TODO: add 'category': flightCaseForMap.category,
+      };
+    }
+
+    blocRowToMap(BlocRow blocRowForMap) {
+      return {
+        'index': idAndBlockRow[blocRowForMap.id],
+        'loaded': blocRowForMap.loaded,
+        'id': blocRowForMap.id,
+        'isCrica': blocRowForMap.isCrica,
+        // 'stream': blocRowForMap.stream,
+        'flightCaseList':
+            blocRowForMap.flightCaseList.map(flightCasesToMap).toList(),
+      };
+    }
+
+    mapOfFlightCasesOnList.forEach((key, value) {
+      totalFlightCases += value.length;
+      testMap[key] = value.map(flightCasesToMap).toList();
+    });
+
+    // Map test = listBlocRow.map(blocRowToMap).toList();
+
+    // print(totalFlightCases);
+    // print(mapOfFlightCasesOnList);
+
+    await Firestore.instance.collection('loads').document(uidLoad).updateData({
+      'totalCases': totalFlightCases,
+      'loadedCases': flightCasesLoaded,
+      'loadList': listBlocRow.map(blocRowToMap).toList(),
+      'idAndBlocRow': idAndBlockRow,
+    });
+  }
+
+  // Get Loaded Cases and Total Cases
+  Future<List<int>> getTotalAndLoadedCasesPRUEBA() {
     return Firestore.instance
         .collection('loads')
         .document(uidLoad)
         .get()
         .then((data) async {
-      List loadListOfMaps = data['loadList'];
+      int loadedCases = data['loadedCases'];
+      int totalCases = data['totalCases'];
 
-      List<FlightCase> loadList = loadListOfMaps
-          .map((element) => FlightCase(
-                index: element['index'],
-                nameFlightCase: element['name'],
-                quantity: element['quantity'],
-                typeFlightCase: element['type'],
-                loaded: element['loaded'],
-                stack: element['stack'],
-                wheels: element['wheels'],
-                tilt: element['tilt'],
-                color: element['color'],
-                //TODO: add category: snapshot.data['category'],
-              ))
-          .toList();
+      return [loadedCases, totalCases];
+    });
+  }
 
-      return loadList;
+  ///Load List Data Fetch Once
+
+  Future<List<BlocRow>> getLoadListOncePRUEBA() {
+    return Firestore.instance
+        .collection('loads')
+        .document(uidLoad)
+        .get()
+        .then((data) async {
+      List loadListOfBlocRows = data['loadList'];
+      idAndBlocRow = data['idAndBlocRow'];
+      int loadedCases = data['loadedcases'];
+      int totalCases = data['totalCases'];
+
+      // Fetch Load List
+      test(List<dynamic> list) {
+        List<FlightCase> flightCaseList = list
+            .map((element) => FlightCase(
+                  index: element['index'],
+                  nameFlightCase: element['name'],
+                  quantity: element['quantity'],
+                  typeFlightCase: element['type'],
+                  loaded: element['loaded'],
+                  stack: element['stack'],
+                  wheels: element['wheels'],
+                  tilt: element['tilt'],
+                  color: element['color'],
+                  //TODO: add category: snapshot.data['category'],
+                ))
+            .toList();
+        return flightCaseList;
+      }
+
+      // Fetch Bloc Row List
+
+      if (idAndBlocRow != null) {
+        List<BlocRow> loadBlocRowList = loadListOfBlocRows.map((element) {
+          // totalFlightCaseLists[element['id']] = test(element['flightCaseList']);
+
+          return BlocRow(
+            index: element['index'],
+            id: element['id'],
+            loaded: element['loaded'],
+            isCrica: element['isCrica'],
+            isLoadPage: false,
+            flightCaseList: test(element['flightCaseList']),
+          );
+        }).toList();
+
+        return loadBlocRowList;
+      } else {
+        List<BlocRow> loadBlocRowList = [
+          BlocRow(
+            isCrica: false,
+            isLoadPage: false,
+            flightCaseList: test(data['loadList']),
+            id: '01234',
+            index: 1,
+          )
+        ];
+
+        return loadBlocRowList;
+      }
     });
   }
 
@@ -883,7 +1170,7 @@ await Firestore.instance
         .map(_loadsList);
   }
 
-  // delete load member
+  // delete load
   void deleteLoad() async {
     CollectionReference loadCollection = Firestore.instance.collection('loads');
 

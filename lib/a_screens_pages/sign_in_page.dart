@@ -12,7 +12,6 @@ import 'package:qbk_simple_app/ab_created_widgets/text_field-widget.dart';
 import 'package:qbk_simple_app/ab_created_widgets/a_buttons/selection_button_widget.dart';
 import 'package:qbk_simple_app/services/auth.dart';
 
-//TODO: error when writes with keyboard of the computer on the phone
 
 ///Documentated
 
@@ -97,7 +96,7 @@ class _SignInPageState extends State<SignInPage> {
                                 ],
                               ),
                               SizedBox(
-                                height: 68.0,
+                                height: displayHeight(context) * 0.1,
                               ),
                               //TODO: make that if there's a space after the mail the app ignores it
                               TextFieldQBK(
@@ -109,9 +108,7 @@ class _SignInPageState extends State<SignInPage> {
                                   email = value;
                                 },
                               ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
+                              
                               TextFieldQBK(
                                 //TODO: change the validatos so it shows 'incorrect email or password' when the password is wrong
                                 validator: (value) =>
@@ -144,7 +141,7 @@ class _SignInPageState extends State<SignInPage> {
                                             key: _formKeyResetPassword,
                                             child: Container(
                                               height:
-                                                  displayHeight(context) * 0.6,
+                                                  displayHeight(context) * 0.5,
                                               width:
                                                   displayWidth(context) * 0.7,
                                               child: Column(
@@ -189,7 +186,7 @@ class _SignInPageState extends State<SignInPage> {
                                                   ),
                                                   SelectionButton(
                                                       text: 'Send email',
-                                                      color: Colors.green,
+                                                      color: kyellowQBK,
                                                       height: displayHeight(
                                                               context) *
                                                           0.1,
@@ -219,9 +216,9 @@ class _SignInPageState extends State<SignInPage> {
                                 height: 10.0,
                               ),
                               SelectionButton(
-                                  text: 'Sign In',
+                                  text: 'SIGN IN',
                                   width: displayWidth(context) * 0.85,
-                                  color: Colors.green,
+                                  color: kyellowQBK,
                                   onPress: () async {
                                     await checkConnectivityToInternet();
 

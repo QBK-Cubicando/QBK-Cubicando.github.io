@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_cases.dart';
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_friends.dart';
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_gigs.dart';
-import 'package:qbk_simple_app/a_screens_pages/load_screen.dart';
+import 'package:qbk_simple_app/a_screens_pages/load_page.dart';
 import 'package:flutter/services.dart';
 
 import 'package:qbk_simple_app/models/user.dart';
@@ -22,13 +22,6 @@ import 'package:qbk_simple_app/a_screens_pages/a_new_gig_pages/new_gig_page.dart
 import 'a_screens_pages/registration_information_page.dart';
 import 'services/wrapper_widget.dart';
 
-import 'dart:async';
-import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-
 ///Read but not Documentated
 void main() => runApp(QBKApp());
 
@@ -42,6 +35,7 @@ class QBKApp extends StatelessWidget {
     return StreamProvider<UserData>.value(
       value: AuthService().user,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
             scaffoldBackgroundColor: Colors.black, fontFamily: 'BioRhyme'),
         initialRoute: WrapperQBK.id,

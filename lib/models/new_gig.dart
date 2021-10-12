@@ -20,6 +20,8 @@ class NewGig {
   final DateTime endDate;
   final String location;
   final String notes;
+  final String color;
+  final int crew;
 
   NewGig(
       {this.uidGig,
@@ -27,7 +29,9 @@ class NewGig {
       this.startDate,
       this.endDate,
       this.location,
-      this.notes});
+      this.notes,
+      this.color,
+      this.crew});
 }
 
 class NewGigTile extends StatelessWidget {
@@ -38,11 +42,30 @@ class NewGigTile extends StatelessWidget {
   /// JUST FOR COPY LOAD SCREEN
   final String uidThisGig;
 
+  Color _gigColor() {
+    if (gig.color == 'red') {
+      return kredQBK;
+    } else if (gig.color == 'blue') {
+      return kblueQBK;
+    } else if (gig.color == 'green') {
+      return kgreenQBK;
+    } else if (gig.color == 'purple') {
+      return kpurpleQBK;
+    } else if (gig.color == 'orange') {
+      return Colors.orangeAccent.shade200;
+    } else {
+      return Colors.grey.shade50;
+    }
+  }
+
   NewGigTile({this.gig, this.isCopyPage, this.uidThisGig, this.pending});
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserData>(context);
+
+    String startDate = DateFormat('dd-MM-yyyy').format(gig.startDate);
+    String endDate = DateFormat('dd-MM-yyyy').format(gig.endDate);
 
     return Padding(
       padding: EdgeInsets.only(top: 8.0),
@@ -50,62 +73,65 @@ class NewGigTile extends StatelessWidget {
         margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0.0),
 
         child: isCopyPage == false
-            ? ListTile(
+            ? GestureDetector(
                 onLongPress: () {
-                  if(!pending){
+                  if (!pending) {
                     showDialog(
-                      context: context,
-                      builder: (context) {
-                        return EditGigPopup(
-                          uidGig: gig.uidGig,
-                          nameGig: gig.nameGig,
-                          startDate: gig.startDate,
-                          endDate: gig.endDate,
-                          location: gig.location,
-                          notes: gig.notes ?? '',
-                        );
-                      });}
+                        context: context,
+                        builder: (context) {
+                          return EditGigPopup(
+                            uidGig: gig.uidGig,
+                            nameGig: gig.nameGig,
+                            startDate: gig.startDate,
+                            endDate: gig.endDate,
+                            location: gig.location,
+                            notes: gig.notes ?? '',
+                            color: gig.color,
+                            crew: gig.crew,
+                          );
+                        });
+                  }
                 },
-                onTap: (){
-
-                  if(pending){
-                    showDialog(context: context,
-                      builder: (context){
-                        return Container(
-                        height: displayHeight(context) * 0.6,
-                        width: displayWidth(context) * 0.8,
-                        child: AlertDialog(
-                          title: Center(
-                              child: Text(
-                            'Do you accept this Gig?',
-                            style: kTextStyle(context).copyWith(
-                                color: Colors.black,
-                                fontSize: displayWidth(context) * 0.05),
-                          )),
-                          actions: <Widget>[
-                            SelectionButton(
-                              text: 'No',
-                              color: Colors.redAccent,
-                              onPress: () async {
-                                await DatabaseService(
-                                      userUid: user.uid,
-                                      uidGig: gig.uidGig,
-                                      uidCrewGig: user.uid,
-                                      crewMemberData: user.uid,
-                                      isCrewPage: true)
-                                  .gigDeleteCrewMember();
-                                Navigator.pop(context);
-                              },
-                            ),
-                            SelectionButton(
-                              text: 'Yes',
-                              color: Colors.greenAccent,
-                              onPress: () async {
-                                ///Accepting Gig
+                onTap: () {
+                  if (pending) {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Container(
+                            height: displayHeight(context) * 0.6,
+                            width: displayWidth(context) * 0.8,
+                            child: AlertDialog(
+                              title: Center(
+                                  child: Text(
+                                'Do you accept this Gig?',
+                                style: kTextStyle(context).copyWith(
+                                    color: Colors.black,
+                                    fontSize: displayWidth(context) * 0.05),
+                              )),
+                              actions: <Widget>[
+                                SelectionButton(
+                                  text: 'No',
+                                  color: Colors.redAccent,
+                                  onPress: () async {
+                                    await DatabaseService(
+                                            userUid: user.uid,
+                                            uidGig: gig.uidGig,
+                                            uidCrewGig: user.uid,
+                                            crewMemberData: user.uid,
+                                            isCrewPage: true)
+                                        .gigDeleteCrewMember();
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                SelectionButton(
+                                  text: 'Yes',
+                                  color: Colors.greenAccent,
+                                  onPress: () async {
+                                    ///Accepting Gig
                                     await Firestore.instance
-                                    .collection('gigs')
-                                    .document(gig.uidGig)
-                                    .updateData({
+                                        .collection('gigs')
+                                        .document(gig.uidGig)
+                                        .updateData({
                                       '${user.uid}': true,
                                     });
 
@@ -113,58 +139,154 @@ class NewGigTile extends StatelessWidget {
                                     await DatabaseService(
                                       userUid: user.uid,
                                     ).setCalendarGigData(
+                                        uidGig: gig.uidGig,
+                                        nameGig: gig.nameGig,
+                                        startDate: gig.startDate,
+                                        endDate: gig.endDate,
+                                        location: gig.location,
+                                        color: gig.color,
+                                        crew: gig.crew);
+
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        });
+                  }
+                },
+                child: Column(
+                  children: [
+                    Container(
+                      height: displayHeight(context) * 0.12,
+                      child: Row(
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child: Container(
+                                width: 13,
+                                height: 13,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle, color: _gigColor()),
+                              )),
+                          Expanded(
+                            flex: 4,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  child: Text(
+                                    gig.nameGig,
+                                    style: kTextStyle(context)
+                                        .copyWith(color: Colors.black),
+                                  ),
+                                ),
+                                gig.startDate == gig.endDate
+                                    ? Container(child: Text(startDate))
+                                    : Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                              child:
+                                                  Text('From: ${startDate}')),
+                                          Container(
+                                              child: Text('To: ${endDate}'))
+                                        ],
+                                      ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                              flex: 3,
+                              child: Column(
+                                // crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: displayWidth(context) * 0.25,
+                                    margin: EdgeInsets.symmetric(
+                                        vertical: 3.0, horizontal: 10.0),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 3.0, horizontal: 10.0),
+                                    child: Center(
+                                      child: Text(
+                                        gig.location,
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    ),
+                                    decoration: BoxDecoration(
+                                        color: _gigColor(),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.person),
+                                      Container(
+                                          child: Text('${gig.crew} CREW')),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                        ],
+                      ),
+                    ),
+                    pending
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SelectionButton(
+                                width: displayWidth(context) * 0.43,
+                                height: displayHeight(context) * 0.07,
+                                text: 'Discard',
+                                color: Colors.redAccent,
+                                onPress: () async {
+                                  await DatabaseService(
+                                          userUid: user.uid,
+                                          uidGig: gig.uidGig,
+                                          uidCrewGig: user.uid,
+                                          crewMemberData: user.uid,
+                                          isCrewPage: true)
+                                      .gigDeleteCrewMember();
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              SizedBox(
+                                width: displayWidth(context) * 0.02,
+                              ),
+                              SelectionButton(
+                                width: displayWidth(context) * 0.43,
+                                height: displayHeight(context) * 0.07,
+                                text: 'Accept',
+                                color: Colors.greenAccent,
+                                onPress: () async {
+                                  ///Accepting Gig
+                                  await Firestore.instance
+                                      .collection('gigs')
+                                      .document(gig.uidGig)
+                                      .updateData({
+                                    '${user.uid}': true,
+                                  });
+
+                                  ///Set the CalendarGig info to firebase
+                                  await DatabaseService(
+                                    userUid: user.uid,
+                                  ).setCalendarGigData(
                                       uidGig: gig.uidGig,
                                       nameGig: gig.nameGig,
                                       startDate: gig.startDate,
-                                      endDate: gig.endDate,     
-                                    );
-                                    Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                      });}
-
-                },
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      gig.nameGig.length > 10
-                          ? gig.nameGig.substring(0, 10)
-                          : gig.nameGig,
-                      style: kTextStyle(context).copyWith(color: Colors.black),
-                    ),
-                    Text(
-                      gig.location.length > 10
-                          ? gig.location.substring(0, 9)
-                          : gig.location,
-                      style: kTextStyle(context).copyWith(color: Colors.black),
-                    ),
+                                      endDate: gig.endDate,
+                                      location: gig.location);
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          )
+                        : Container()
                   ],
                 ),
-                subtitle: gig.startDate == gig.endDate
-                    ? Text(
-                        DateFormat('yyyy-MM-dd').format(gig.startDate),
-                        style: kTextStyle(context)
-                            .copyWith(color: Colors.black), //Todo:Reducir Font
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            DateFormat('yyyy-MM-dd').format(gig.startDate),
-                            style: kTextStyle(context).copyWith(
-                                color: Colors.black), //Todo:Reducir Font
-                          ),
-                          Text(
-                            DateFormat('yyyy-MM-dd').format(gig.endDate),
-                            style: kTextStyle(context).copyWith(
-                                color: Colors.black), //Todo:Reducir Font
-                          )
-                        ],
-                      ),
               )
             :
 
@@ -192,29 +314,28 @@ class NewGigTile extends StatelessWidget {
                     ),
                     Text(
                       gig.location,
-                      style: kTextStyle(context)
-                          .copyWith(color: Colors.black), //Todo:Reducir Font
+                      style: kTextStyle(context).copyWith(color: Colors.black),
                     ),
                   ],
                 ),
                 subtitle: gig.startDate == gig.endDate
                     ? Text(
                         DateFormat('yyyy-MM-dd').format(gig.startDate),
-                        style: kTextStyle(context)
-                            .copyWith(color: Colors.black), //Todo:Reducir Font
+                        style:
+                            kTextStyle(context).copyWith(color: Colors.black),
                       )
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text(
                             DateFormat('yyyy-MM-dd').format(gig.startDate),
-                            style: kTextStyle(context).copyWith(
-                                color: Colors.black), //Todo:Reducir Font
+                            style: kTextStyle(context)
+                                .copyWith(color: Colors.black),
                           ),
                           Text(
                             DateFormat('yyyy-MM-dd').format(gig.endDate),
-                            style: kTextStyle(context).copyWith(
-                                color: Colors.black), //Todo:Reducir Font
+                            style: kTextStyle(context)
+                                .copyWith(color: Colors.black),
                           )
                         ],
                       ),

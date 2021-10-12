@@ -15,6 +15,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/121109191/firebase_core_web.iml" filepath="$PROJECT_DIR$/.idea/modules/121109191/firebase_core_web.iml" group="android/firebase_core_web" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/1227960687/firebase_database.iml" filepath="$PROJECT_DIR$/.idea/modules/1227960687/firebase_database.iml" group="android/firebase_database" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1418391481/firebase_messaging.iml" filepath="$PROJECT_DIR$/.idea/modules/-1418391481/firebase_messaging.iml" group="android/firebase_messaging" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1954331951/google_sign_in.iml" filepath="$PROJECT_DIR$/.idea/modules/1954331951/google_sign_in.iml" group="android/google_sign_in" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1608473597/google_sign_in_web.iml" filepath="$PROJECT_DIR$/.idea/modules/1608473597/google_sign_in_web.iml" group="android/google_sign_in_web" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/966065349/share.iml" filepath="$PROJECT_DIR$/.idea/modules/966065349/share.iml" group="android/share" />
     </modules>
   </component>
 </project>

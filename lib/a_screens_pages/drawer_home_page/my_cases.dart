@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:qbk_simple_app/ab_created_widgets/top_qbk.dart';
 import 'package:qbk_simple_app/models/flight_case.dart';
 import 'package:qbk_simple_app/services/database.dart';
 
@@ -10,8 +11,6 @@ import 'package:qbk_simple_app/models/user.dart';
 import 'package:qbk_simple_app/ui/sizes-helpers.dart';
 import 'package:qbk_simple_app/utilities/loading_widget.dart';
 import 'package:qbk_simple_app/utilities/constants.dart';
-
-//TODO: When you edit a case this page should refresh and show the new date
 
 ///READ but not Documentated
 class MyCases extends StatefulWidget {
@@ -33,11 +32,10 @@ class _MyCasesState extends State<MyCases> {
           }
 
           if (snapshot.hasData) {
-            return UpperBar(
-                text: 'My Cases',
-                onBackGoTo: QBKHomePage(),
-                body: snapshot.data.length != 0
-                    ? Center(
+            return SafeArea(
+              child: Scaffold(
+                  body: snapshot.data.length != 0
+                      ? Center(
                         child: Container(
                           width: displayWidth(context),
                           child: OwnCaseTileList(
@@ -45,22 +43,20 @@ class _MyCasesState extends State<MyCases> {
                           ),
                         ),
                       )
-                    : UpperBar(
-                        text: 'My Gigs',
-                        onBackGoTo: QBKHomePage(),
-                        body: Column(
+                      : Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Center(
                               child: Container(
                                 child: Text(
-                                  'No Gigs created yet !',
+                                  'No Cases created yet !',
                                   style: kTextStyle(context),
                                 ),
                               ),
                             ),
                           ],
-                        )));
+                          )),
+            );
           } else {
             return Center(child: Loading());
           }

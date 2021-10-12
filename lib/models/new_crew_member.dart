@@ -30,14 +30,22 @@ class NewFriend {
 }
 
 class NewCrewMember {
-  //TODO: get the email or uid so you can delete with no error
   final String uidCrewMember;
   final String nameCrew;
   final String permission;
+  final String city;
+  final String speciality;
+  final NewFriend crew;
   final int index; //TODO: erase index
 
   NewCrewMember(
-      {this.uidCrewMember, this.nameCrew, this.permission, this.index});
+      {this.uidCrewMember,
+      this.nameCrew,
+      this.permission,
+      this.index,
+      this.city,
+      this.speciality,
+      this.crew});
 }
 
 class NewCrewMemberOnList extends StatelessWidget {
@@ -56,11 +64,11 @@ class NewCrewMemberOnList extends StatelessWidget {
 
   Color _colorCrewMember(String permission) {
     if (permission == 'Admin') {
-      return Colors.green;
+      return kgreenQBK;
     } else if (permission == 'Just Read') {
-      return Colors.redAccent;
+      return kredQBK;
     } else if (permission == 'Loader') {
-      return Colors.orangeAccent;
+      return kyellowQBK;
     } else {
       return Colors.grey;
     }
@@ -79,6 +87,10 @@ class NewCrewMemberOnList extends StatelessWidget {
     }
 
     return Container(
+      margin: EdgeInsets.symmetric(vertical: 4),
+      color: Colors.grey.shade200,
+      width: double.infinity,
+      height: displayHeight(context) * 0.11,
       child: GestureDetector(
         onLongPress: () {
           if (userPermission == 'Admin') {
@@ -133,25 +145,48 @@ class NewCrewMemberOnList extends StatelessWidget {
             ));
           }
         },
-        child: Column(
-          children: <Widget>[
-            Icon(
-              Icons.accessibility_new,
-              size: 40.0,
-            ),
-            Container(
-              color: _colorCrewMember(newCrewMember.permission),
-              //TODO: Give a font and size
-              child: Center(
-                child: Text(
-                  newCrewMember.nameCrew.length > 5
-                      ? newCrewMember.nameCrew.substring(0, 5)
-                      : newCrewMember.nameCrew,
-                  style: TextStyle(fontSize: 18),
+        child: Center(
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                flex: 1,
+                child: Center(
+                  child: Icon(
+                    Icons.person,
+                    size: 30.0,
+                    color: _colorCrewMember(newCrewMember.permission),
+                  ),
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                flex: 4,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          newCrewMember.nameCrew,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                    Text(newCrewMember.speciality)
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Center(
+                  child: Text(
+                    newCrewMember.permission,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -189,14 +224,10 @@ class _CrewMembersListState extends State<CrewMembersList> {
             if (snapshot.hasData) {
               List<NewCrewMember> crewMember = snapshot.data;
 
-              return GridView.builder(
+              return ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
                   itemCount: crewMember.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    crossAxisSpacing: 4,
-                  ),
                   itemBuilder: (context, index) {
                     return NewCrewMemberOnList(
                       newCrewMember: crewMember[index],
@@ -233,6 +264,8 @@ class FriendList extends StatefulWidget {
   final bool isLoader;
   final bool pending;
   final bool waitingFriendsAnswer;
+  final int lengthCrew;
+  final List<String> listCrew;
 
   FriendList(
       {this.isCrewPage,
@@ -244,7 +277,9 @@ class FriendList extends StatefulWidget {
       this.indexOfCrew,
       this.isLoader,
       this.pending,
-      this.waitingFriendsAnswer});
+      this.waitingFriendsAnswer,
+      this.lengthCrew,
+      this.listCrew});
 
   @override
   _FriendListState createState() => _FriendListState();
@@ -288,6 +323,8 @@ class _FriendListState extends State<FriendList> {
                   isLoader: widget.isLoader,
                   pending: widget.pending,
                   waitingFriendsAnswer: widget.waitingFriendsAnswer,
+                  lengthCrew: widget.lengthCrew,
+                  listCrew: widget.listCrew,
                 );
               },
             );
@@ -310,6 +347,8 @@ class NewFriendTile extends StatelessWidget {
   final bool isLoader;
   final bool pending;
   final bool waitingFriendsAnswer;
+  final int lengthCrew;
+  final List<String> listCrew;
 
   NewFriendTile(
       {this.friend,
@@ -321,7 +360,9 @@ class NewFriendTile extends StatelessWidget {
       this.indexOfCrew,
       this.isLoader,
       this.pending,
-      this.waitingFriendsAnswer});
+      this.waitingFriendsAnswer,
+      this.lengthCrew,
+      this.listCrew});
 
   @override
   Widget build(BuildContext context) {
@@ -349,219 +390,257 @@ class NewFriendTile extends StatelessWidget {
       child: Card(
         margin: EdgeInsets.fromLTRB(20.0, 6.0, 20.0, 0.0),
 
-        child: ListTile(
-            onLongPress: () {
-              if (!isCrewPage && !pending) {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Container(
-                        height: displayHeight(context) * 0.6,
-                        width: displayWidth(context) * 0.8,
-                        child: AlertDialog(
-                          title: Center(
-                              child: Text(
-                            'Are you sure you want to delete ${friend.name}?',
-                            style: kTextStyle(context).copyWith(
-                                color: Colors.black,
-                                fontSize: displayWidth(context) * 0.05),
-                          )),
-                          actions: <Widget>[
-                            SelectionButton(
-                              text: 'Cancel',
-                              color: Colors.blueAccent,
-                              onPress: () => Navigator.pop(context),
-                            ),
-                            SelectionButton(
-                              text: 'Delete',
-                              color: Colors.redAccent,
-                              onPress: () {
-                                Navigator.pop(context);
-                                _deleteFriend(false);
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    });
-              }
-              if (!isCrewPage && pending) {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Container(
-                        height: displayHeight(context) * 0.6,
-                        width: displayWidth(context) * 0.8,
-                        child: AlertDialog(
-                          title: Center(
-                              child: Text(
-                            'Are you sure you want to delete this request?',
-                            style: kTextStyle(context).copyWith(
-                                color: Colors.black,
-                                fontSize: displayWidth(context) * 0.05),
-                          )),
-                          actions: <Widget>[
-                            SelectionButton(
-                              text: 'Cancel',
-                              color: Colors.blueAccent,
-                              onPress: () => Navigator.pop(context),
-                            ),
-                            SelectionButton(
-                              text: 'Delete',
-                              color: Colors.redAccent,
-                              onPress: () async {
-                                ///Delete pending for you
-                                    await Firestore.instance
-                                        .collection('users')
-                                        .document(userUid)
-                                        .collection('pending')
-                                        .document(friend.uid)
-                                        .delete();
+        child: GestureDetector(
+          onLongPress: () {
+            if (!isCrewPage && !pending) {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Container(
+                      height: displayHeight(context) * 0.6,
+                      width: displayWidth(context) * 0.8,
+                      child: AlertDialog(
+                        title: Center(
+                            child: Text(
+                          'Are you sure you want to delete ${friend.name}?',
+                          style: kTextStyle(context).copyWith(
+                              color: Colors.black,
+                              fontSize: displayWidth(context) * 0.05),
+                        )),
+                        actions: <Widget>[
+                          SelectionButton(
+                            text: 'Cancel',
+                            color: Colors.blueAccent,
+                            onPress: () => Navigator.pop(context),
+                          ),
+                          SelectionButton(
+                            text: 'Delete',
+                            color: Colors.redAccent,
+                            onPress: () {
+                              Navigator.pop(context);
+                              _deleteFriend(false);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  });
+            }
+            if (!isCrewPage && pending) {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Container(
+                      height: displayHeight(context) * 0.6,
+                      width: displayWidth(context) * 0.8,
+                      child: AlertDialog(
+                        title: Center(
+                            child: Text(
+                          'Are you sure you want to delete this request?',
+                          style: kTextStyle(context).copyWith(
+                              color: Colors.black,
+                              fontSize: displayWidth(context) * 0.05),
+                        )),
+                        actions: <Widget>[
+                          SelectionButton(
+                            text: 'Cancel',
+                            color: Colors.blueAccent,
+                            onPress: () => Navigator.pop(context),
+                          ),
+                          SelectionButton(
+                            text: 'Delete',
+                            color: Colors.redAccent,
+                            onPress: () async {
+                              ///Delete pending for you
+                              await Firestore.instance
+                                  .collection('users')
+                                  .document(userUid)
+                                  .collection('pending')
+                                  .document(friend.uid)
+                                  .delete();
 
-                                    ///Delete pending for your friend
-                                    await Firestore.instance
-                                        .collection('users')
-                                        .document(friend.uid)
-                                        .collection('pending')
-                                        .document(userUid)
-                                        .delete();
-                                    Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    });
+                              ///Delete pending for your friend
+                              await Firestore.instance
+                                  .collection('users')
+                                  .document(friend.uid)
+                                  .collection('pending')
+                                  .document(userUid)
+                                  .delete();
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  });
+            }
+          },
+          onTap: () async {
+            try {
+              if (isLoader == true && permission == 'Loader') {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  duration: Duration(seconds: 3),
+                  content: Text(
+                    'Just one Loader allowed',
+                    style: kTextStyle(context)
+                        .copyWith(color: Colors.redAccent.shade100),
+                  ),
+                ));
               }
-            },
-            onTap: () async {
-              try {
-                if (isLoader == true && permission == 'Loader') {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    duration: Duration(seconds: 3),
-                    content: Text(
-                      'Just one Loader allowed',
-                      style: kTextStyle(context)
-                          .copyWith(color: Colors.redAccent.shade100),
-                    ),
-                  ));
-                }
-                if (isCrewPage) {
-                  await DatabaseService(
-                    userUid: userUid,
-                    uidGig: uidGig,
-                    uidCrewGig: friend.uid,
-                    crewMemberData: friend.uid,
-                    isCrewPage: true,
-                  ).gigSetCrewData(
-                    nameCrew: friend.name,
-                    permission: isLoader == true && permission == 'Loader'
-                        ? 'Just Read'
-                        : permission,
-                    index: indexOfCrew,
-                  );
-                  DatabaseService(uidGig: uidGig).checkForIsLoader();
-                  Navigator.pop(context, friend);
-                } else {
-                  if (searchingFriends == true) {
-                    if (userUid != friend.uid) {
-                      DatabaseService(
-                              userUid: userUid,
-                              isCrewPage: false,
-                              crewMemberData: friend.uid,
-                              pending: true,
-                              waitingFriendsAnswer: true)
-                          .gigSetCrewData(
-                        nameCrew: friend.name,
-                        speciality: friend.speciality,
-                        city: friend.city,
-                      );
-                    }
-                    Navigator.pop(context);
+              if (isCrewPage) {
+                await DatabaseService(
+                  userUid: userUid,
+                  uidGig: uidGig,
+                  uidCrewGig: friend.uid,
+                  crewMemberData: friend.uid,
+                  isCrewPage: true,
+                ).gigSetCrewData(
+                  nameCrew: friend.name,
+                  permission: isLoader == true && permission == 'Loader'
+                      ? 'Just Read'
+                      : permission,
+                  speciality: friend.speciality,
+                  city: friend.city,
+                  index: indexOfCrew,
+                );
+                DatabaseService(uidGig: uidGig).checkForIsLoader();
+                DatabaseService(uidGig: uidGig).updateCrewNumberGig(
+                    crew: listCrew.contains(friend.uid)
+                        ? lengthCrew
+                        : lengthCrew + 1,
+                    user: userUid);
+                Navigator.pop(context, friend);
+              } else {
+                if (searchingFriends == true) {
+                  if (userUid != friend.uid) {
+                    DatabaseService(
+                            userUid: userUid,
+                            isCrewPage: false,
+                            crewMemberData: friend.uid,
+                            pending: true,
+                            waitingFriendsAnswer: true)
+                        .gigSetCrewData(
+                      nameCrew: friend.name,
+                      speciality: friend.speciality,
+                      city: friend.city,
+                    );
                   }
-                  if (pending && !waitingFriendsAnswer) {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return Container(
-                            height: displayHeight(context) * 0.6,
-                            width: displayWidth(context) * 0.8,
-                            child: AlertDialog(
-                              title: Center(
-                                  child: Text(
-                                'Accept ${friend.name} friend request?',
-                                style: kTextStyle(context).copyWith(
-                                    color: Colors.black,
-                                    fontSize: displayWidth(context) * 0.05),
-                              )),
-                              actions: <Widget>[
-                                SelectionButton(
-                                  text: 'No',
-                                  color: Colors.redAccent,
-                                  onPress: () async {
-                                    ///Delete pending for you
-                                    await Firestore.instance
-                                        .collection('users')
-                                        .document(userUid)
-                                        .collection('pending')
-                                        .document(friend.uid)
-                                        .delete();
-
-                                    ///Delete pending for your friend
-                                    await Firestore.instance
-                                        .collection('users')
-                                        .document(friend.uid)
-                                        .collection('pending')
-                                        .document(userUid)
-                                        .delete();
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                SelectionButton(
-                                  text: 'Yes',
-                                  color: Colors.greenAccent,
-                                  onPress: () async {
-                                    DatabaseService(
-                                            userUid: userUid,
-                                            crewMemberData: friend.uid)
-                                        .gigAddFriend(
-                                      name: friend.name,
-                                      city: friend.city,
-                                      speciality: friend.speciality,
-                                    );
-
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        });
-                  }
+                  Navigator.pop(context);
                 }
-              } catch (e) {
-                print(e);
+                if (pending && !waitingFriendsAnswer) {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Container(
+                          height: displayHeight(context) * 0.6,
+                          width: displayWidth(context) * 0.8,
+                          child: AlertDialog(
+                            title: Center(
+                                child: Text(
+                              'Accept ${friend.name} friend request?',
+                              style: kTextStyle(context).copyWith(
+                                  color: Colors.black,
+                                  fontSize: displayWidth(context) * 0.05),
+                            )),
+                            actions: <Widget>[
+                              SelectionButton(
+                                text: 'No',
+                                color: Colors.redAccent,
+                                onPress: () async {
+                                  ///Delete pending for you
+                                  await Firestore.instance
+                                      .collection('users')
+                                      .document(userUid)
+                                      .collection('pending')
+                                      .document(friend.uid)
+                                      .delete();
+
+                                  ///Delete pending for your friend
+                                  await Firestore.instance
+                                      .collection('users')
+                                      .document(friend.uid)
+                                      .collection('pending')
+                                      .document(userUid)
+                                      .delete();
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              SelectionButton(
+                                text: 'Yes',
+                                color: Colors.greenAccent,
+                                onPress: () async {
+                                  DatabaseService(
+                                          userUid: userUid,
+                                          crewMemberData: friend.uid)
+                                      .gigAddFriend(
+                                    name: friend.name,
+                                    city: friend.city,
+                                    speciality: friend.speciality,
+                                  );
+
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      });
+                }
               }
-            },
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            } catch (e) {
+              print(e);
+            }
+          },
+          child: Container(
+            height: displayHeight(context) * 0.11,
+            child: Row(
               children: <Widget>[
-                Text(
-                  friend.name,
-                  style: kTextStyle(context).copyWith(color: Colors.black),
+                Expanded(
+                  flex: 1,
+                  child: Center(
+                    child: Icon(
+                      Icons.person,
+                      size: 30.0,
+                      color: Colors.grey.shade500,
+                    ),
+                  ),
                 ),
-                Text(
-                  friend.speciality,
-                  style: kTextStyle(context)
-                      .copyWith(color: Colors.black), //Todo:Reducir Font
+                Expanded(
+                  flex: 4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            friend.name,
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        friend.speciality,
+                        style: TextStyle(fontSize: 15),
+                      )
+                    ],
+                  ),
                 ),
+                Expanded(
+                  flex: 2,
+                  child: Center(
+                    child: Text(
+                      friend.city,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                    ),
+                  ),
+                )
               ],
             ),
-            subtitle: Text(
-              friend.city,
-              style: kTextStyle(context)
-                  .copyWith(color: Colors.black), //Todo:Reducir Font
-            )),
+          ),
+        ),
 
         /// NewGigTile for Copy
       ),

@@ -26,17 +26,38 @@ exports.senddevices = functions.firestore
         return fcm.sendToDevice(token, payload);
     });
 
+// exports.addFriend = functions.firestore
+//     .document("users/{id}/friends/{friendUid}")
+//     .onCreate((snapshot) => {
+//         const name = snapshot.get("name");
+//         const subject = snapshot.get("subject");
+//         const token = snapshot.get("token");
+
+//         const payload = {
+//             notification: {
+//                 title: "from " + name,
+//                 body: "subject " + subject,
+//                 sound: "default",
+//             },
+//         };
+
+//         return fcm.sendToDevice(token, payload);
+//     });
+
 exports.addFriend = functions.firestore
-    .document("users/{id}/friends/{friendUid}")
+    .document("users/{id}/pending/{id}")
     .onCreate((snapshot) => {
         const name = snapshot.get("name");
-        const subject = snapshot.get("subject");
-        const token = snapshot.get("token");
+        const city = snapshot.get("city");
+        const speciality = snapshot.get("speciality");
+        const friendUid = snapshot.get("friendUid");
+        const userUid = snapshot.get("userUid");
+        const token = 'cmHALJEg840:APA91bF6hS0zElPjN3Iema_2OBTxRTlBruTXa4Gy_hXUUj_K1tkvQonFfMr1QRTSXNo6VqBGf5N6WDO7ubyMNLCUckzBQC4E_kAl3_xYzGDMip7JhK10i4wDEdjMuOgtf04SxZKr17rW';
 
         const payload = {
             notification: {
                 title: "from " + name,
-                body: "subject " + subject,
+                body: "subject " + city + speciality + userUid + friendUid,
                 sound: "default",
             },
         };

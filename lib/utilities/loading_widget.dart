@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:qbk_simple_app/ui/sizes-helpers.dart';
+import 'package:qbk_simple_app/utilities/constants.dart';
 
 class Loader extends StatefulWidget {
   @override
@@ -169,7 +170,7 @@ class Loading extends StatelessWidget {
     return Center(
       child: Container(
         child: SpinKitCubeGrid(
-          color: Colors.green,
+          color: kgreenQBK,
           size: size == null ? displayWidth(context) * 0.25 : size,
         ),
       ),

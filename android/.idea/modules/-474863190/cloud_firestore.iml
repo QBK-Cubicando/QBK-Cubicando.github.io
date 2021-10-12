@@ -171,5 +171,6 @@
     <orderEntry type="library" name="Gradle: io.grpc:grpc-android:1.21.0@aar" level="project" />
     <orderEntry type="module" module-name="firebase_core" />
     <orderEntry type="module" module-name="cloud_firestore_web" />
+    <orderEntry type="library" name="Gradle: android-android-28" level="project" />
   </component>
 </module>

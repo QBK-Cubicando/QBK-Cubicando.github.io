@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:qbk_simple_app/a_screens_pages/a_new_gig_pages/copy_load_page.dart';
+import 'package:qbk_simple_app/a_screens_pages/a_new_gig_pages/create_load_page.dart';
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/edit_case_popup.dart';
 import 'package:qbk_simple_app/ab_created_widgets/popup_load_widget.dart';
 import 'package:qbk_simple_app/models/user.dart';
 import 'package:qbk_simple_app/services/database.dart';
 import 'package:provider/provider.dart';
+import 'package:qbk_simple_app/services/global_variables.dart';
 import 'package:qbk_simple_app/ui/base_widget.dart';
 import 'package:qbk_simple_app/ui/sizes-helpers.dart';
 import 'package:qbk_simple_app/utilities/constants.dart';
@@ -42,7 +47,7 @@ class FlightCase {
       this.label});
 }
 
-class FlightCaseOnList extends StatelessWidget {
+class FlightCaseOnList extends StatefulWidget {
   final List<FlightCase> flightCaseList;
   final FlightCase flightCase;
   final String userUid;
@@ -52,6 +57,7 @@ class FlightCaseOnList extends StatelessWidget {
   final bool isLoadPage;
   final String color;
   final String label;
+  final String blocRowId;
 
   FlightCaseOnList(
       {Key key,
@@ -63,20 +69,26 @@ class FlightCaseOnList extends StatelessWidget {
       this.index,
       this.isLoadPage,
       this.color,
-      this.label});
+      this.label,
+      this.blocRowId});
 
+  @override
+  _FlightCaseOnListState createState() => _FlightCaseOnListState();
+}
+
+class _FlightCaseOnListState extends State<FlightCaseOnList> {
   ///Function to set the case color
   Color _flightCaseListColor() {
-    if (flightCase.color == 'Red') {
-      return Colors.redAccent;
-    } else if (flightCase.color == 'Blue') {
-      return Colors.blueAccent;
-    } else if (flightCase.color == 'Green') {
-      return Colors.lightGreenAccent;
-    } else if (flightCase.color == 'Purple') {
-      return Colors.purpleAccent;
-    } else if (flightCase.color == 'Orange') {
-      return Colors.orangeAccent;
+    if (widget.flightCase.color == 'Red') {
+      return kredQBK;
+    } else if (widget.flightCase.color == 'Blue') {
+      return kblueQBK;
+    } else if (widget.flightCase.color == 'Green') {
+      return kgreenQBK;
+    } else if (widget.flightCase.color == 'Purple') {
+      return kpurpleQBK;
+    } else if (widget.flightCase.color == 'Orange') {
+      return Colors.orangeAccent.shade200;
     } else {
       return Colors.grey.shade50;
     }
@@ -85,22 +97,41 @@ class FlightCaseOnList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     /// Checks if you are in Load Page or Create Load page
-    return isLoadPage
+    return widget.isLoadPage
         ?
 
         ///LOAD PAGE WIDGET
-        FlightCaseOnLoadList(
-            color: _flightCaseListColor(),
-            flightCase: flightCase,
-            index: flightCase.index,
+        GestureDetector(
+            onTap: () async {
+              setState(() {
+                bool loaded;
+                if (idAndBlocRow.containsKey(widget.blocRowId)) {
+                  loaded = false;
+                } else {
+                  loaded = true;
+                }
+                print(widget.blocRowId);
+
+                Map<FlightCase, bool> temp = {};
+                temp[widget.flightCase] = loaded;
+                streamControllerFlightCase.add(temp);
+                selectedBlocRowId = widget.blocRowId;
+              });
+              
+            },
+            child: FlightCaseOnLoadList(
+              color: _flightCaseListColor(),
+              flightCase: widget.flightCase,
+              index: widget.flightCase.index,
+            ),
           )
         :
 
         ///NO LOAD PAGE WIDGET
         FlightCaseOnLoadList(
             color: _flightCaseListColor(),
-            flightCase: flightCase,
-            index: index,
+            flightCase: widget.flightCase,
+            index: widget.index,
           );
   }
 }
@@ -118,10 +149,10 @@ class FlightCaseOnLoadList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(5.0),
-      height: displayHeight(context) * 0.25,
+      height: displayHeight(context) * 0.15,
       width: displayWidth(context) * 0.225,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20.0),
+        
         color: color,
       ),
       child: Column(
@@ -147,26 +178,26 @@ class FlightCaseOnLoadList extends StatelessWidget {
               flightCase.wheels
                   ? Icon(
                       Icons.blur_circular,
-                      size: displayWidth(context) * 0.045,
+                      size: displayWidth(context) * 0.055,
                     )
                   : SizedBox(
-                      width: displayWidth(context) * 0.045,
+                      width: displayWidth(context) * 0.055,
                     ),
               flightCase.tilt
                   ? Icon(
                       Icons.file_upload,
-                      size: displayWidth(context) * 0.045,
+                      size: displayWidth(context) * 0.055,
                     )
                   : SizedBox(
-                      width: displayWidth(context) * 0.045,
+                      width: displayWidth(context) * 0.055,
                     ),
               flightCase.stack
                   ? Icon(
                       Icons.category,
-                      size: displayWidth(context) * 0.045,
+                      size: displayWidth(context) * 0.055,
                     )
                   : SizedBox(
-                      width: displayWidth(context) * 0.045,
+                      width: displayWidth(context) * 0.055,
                     ),
             ],
           ),
@@ -194,15 +225,15 @@ class OwnCaseTile extends StatelessWidget {
 
   Color _flightCaseListColor() {
     if (flightCase.color == 'Red') {
-      return Colors.redAccent;
+      return kredQBK;
     } else if (flightCase.color == 'Blue') {
-      return Colors.blueAccent;
+      return kblueQBK;
     } else if (flightCase.color == 'Green') {
-      return Colors.lightGreenAccent;
+      return kgreenQBK;
     } else if (flightCase.color == 'Purple') {
-      return Colors.purpleAccent;
+      return kpurpleQBK;
     } else if (flightCase.color == 'Orange') {
-      return Colors.orangeAccent;
+      return Colors.orangeAccent.shade200;
     } else {
       return Colors.grey.shade50;
     }
@@ -222,8 +253,7 @@ class OwnCaseTile extends StatelessWidget {
                   width: displayWidth(context) * 0.7,
                   decoration: BoxDecoration(
                       color: _flightCaseListColor(),
-                      border: Border.all(color: Colors.black, width: 3),
-                      borderRadius: BorderRadius.circular(15)),
+                      ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50),
                     child: Row(
@@ -233,7 +263,8 @@ class OwnCaseTile extends StatelessWidget {
                           flightCase.nameFlightCase,
                           textAlign: TextAlign.center,
                           style:
-                              kTextStyle(context).copyWith(color: Colors.black),
+                              kTextStyle(context)
+                              .copyWith(color: Colors.black, fontSize: 25),
                         ),
                         Row(
                           children: [
@@ -305,8 +336,7 @@ class OwnCaseTile extends StatelessWidget {
                   width: displayWidth(context) * 0.7,
                   decoration: BoxDecoration(
                       color: _flightCaseListColor(),
-                      border: Border.all(color: Colors.black, width: 3),
-                      borderRadius: BorderRadius.circular(15)),
+                      ),
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
                     child: Row(

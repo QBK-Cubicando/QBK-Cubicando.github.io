@@ -112,7 +112,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               password = value;
                             },
                           ), //password
-                          //TODO: create a repeat password and validator
+                        
                           TextFieldQBK(
                             hintText: 'Repeat Password',
                             obscureText: true,
@@ -135,9 +135,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               },
                             ),
                           ),
-                          SizedBox(
-                            height: 10.0,
-                          ),
+                         
                           Text(
                             error,
                             style: kButtonsTextStyle(context)
@@ -147,7 +145,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                           SelectionButton(
                             text: 'Register',
                             width: displayWidth(context) * 0.85,
-                            color: Colors.green,
+                            color: kyellowQBK,
                             onPress: () async {
                               await checkConnectivityToInternet();
 
@@ -196,7 +194,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             },
                           ),
                           SizedBox(
-                            height: 3,
+                            height: displayHeight(context) * 0.1,
                           )
                         ],
                       ),

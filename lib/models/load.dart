@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qbk_simple_app/a_screens_pages/a_new_gig_pages/create_load_page.dart';
-import 'package:qbk_simple_app/a_screens_pages/load_screen.dart';
+import 'package:qbk_simple_app/a_screens_pages/load_page.dart';
 import 'package:qbk_simple_app/ui/sizes-helpers.dart';
 
 import 'package:qbk_simple_app/utilities/constants.dart';
@@ -20,7 +20,7 @@ class Load {
   Load({this.uidLoad, this.nameLoad, this.index});
 }
 
-//TODO:CHECK IS YOU CAN DELETE IN THE PAGE OR NOT
+//TODO:CHECK IF YOU CAN DELETE IN THE PAGE OR NOT
 
 class LoadOnList extends StatelessWidget {
   final String userUid;
@@ -77,38 +77,50 @@ class LoadOnList extends StatelessWidget {
                         title: Center(
                             child: Text(
                           'Are you sure you want to delete ${loadOnList.nameLoad}?',
+                          textAlign: TextAlign.center,
                           style:
                               kTextStyle(context).copyWith(color: Colors.black),
                         )),
                         actions: <Widget>[
-                          SelectionButton(
-                            text: 'Cancel',
-                            color: Colors.blueAccent,
-                            onPress: () => Navigator.pop(context),
+                          
+                          Row(
+                            children: [
+                              Container(
+                                width: displayWidth(context) * 0.35,
+                                child: SelectionButton(
+                                  text: 'Delete',
+                                  color: Colors.redAccent,
+                                  onPress: () {
+                                    Navigator.pop(context);
+                                    _deleteLoad();
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: displayWidth(context) * 0.05,
+                              ),
+                              Container(
+                                width: displayWidth(context) * 0.35,
+                                child: SelectionButton(
+                                    text: 'Edit',
+                                    color: Colors.orangeAccent,
+                                    onPress: () async {
+                                      await Navigator.push(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return CreateLoadPage(
+                                          uidGig: uidGig,
+                                          uidLoad: loadOnList.uidLoad,
+                                          nameGig: 'Edit Load',
+                                          nameLoad: loadOnList.nameLoad,
+                                        );
+                                      }));
+                                      Navigator.pop(context);
+                                    }),
+                              ),
+                              
+                            ],
                           ),
-                          SelectionButton(
-                              text: 'Edit',
-                              color: Colors.orangeAccent,
-                              onPress: () async {
-                                await Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) {
-                                  return CreateLoadPage(
-                                    uidGig: uidGig,
-                                    uidLoad: loadOnList.uidLoad,
-                                    nameGig: 'Edit Load',
-                                    nameLoad: loadOnList.nameLoad,
-                                  );
-                                }));
-                                Navigator.pop(context);
-                              }),
-                          SelectionButton(
-                            text: 'Delete',
-                            color: Colors.redAccent,
-                            onPress: () {
-                              Navigator.pop(context);
-                              _deleteLoad();
-                            },
-                          ),
+                          
                         ],
                       );
                     });
@@ -126,30 +138,18 @@ class LoadOnList extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.all(3.0),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                color: Colors.grey.shade400,
+                // borderRadius: BorderRadius.circular(20.0),
+                color: kyellowQBK,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Icon(
-                      Icons.directions_bus,
-                      size: displayWidth(context) * 0.07,
-                    ),
-                    Card(
-                      color: Colors.orangeAccent,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Text(
-                          loadOnList.nameLoad,
-                          style:
-                              TextStyle(fontSize: displayWidth(context) * 0.04),
-                        ),
-                      ),
-                    ),
-                  ],
+                child: Center(
+                  child: Text(
+                    loadOnList.nameLoad,
+                    style: TextStyle(
+                        fontSize: displayWidth(context) * 0.045,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ),
@@ -238,7 +238,7 @@ class _LoadListState extends State<LoadList> {
                 shrinkWrap: true,
                 itemCount: loadList.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
+                  crossAxisCount: 3,
                   crossAxisSpacing: 4,
                 ),
                 itemBuilder: (context, index) {

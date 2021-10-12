@@ -36,6 +36,7 @@ class TextFieldQBK extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      
       width: width ?? displayWidth(context) * 0.85,
       height: height ?? displayHeight(context) * 0.12,
       child: TextFormField(
@@ -51,15 +52,14 @@ class TextFieldQBK extends StatelessWidget {
         style: kTextStyle(context).copyWith(
             color: Colors.black, fontSize: displayWidth(context) * 0.045),
         decoration: InputDecoration(
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(15.0))),
+          
           filled: true,
           fillColor: Colors.grey.shade300,
           hintText: this.hintText,
-          prefixIcon: Icon(
-            this.icon,
-            size: displayWidth(context) * 0.04,
-          ),
+                    // prefixIcon: Icon(
+          //   this.icon,
+          //   size: displayWidth(context) * 0.04,
+          // ),
         ),
         onChanged: onChanged,
         validator: validator,

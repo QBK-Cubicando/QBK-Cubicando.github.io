@@ -1,14 +1,17 @@
+//TODO: Check For internet connection Everytime a button is pressed
+
 //TODO: Look for an app that makes what I want
 
 //TODO: Find a font and a package of icons that fit the spirit of the App
 
 //TODO: Create an option where you can Load but also Unload the truck so the items go on reverse
 
-//TODO: IN the page of loading/unloading the truck you can see the truck and where the case is going, and also the number of cases left and inside
-
 //TODO: Frases como, llamando a los cargas, o cosas graciosas de los bolos
 
 //TODO: Poder meter imagenes en las notas de como va la carga
+
+//TODO: En Load Page Opción de longpress y añadir incidencias a cualquier carga, la carga con incidencias tendrá un punto rojo encíma.
+//TODO: Todas las incidencias estarán recogidas en una lista de incidencias ( carga, fecha, incidencia, arreglada o no )
 
 // TODO: Secundario //Lista de sonidos para la app
 //sonido de abrir gaveta
@@ -35,3 +38,5 @@
 /// que la caja se vea la incidencia
 /// o una lista de inicencias del boolo
 ///
+
+//TODO: Create Load, make the remove function, that you ca select witch element to remove.

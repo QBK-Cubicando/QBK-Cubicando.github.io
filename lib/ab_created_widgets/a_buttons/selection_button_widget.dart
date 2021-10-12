@@ -18,8 +18,7 @@ class SelectionButton extends StatelessWidget {
         height: height,
         width: width,
         child: RaisedButton(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+          
           color: color,
           child: Text(
             text,

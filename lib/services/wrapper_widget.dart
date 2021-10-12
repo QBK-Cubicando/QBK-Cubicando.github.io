@@ -28,4 +28,3 @@ class WrapperQBK extends StatelessWidget {
     }
   }
 }
-//TODO: Fix gray page when autentification on QBK Web

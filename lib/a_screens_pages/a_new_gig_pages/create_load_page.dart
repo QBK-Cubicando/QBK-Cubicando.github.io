@@ -1,17 +1,29 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:qbk_simple_app/ab_created_widgets/a_buttons/selection_button_widget.dart';
+import 'package:qbk_simple_app/models/BlocRow.dart';
 import 'package:qbk_simple_app/services/database.dart';
+import 'package:qbk_simple_app/services/global_variables.dart';
+
 import 'package:qbk_simple_app/ui/sizes-helpers.dart';
-import 'package:qbk_simple_app/utilities/constants.dart';
 
 import 'package:qbk_simple_app/ab_created_widgets/a_buttons/load_selection_button_widget.dart';
 import 'package:qbk_simple_app/ab_created_widgets/popup_load_widget.dart';
 import 'package:keyboard_avoider/keyboard_avoider.dart';
 import 'package:qbk_simple_app/models/flight_case.dart';
+import 'package:qbk_simple_app/utilities/constants.dart';
 import 'package:reorderables/reorderables.dart';
 
 import '../../ui/sizes-helpers.dart';
-import 'package:boardview/boardview.dart';
+
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:random_string/random_string.dart';
+import 'dart:async';
+
+//TODO: Collapse Bloc Rows
+
+
 
 ///Documentated
 class CreateLoadPage extends StatefulWidget {
@@ -35,53 +47,155 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
   ///and also the list to work with OFFLINE
   List<FlightCase> flightCaseCreateList = [];
 
+  Map<String, List<FlightCase>> totalFlightCaseLists = {};
+  List<BlocRow> blocRowList = [];
+
+  Map<String, int> idAndBlocRow = {};
+  Color color = Colors.grey.shade500;
+
+  final Stream<int> streamBlocRow = streamControllerBlocRow.stream;
+
   ///List of cases fetched from firebase
   Future<List<FlightCase>> flightCaseFetchedList;
+  Future<List<BlocRow>> blocRowFetchedList;
 
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
+    streamBlocRow.listen((event) {
+      mySetStateBlocRow(event);
+    });
 
-    flightCaseFetchedList =
-        DatabaseService(uidLoad: widget.uidLoad).getLoadListOnce();
+    blocRowFetchedList =
+        DatabaseService(uidLoad: widget.uidLoad).getLoadListOncePRUEBA();
 
-    _fetchLoadListFromFirebase();
+    _fetchBlocRowListFromFirebase();
+  }
+
+  void mySetStateBlocRow(int event) {
+    // setState(() {});
   }
 
   ///Fetch the list of cases from firebase and set it to OFFLINE list of cases
-  _fetchLoadListFromFirebase() async {
-    if (flightCaseFetchedList != null) {
-      flightCaseCreateList = await flightCaseFetchedList;
+
+  _fetchBlocRowListFromFirebase() async {
+    if (blocRowFetchedList != null) {
+      int i = 1;
+      blocRowList = await blocRowFetchedList;
+      // Assign Strem to every BlocRow
+      blocRowList.forEach((element) {
+        element.stream = streamControllerBlocRow.stream;
+        element.isLoadPage = false;
+        idAndBlocRow[element.id] = i;
+        i += 1;
+        totalFlightCaseLists[element.id] = element.flightCaseList;
+      });
     } else {
-      flightCaseCreateList = [];
+      blocRowList = [];
     }
+
     setState(() {});
+  }
+
+  createFlightCaseListForBlockRow(String id) {
+    totalFlightCaseLists[id] = [];
   }
 
   @override
   Widget build(BuildContext context) {
+    void _onReorder(int oldIndex, int newIndex) async {
+      blocRowList.insert(newIndex, blocRowList.removeAt(oldIndex));
+      streamControllerBlocRow.add(idAndBlocRow[selectedBlocRowId]);
+      setState(() {});
+    }
+
+    var wrap = ReorderableWrap(
+      alignment: WrapAlignment.center,
+      maxMainAxisCount: 1,
+      spacing: 15.0,
+      runSpacing: 4.0,
+      padding: const EdgeInsets.all(8),
+      children: blocRowList,
+      onReorder: _onReorder,
+      onNoReorder: (int index) {
+        //this callback is optional
+        debugPrint(
+            '${DateTime.now().toString().substring(5, 22)} reorder cancelled. index:$index');
+      },
+    );
+
+    var buttonBar = Container(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      alignment: Alignment.bottomLeft,
+      color: Colors.grey.shade600,
+      height: displayHeight(context) * 0.09,
+      width: displayWidth(context) * 0.95,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Center(
+              child: Text(
+            'BLOCK ROW',
+            style: TextStyle(fontSize: 18, color: Colors.white),
+          )),
+          Row(
+            children: [
+              FloatingActionButton(
+                  child: Icon(Icons.remove),
+                  backgroundColor: Colors.black,
+                  onPressed: () {
+                    setState(() {
+                      blocRowList.removeLast();
+                      streamControllerBlocRow
+                          .add(idAndBlocRow[selectedBlocRowId]);
+                    });
+                  }),
+              SizedBox(
+                width: displayWidth(context) * 0.1,
+              ),
+                  FloatingActionButton(
+                  child: Icon(Icons.add),
+                  backgroundColor: Colors.black,
+                  onPressed: () {
+                    String id = randomAlphaNumeric(5);
+                    idAndBlocRow[id] = idAndBlocRow.length + 1;
+                    createFlightCaseListForBlockRow(id);
+                    blocRowList.add(BlocRow(
+                        isLoadPage: false,
+                        index: idAndBlocRow[id],
+                        isCrica: false,
+                        id: id,
+                        stream: streamControllerBlocRow.stream,
+                        flightCaseList: totalFlightCaseLists[id]));
+                    setState(() {});
+                  }),
+            ],
+          ),
+          
+        ],
+      ),
+    );
+
+    var column = SingleChildScrollView(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        wrap,
+        buttonBar,
+      ]),
+    );
+
     return Scaffold(
       drawerEnableOpenDragGesture: false,
       key: _scaffoldKey,
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.grey.shade800,
-        title: Center(
-          child: Text(
-            widget.nameGig ?? 'Create Load',
-            style: kTitleTextStile(context),
-          ),
-        ),
-      ),
+      
       drawer: SafeArea(
         child: Container(
           width: double.infinity,
           child: Drawer(
             child: Container(
-              color: Colors.grey,
+              color: Colors.black,
               child: Padding(
                 padding: EdgeInsets.fromLTRB(8, 15, 5, 15),
                 child: Center(
@@ -89,63 +203,70 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
                     width: displayWidth(context),
                     child: Column(
                       children: <Widget>[
-                        Row(
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Center(
-                              child: Text(
-                                'My Cases',
-                                textAlign: TextAlign.center,
-                                style: kButtonsTextStyle(context),
-                              ),
-                            ),
+                            
+                            
                             SizedBox(
-                              width: 10,
+                              height: 8,
                             ),
-                            LoadSelectionButton(
-                              text: Text(
-                                'Update & Close',
-                                textAlign: TextAlign.center,
-                                style: kTextStyle(context)
-                                    .copyWith(color: Colors.black),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                alignment: Alignment.centerLeft,
+                                width: displayWidth(context) * 0.85,
+                                height: displayHeight(context) * 0.06,
+                                color: kyellowQBK,
+                                child: Text(
+                                  'Block Row $selectedBlockRowIndex',
+                                  textAlign: TextAlign.center,
+                                  style: kTextStyle(context)
+                                      .copyWith(color: Colors.black),
+                                ),
                               ),
-                              color: CupertinoColors.activeGreen,
-                              onPressed: () {
-                                _scaffoldKey.currentState.openEndDrawer();
-                                setState(() {});
-                              },
-                              height: displayHeight(context) * 0.15,
-                              width: displayWidth(context) * 0.3,
                             ),
                           ],
                         ),
                         SizedBox(height: 20),
-                        LoadSelectionButton(
-                          text: Text(
-                            'New Own Case',
-                            style: kTextStyle(context).copyWith(
-                              color: Colors.black,
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                            child: Container(
+                              height: displayHeight(context) * 0.07,
+                              width: displayWidth(context) * 0.42,
+                              color: Colors.grey.shade300,
+                              child: Center(
+                                child: Text(
+                                  'NEW CASE',
+                                  style: kTextStyle(context).copyWith(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
                             ),
+                            onTap: () async {
+                              final updatedList = await showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return PopupCreateLoad(
+                                    title: 'Own',
+                                    uidGig: widget.uidGig,
+                                    uidLoad: widget.uidLoad,
+                                    flightCaseList:
+                                        totalFlightCaseLists[selectedBlocRowId],
+                                  );
+                                },
+                                barrierDismissible: false,
+                              );
+                              setState(() =>
+                                  totalFlightCaseLists[selectedBlocRowId] =
+                                      updatedList);
+                            },
                           ),
-                          color: Colors.grey.shade400,
-                          height: displayHeight(context) * 0.07,
-                          width: displayWidth(context) * 0.5,
-                          onPressed: () async {
-                            final updatedList = await showDialog(
-                              context: context,
-                              builder: (context) {
-                                return PopupCreateLoad(
-                                  title: 'Own',
-                                  uidGig: widget.uidGig,
-                                  uidLoad: widget.uidLoad,
-                                  flightCaseList: flightCaseCreateList,
-                                );
-                              },
-                              barrierDismissible: false,
-                            );
-                            setState(() => flightCaseCreateList = updatedList);
-                          },
                         ),
+                        
                         SizedBox(
                           height: 15,
                         ),
@@ -153,8 +274,27 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
                           child: OwnCaseTileList(
                             uidGig: widget.uidGig,
                             uidLoad: widget.uidLoad,
-                            flightCaseList: flightCaseCreateList,
+                            flightCaseList:
+                                totalFlightCaseLists[selectedBlocRowId],
                             isLoadPage: true,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: SelectionButton(
+                            text: 'SAVE',
+                            color: kyellowQBK,
+                            onPress: () {
+                              _scaffoldKey.currentState.openEndDrawer();
+                              streamControllerBlocRow
+                                  .add(idAndBlocRow[selectedBlocRowId]);
+                              setState(() {});
+                            },
+                            height: displayHeight(context) * 0.07,
+                            width: displayWidth(context) * 0.3,
                           ),
                         ),
                       ],
@@ -166,130 +306,170 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
           ),
         ),
       ),
-      body: Builder(
-        builder: (context) => KeyboardAvoider(
-          autoScroll: true,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-//              TextFieldQBK(
-////TODO: Make that you can search any flight case you previously created
-//                icon: Icons.search,
-//                hintText: '  What you\'re looking for?',
-//              ),//Searching
-              SizedBox(
-                height: 8.0,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  //TODO CRIKA
-                  // LoadSelectionButton(
-                  //   text: Text(
-                  //     'CRIKA',
-                  //     style: kTextStyle.copyWith(
-                  //         color: Colors.black, fontSize: 23.0),
-                  //   ),
-                  //   height: 50.0,
-                  //   width: 200.0,
-                  //   color: Colors.red,
-                  //   onPressed: () {
-                  //     print('CRIKA pressed');
-                  //     setState(() {});
-                  //   },
-                  // ),
-                  LoadSelectionButton(
-                    height: displayHeight(context) * 0.08,
-                    text: Text(
-                      'Case',
-                      style: kTextStyle(context).copyWith(color: Colors.black),
-                    ),
-                    color: Colors.grey.shade400,
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  ), //New Custom
-                ],
-              ), //Buttons New cases
-              SizedBox(
-                height: 8.0,
-              ),
-              Container(
-                  alignment: AlignmentDirectional.topStart,
-                  padding: EdgeInsets.all(3),
-                  height: MediaQuery.of(context).size.height * 0.7,
-                  width: displayWidth(context),
-                  color: Colors.grey,
-                  child: ReorderableWrap(
-                    spacing: 4,
-                    runSpacing: 4,
-                    onReorderStarted: (index) {
-                      setState(() {});
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        duration: Duration(seconds: 30),
-                        content: BinForFlightCases(
-                          list: flightCaseCreateList,
-                        ),
-                      ));
-                    },
-                    onReorder: (int oldIndex, int newIndex) {
-                      setState(() {
-                        FlightCase row =
-                            flightCaseCreateList.removeAt(oldIndex);
-                        flightCaseCreateList.insert(newIndex, row);
-                      });
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    },
-                    onNoReorder: (index) {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      setState(() {});
-                    },
-                    children: List.generate(
-                        flightCaseCreateList.length,
-                        (index) => FlightCaseOnList(
-                              flightCaseList: flightCaseCreateList,
-                              flightCase: flightCaseCreateList[index],
-                              index: index + 1,
-                              isLoadPage: false,
-                            )),
-                  )),
-              SizedBox(
-                height: 8.0,
-              ),
-
-              Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: LoadSelectionButton(
-                  height: displayHeight(context) * 0.09,
-                  text: Text(
-                    'I\'ve got everything',
-                    style: kTextStyle(context).copyWith(color: Colors.black),
+      body: SafeArea(
+        child: Builder(
+          builder: (context) => KeyboardAvoider(
+            autoScroll: true,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                //              TextFieldQBK(
+                ////TODO: Make that you can search any flight case you previously created
+                //                icon: Icons.search,
+                //                hintText: '  What you\'re looking for?',
+                //              ),//Searching
+                
+                    Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    margin:
+                        EdgeInsets.only(right: displayWidth(context) * 0.04),
+                    width: 100,
+                    height: 50,
+                    child: Image.asset('images/letras_qbk.png'),
                   ),
-                  width: displayWidth(context) * 0.85,
-                  color: Colors.green,
-                  onPressed: () async {
-                    int index = 1;
-                    for (FlightCase flightCase in flightCaseCreateList) {
-                      flightCase.index = index;
-                      index++;
-                    }
-
-                    ///Set the OFFLINE list of cases to firebase
-                    await DatabaseService(uidLoad: widget.uidLoad)
-                        .updateNewLoadListData(
-                      loadName: widget.nameLoad,
-                      flightCasesOnList: flightCaseCreateList,
-                      flightCasesLoaded: 0,
-                    );
-
-                    Navigator.pop(context);
-                  },
                 ),
-              ),
-              SizedBox(
-                height: 5.0,
-              )
-            ],
+                 
+                SizedBox(
+                  height: 8.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    //TODO CRIKA
+                    GestureDetector(
+                      child: Container(
+                        height: displayHeight(context) * 0.08,
+                        width: displayWidth(context) * 0.45,
+                        color: Colors.grey.shade400,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              'CRICA',
+                              style: kTextStyle(context)
+                                  .copyWith(
+                                  color: Colors.black, fontSize: 18.0),
+                            ),
+                            Icon(
+                              Icons.add_circle_outline,
+                              size: 35,
+                            )
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        String id = randomAlphaNumeric(5);
+                        idAndBlocRow[id] = idAndBlocRow.length + 1;
+                        createFlightCaseListForBlockRow(id);
+                        blocRowList.add(BlocRow(
+                            stream: streamControllerBlocRow.stream,
+                            isLoadPage: false,
+                            index: blocRowList.length + 1,
+                            isCrica: true,
+                            id: id,
+                            loaded: false,
+                            flightCaseList: []));
+                        setState(() {});
+                      },
+                    ),
+                    GestureDetector(
+                      child: Container(
+                        height: displayHeight(context) * 0.08,
+                        width: displayWidth(context) * 0.45,
+                        color: Colors.grey.shade400,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              'CASE',
+                              style: kTextStyle(context).copyWith(
+                                  color: Colors.black, fontSize: 18.0),
+                            ),
+                            Icon(
+                              Icons.add_circle_outline,
+                              size: 35,
+                            )
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        setState(() {
+                          if (selectedBlockRowIndex != null) {
+                            Scaffold.of(context).openDrawer();
+                          }
+                        });
+                      },
+                    ),
+                    //New Custom
+                  ],
+                ), //Buttons New cases
+                SizedBox(
+                  height: 8.0,
+                ),
+                SingleChildScrollView(
+                  child: Container(
+                      alignment: AlignmentDirectional.topStart,
+                      padding: EdgeInsets.all(3),
+                      height: MediaQuery.of(context).size.height * 0.7,
+                      width: displayWidth(context),
+                      color: Colors.grey,
+                      child: column),
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+
+                Container(
+                  width: displayWidth(context) * 0.85,
+                  alignment: Alignment.centerRight,
+                  child: SelectionButton(
+                    text: 'SAVE',
+                    width: displayWidth(context) * 0.3,
+                    color: kyellowQBK,
+                    onPress: () async {
+                      int indexCase = 1;
+                      int indexBlocRow = 1;
+                      Map<String, int> temp = {};
+
+                      // Reassign indexes of bloc Rows
+                      blocRowList.forEach((e) {
+                        temp[e.id.toString()] = indexBlocRow;
+                        indexBlocRow += 1;
+                      });
+
+                      idAndBlocRow = temp;
+
+                      // Reassign indexes of Cases
+                      totalFlightCaseLists.forEach((key, value) {
+                        List<FlightCase> flightCaseList = value;
+
+                        for (FlightCase flightCase in flightCaseList) {
+                          flightCase.index = indexCase;
+                          indexCase++;
+                        }
+                      });
+
+                      ///Set the OFFLINE list of cases to firebase
+                      await DatabaseService(uidLoad: widget.uidLoad)
+                          .updateNewLoadListDataPRUEBA(
+                        loadName: widget.nameLoad,
+                        mapOfFlightCasesOnList: totalFlightCaseLists,
+                        listBlocRow: blocRowList,
+                        flightCasesLoaded: 0,
+                        idAndBlockRow: idAndBlocRow,
+                      );
+
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+
+                SizedBox(
+                  height: 5.0,
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -328,7 +508,10 @@ class _BinForFlightCasesState extends State<BinForFlightCases> {
         );
       },
       onAccept: (data) {
-        widget.list.removeAt(data);
+        try {
+          widget.list.removeAt(data);
+        } catch (e) {}
+
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
       },
     );

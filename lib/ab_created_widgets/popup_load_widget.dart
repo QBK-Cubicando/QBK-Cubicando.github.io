@@ -12,6 +12,8 @@ import 'package:qbk_simple_app/utilities/constants.dart';
 import 'package:qbk_simple_app/ab_created_widgets/a_buttons/load_selection_button_widget.dart';
 import 'package:qbk_simple_app/ab_created_widgets/text_field-widget.dart';
 
+import 'a_buttons/selection_button_widget.dart';
+
 ///Documentated
 class PopupCreateLoad extends StatefulWidget {
   PopupCreateLoad({
@@ -76,15 +78,15 @@ class _PopupCreateLoadState extends State<PopupCreateLoad> {
 
   Color _flightCaseColor(String color) {
     if (color == 'Red') {
-      return Colors.redAccent;
+      return kredQBK;
     } else if (color == 'Blue') {
-      return Colors.blueAccent;
+      return kblueQBK;
     } else if (color == 'Green') {
-      return Colors.lightGreenAccent;
+      return kgreenQBK;
     } else if (color == 'Purple') {
-      return Colors.purpleAccent;
+      return kpurpleQBK;
     } else if (color == 'Orange') {
-      return Colors.orangeAccent;
+      return Colors.orangeAccent.shade100;
     } else {
       return Colors.grey;
     }
@@ -228,29 +230,23 @@ class _PopupCreateLoadState extends State<PopupCreateLoad> {
                   height: 20,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    LoadSelectionButton(
+                    SelectionButton(
                       width: displayWidth(context) * 0.3,
-                      text: Text(
-                        'Cancel',
-                        style: kTextStyle(context)
-                            .copyWith(color: Colors.black), //TODO: Reducir Font
-                      ),
-                      color: Colors.red,
-                      onPressed: () {
+                      text: 'BACK', //TODO: Reducir Font
+                      color: kyellowQBK,
+                      onPress: () {
                         Navigator.pop(context, flightCaseListUpdated);
                       },
-                    ), //Cancel
-                    LoadSelectionButton(
-                      width: displayWidth(context) * 0.3,
-                      text: Text(
-                        'OK',
-                        style: kTextStyle(context)
-                            .copyWith(color: Colors.black), //TODO: Reducir Font
                       ),
-                      color: Colors.green,
-                      onPressed: () {
+
+                    //Cancel
+                    SelectionButton(
+                      width: displayWidth(context) * 0.3,
+                      text: 'SAVE',
+                      color: kyellowQBK,
+                      onPress: () {
                         if (_formKey.currentState.validate()) {
                           for (int i = 1; i < quantity + 1; i++) {
                             addFlightCaseToList();
@@ -260,7 +256,9 @@ class _PopupCreateLoadState extends State<PopupCreateLoad> {
 
                         Navigator.pop(context, flightCaseListUpdated);
                       },
-                    ), //OK
+                      ),
+
+                    //OK
                   ],
                 ),
               ],
@@ -292,32 +290,32 @@ class _CheckBoxCreateLoadState extends State<CheckBoxCreateLoad> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
+        Icon(
+          widget.icon,
+          size: displayWidth(context) * 0.07,
+        ),
+        SizedBox(width: 15.0),
+        Container(
+          child: Text(
+            widget.text,
+            style: kTextStyle(context).copyWith(
+                fontSize: displayWidth(context) * 0.04, color: Colors.black),
+          ),
+        ),
+        SizedBox(width: 15.0),
         Container(
           child: Checkbox(
             value: widget.checkboxValue,
             activeColor: Colors.black,
-            checkColor: Colors.yellow,
+            checkColor: kyellowQBK,
             onChanged: widget.onChanged,
           ),
         ),
-        Row(
-          children: <Widget>[
-            Container(
-              child: Text(
-                widget.text,
-                style: kTextStyle(context).copyWith(
-                    fontSize: displayWidth(context) * 0.04,
-                    color: Colors.black),
-              ),
-            ),
-            SizedBox(width: 15.0),
-            Icon(
-              widget.icon,
-              size: displayWidth(context) * 0.04,
-            ),
-          ],
-        ),
+        Container(
+          width: displayWidth(context) * 0.2,
+        )
       ],
     );
   }
@@ -497,25 +495,19 @@ class _PopupOwnCasesState extends State<PopupOwnCases> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    LoadSelectionButton(
-                      text: Text(
-                        'Back',
-                        style: kTextStyle(context)
-                            .copyWith(color: Colors.black), //TODO: Reducir Font
-                      ),
-                      color: Colors.red,
-                      onPressed: () {
+                    SelectionButton(
+                      text: 'BACK',
+                      color: kyellowQBK,
+                      onPress: () {
                         Navigator.pop(context, true);
-                      },
-                    ), //Cancel
-                    LoadSelectionButton(
-                      text: Text(
-                        'OK',
-                        style: kTextStyle(context)
-                            .copyWith(color: Colors.black), //TODO: Reducir Font
+                      }, 
                       ),
-                      color: Colors.green,
-                      onPressed: () {
+
+                    //Cancel
+                    SelectionButton(
+                      text: 'SAVE',
+                      color: kyellowQBK,
+                      onPress: () {
                         if (_formKey.currentState.validate()) {
                           for (int i = 1; i < quantity + 1; i++) {
                             addFlightCaseToList();
@@ -524,7 +516,9 @@ class _PopupOwnCasesState extends State<PopupOwnCases> {
 
                         Navigator.pop(context, true);
                       },
-                    ), //OK
+                      ),
+
+                    //OK
                   ],
                 ),
               ],

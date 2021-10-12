@@ -43,4 +43,11 @@ TextStyle kTextStyle(BuildContext context) {
 // );
 
 //TODO: Create a color constants
+Color kgreenQBK = Color.fromRGBO(80, 239, 178, 1.0);
+Color kredQBK = Color.fromRGBO(255, 21, 97, 1.0);
+Color kblueQBK = Color.fromRGBO(38, 218, 247, 1.0);
+Color kpurpleQBK = Color.fromRGBO(200, 155, 201, 1.0);
+Color kyellowQBK = Color.fromRGBO(255, 221, 0, 1.0);
+
+
 //TODO: Make a constant for the Profile image so any user has their own

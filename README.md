@@ -1,1 +1,1 @@
-QBK APP WEB
+QBK Simple APP
