@@ -314,67 +314,73 @@ class _NewGigPageState extends State<NewGigPage> {
                               text: 'SAVE',
                               color: kyellowQBK,
                               onPress: () async {
-                                if (_formKey.currentState.validate()) {
-                                  ///Set the Gig info to Firebase
-                                  await DatabaseService(
-                                    userUid: user.uid,
-                                    uidGig: '${user.uid}$nameGig$startDate',
-                                  ).setGigData(
-                                    userUid: user.uid,
-                                    nameGig: nameGig,
-                                    startDate: startDate,
-                                    endDate: endDate.isAfter(startDate)
-                                        ? endDate
-                                        : startDate,
-                                    location: location,
-                                    notes: notes ?? null,
-                                    color: selectedColor,
-                                    crew: 1
-                                  );
+                                try {
+                                  if (_formKey.currentState.validate()) {
+                                    ///Set the Gig info to Firebase
 
-                                  ///Set admin to Gig
-                                  await DatabaseService(
-                                    userUid: user.uid,
-                                    uidGig: '${user.uid}$nameGig$startDate',
-                                    uidCrewGig: user.uid,
-                                    crewMemberData: user.uid,
-                                    isCrewPage: true,
-                                  ).gigSetCrewData(
-                                    nameCrew: widget.userName,
-                                    permission: 'Admin',
-                                    speciality: 'Admin',
-                                    index: 1,
-                                  );
+                                    await DatabaseService(
+                                      userUid: user.uid,
+                                      uidGig: '${user.uid}$nameGig$startDate',
+                                    ).setGigData(
+                                        userUid: user.uid,
+                                        nameGig: nameGig,
+                                        startDate: startDate,
+                                        endDate: endDate.isAfter(startDate)
+                                            ? endDate
+                                            : startDate,
+                                        location: location,
+                                        notes: notes ?? null,
+                                        color: selectedColor,
+                                        crew: 1);
 
-                                  ///Set the CalendarGig info to firebase
-                                  await DatabaseService(
-                                    userUid: user.uid,
-                                  ).setCalendarGigData(
-                                    uidGig: '${user.uid}$nameGig$startDate',
-                                    nameGig: nameGig,
-                                    startDate: startDate,
-                                    endDate: endDate.isAfter(startDate)
-                                        ? endDate
-                                        : startDate,
-                                    location: location,
-                                    color: selectedColor,
-                                    crew: 1
-                                  );
+                                  
 
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) {
-                                      return CreateGigPage(
+                                    ///Set admin to Gig
+                                    await DatabaseService(
+                                      userUid: user.uid,
+                                      uidGig: '${user.uid}$nameGig$startDate',
+                                      uidCrewGig: user.uid,
+                                      crewMemberData: user.uid,
+                                      isCrewPage: true,
+                                    ).gigSetCrewData(
+                                      nameCrew: widget.userName,
+                                      permission: 'Admin',
+                                      speciality: 'Admin',
+                                      index: 1,
+                                    );
+
+                                    ///Set the CalendarGig info to firebase
+                                    await DatabaseService(
+                                      userUid: user.uid,
+                                    ).setCalendarGigData(
                                         uidGig: '${user.uid}$nameGig$startDate',
                                         nameGig: nameGig,
-                                        userUid: user.uid,
-                                        startDate: DateFormat('yyyy-MM-dd')
-                                            .format(startDate),
-                                      );
-                                    }),
-                                  );
-                                } else {
-                                  //TODO:ELSE WHAT
+                                        startDate: startDate,
+                                        endDate: endDate.isAfter(startDate)
+                                            ? endDate
+                                            : startDate,
+                                        location: location,
+                                        color: selectedColor,
+                                        crew: 1);
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) {
+                                        return CreateGigPage(
+                                          uidGig:
+                                              '${user.uid}$nameGig$startDate',
+                                          nameGig: nameGig,
+                                          userUid: user.uid,
+                                          startDate: DateFormat('yyyy-MM-dd')
+                                              .format(startDate),
+                                        );
+                                      }),
+                                    );
+                                  } else {
+                                    print('Not working');
+                                  }
+                                } catch (e) {
+                                  print(e);
                                 }
                               },
                             ),

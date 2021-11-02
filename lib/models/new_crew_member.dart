@@ -121,10 +121,10 @@ class NewCrewMemberOnList extends StatelessWidget {
                             Navigator.pop(context);
                             _deleteCrewMember();
                             if (newCrewMember.permission == 'Loader') {
-                              await Firestore.instance
+                              await FirebaseFirestore.instance
                                   .collection('gigs')
-                                  .document(uidGig)
-                                  .updateData({
+                                  .doc(uidGig)
+                                  .update({
                                 'isLoader': false,
                               });
                             }
@@ -452,19 +452,19 @@ class NewFriendTile extends StatelessWidget {
                             color: Colors.redAccent,
                             onPress: () async {
                               ///Delete pending for you
-                              await Firestore.instance
+                              await FirebaseFirestore.instance
                                   .collection('users')
-                                  .document(userUid)
+                                  .doc(userUid)
                                   .collection('pending')
-                                  .document(friend.uid)
+                                  .doc(friend.uid)
                                   .delete();
 
                               ///Delete pending for your friend
-                              await Firestore.instance
+                              await FirebaseFirestore.instance
                                   .collection('users')
-                                  .document(friend.uid)
+                                  .doc(friend.uid)
                                   .collection('pending')
-                                  .document(userUid)
+                                  .doc(userUid)
                                   .delete();
                               Navigator.pop(context);
                             },
@@ -548,19 +548,19 @@ class NewFriendTile extends StatelessWidget {
                                 color: Colors.redAccent,
                                 onPress: () async {
                                   ///Delete pending for you
-                                  await Firestore.instance
+                                  await FirebaseFirestore.instance
                                       .collection('users')
-                                      .document(userUid)
+                                      .doc(userUid)
                                       .collection('pending')
-                                      .document(friend.uid)
+                                      .doc(friend.uid)
                                       .delete();
 
                                   ///Delete pending for your friend
-                                  await Firestore.instance
+                                  await FirebaseFirestore.instance
                                       .collection('users')
-                                      .document(friend.uid)
+                                      .doc(friend.uid)
                                       .collection('pending')
-                                      .document(userUid)
+                                      .doc(userUid)
                                       .delete();
                                   Navigator.pop(context);
                                 },

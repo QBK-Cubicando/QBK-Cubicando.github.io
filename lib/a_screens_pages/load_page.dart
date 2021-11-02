@@ -180,7 +180,7 @@ class _LoadPageState extends State<LoadPage> {
       }
     });
 
-    await DatabaseService(uidLoad: widget.uidLoad).updateNewLoadListDataPRUEBA(
+    await DatabaseService(uidLoad: widget.uidLoad).updateNewLoadListData(
       mapOfFlightCasesOnList: mapOfFlightCasesOnList,
       listBlocRow: blocRowTotalList,
       idAndBlockRow: idAndBlocRow,
@@ -245,10 +245,10 @@ class _LoadPageState extends State<LoadPage> {
   //   ///Just to update the loads that don't have total case option
   //   try {
   //     if (init = true) {
-  //       Firestore.instance
+  //       FirebaseFirestore.instance
   //           .collection('loads')
-  //           .document(widget.uidLoad)
-  //           .updateData({
+  //           .doc(widget.uidLoad)
+  //           .update({
   //         'totalCases': flightCaseTotalList.length,
   //         'loadedCases': flightCaseLoadedList.length == null
   //             ? 0
@@ -394,7 +394,7 @@ class _LoadPageState extends State<LoadPage> {
       // });
       // print(casesLoaded);
       await DatabaseService(uidLoad: widget.uidLoad)
-          .updateNewLoadListDataPRUEBA(
+          .updateNewLoadListData(
         mapOfFlightCasesOnList: mapOfFlightCasesOnList,
         listBlocRow: blocRowTotalList,
         idAndBlockRow: idAndBlocRow,
@@ -402,10 +402,10 @@ class _LoadPageState extends State<LoadPage> {
       );
       blocRowTotalList.clear();
 
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection('loads')
-          .document(widget.uidLoad)
-          .updateData({'refresh': false});
+          .doc(widget.uidLoad)
+          .update({'refresh': false});
     } else {
       // flightCaseLoadedList.clear();
       // flightCaseNotLoadedList.clear();
@@ -423,10 +423,10 @@ class _LoadPageState extends State<LoadPage> {
     //       flightCasesLoaded: flightCaseLoadedList.length,
     //     );
     //   }
-    //   await Firestore.instance
+    //   await FirebaseFirestore.instance
     //       .collection('loads')
-    //       .document(widget.uidLoad)
-    //       .updateData({'refresh': true});
+    //       .doc(widget.uidLoad)
+    //       .update({'refresh': true});
     // } else if ((fetchedLoadedCasesLength > flightCaseLoadedList.length &&
     //         fetchedLoadedCasesLength != flightCaseTotalList.length) ||
     //     fetchedLoadedCasesLength == flightCaseTotalList.length &&
@@ -435,21 +435,22 @@ class _LoadPageState extends State<LoadPage> {
     //   flightCaseNotLoadedList.clear(); don't do this, replace the list don't clear.
     // _fetchLoadListFromFirebase();
 
-    //   await Firestore.instance
+    //   await FirebaseFirestore.instance
     //       .collection('loads')
-    //       .document(widget.uidLoad)
-    //       .updateData({'refresh': false});
+    //       .doc(widget.uidLoad)
+    //       .update({'refresh': false});
     // }
   }
 
   ///Gets the loader
   _getLoader() async {
-    futureLoader = Firestore.instance
+    futureLoader = FirebaseFirestore.instance
         .collection('loads')
-        .document(widget.uidLoad)
+        .doc(widget.uidLoad)
         .get()
         .then((val) {
-      return val.data['loader'];
+      var v = val.data() as Map<String, dynamic>;
+      return v['loader'];
     });
 
     if (futureLoader != null) {
@@ -466,10 +467,10 @@ class _LoadPageState extends State<LoadPage> {
   _setLoader(loaderFunction) async {
     if (loaderFunction == null || loaderFunction == 'No Loader') {
       if (widget.permission == 'Admin' || widget.permission == 'Loader') {
-        await Firestore.instance
+        await FirebaseFirestore.instance
             .collection('loads')
-            .document(widget.uidLoad)
-            .updateData({
+            .doc(widget.uidLoad)
+            .update({
           'loader': widget.userUid,
         });
         loader = widget.userUid;
@@ -479,10 +480,10 @@ class _LoadPageState extends State<LoadPage> {
 
   ///Clears the loader
   _clearLoader() async {
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('loads')
-        .document(widget.uidLoad)
-        .updateData({
+        .doc(widget.uidLoad)
+        .update({
       'loader': 'No Loader',
       'refresh': false,
     });
@@ -500,18 +501,18 @@ class _LoadPageState extends State<LoadPage> {
               color: kyellowQBK,
               onPressed: () async {
                 if (fetchedLoadedCasesLength < totalCases) {
-                  await Firestore.instance
+                  await FirebaseFirestore.instance
                       .collection('loads')
-                      .document(widget.uidLoad)
-                      .updateData({'refresh': true});
+                      .doc(widget.uidLoad)
+                      .update({'refresh': true});
 
                   _refreshLoad();
 
                   Timer(Duration(seconds: 5), () async {
-                    await Firestore.instance
+                    await FirebaseFirestore.instance
                         .collection('loads')
-                        .document(widget.uidLoad)
-                        .updateData({'refresh': false});
+                        .doc(widget.uidLoad)
+                        .update({'refresh': false});
                   });
                 }
               },
@@ -527,13 +528,13 @@ class _LoadPageState extends State<LoadPage> {
     // _fetchLoadListFromFirebase();
     blocRowFetchedList =
         DatabaseService(uidLoad: widget.uidLoad, isLoadPage: true)
-            .getLoadListOncePRUEBA();
+            .getLoadListOnce();
 
     _fetchBlocRowListFromFirebase();
 
     // Get Loaded and Total Cases
     tempListLoadedAndTotalCases =
-        DatabaseService(uidLoad: widget.uidLoad).getTotalAndLoadedCasesPRUEBA();
+        DatabaseService(uidLoad: widget.uidLoad).getTotalAndLoadedCases();
     _fetchLoadedAndTotalCasesFromFirebase();
 
     streamFlightCase.listen((event) {
@@ -792,10 +793,11 @@ class _LoadPageState extends State<LoadPage> {
 
                                                 if (casesLoaded == totalCases) {
                                                   _resetAndExit();
-                                                  await Firestore.instance
+                                                  await FirebaseFirestore
+                                                      .instance
                                                       .collection('loads')
-                                                      .document(widget.uidLoad)
-                                                      .updateData(
+                                                      .doc(widget.uidLoad)
+                                                      .update(
                                                           {'refresh': false});
                                                   if (loader == user.uid) {
                                                     _clearLoader();

@@ -20,7 +20,7 @@ class PushNotificationMessage extends StatefulWidget {
 }
 
 class _PushNotificationMessageState extends State<PushNotificationMessage> {
-  final FirebaseMessaging _fcm = FirebaseMessaging();
+  final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   static Future<dynamic> myBackgroundMessageHandler(
       Map<String, dynamic> message) {
     if (message.containsKey('data')) {
@@ -41,10 +41,10 @@ class _PushNotificationMessageState extends State<PushNotificationMessage> {
   void initState() {
     try {
       if (Platform.isIOS) {
-        iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
+        // iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
           _saveDeviceToken();
-        });
-        _fcm.requestNotificationPermissions(IosNotificationSettings());
+        // });
+        _fcm.requestPermission();
       } else {
         _saveDeviceToken();
       }
@@ -53,51 +53,51 @@ class _PushNotificationMessageState extends State<PushNotificationMessage> {
       _saveDeviceToken();
     }
 
-    _fcm.configure(
+    // _fcm.configure(
       /// Called when the app is in the foreground and we receive a notification
-      onMessage: (Map<String, dynamic> message) async {
-        print('onMessage: $message');
-        final SnackBar snackBar = SnackBar(
-          content: Text(message['notification']['title']),
-          action: SnackBarAction(
-            label: 'Go',
-            onPressed: () {
-              Navigator.pushNamed(context, MyFriends.id);
-            },
-          ),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      },
+      // FirebaseMessaging.onMessage.listen(Map<String, dynamic> message) async {
+    //   print('onMessage: $message');
+    //   final SnackBar snackBar = SnackBar(
+    //     content: Text(message['notification']['title']),
+    //     action: SnackBarAction(
+    //       label: 'Go',
+    //       onPressed: () {
+    //         Navigator.pushNamed(context, MyFriends.id);
+    //       },
+    //     ),
+    //   );
+    //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    // },
 
-      /// Called when the app is in the background and we click on a notification
-      onResume: (Map<String, dynamic> message) async {
-        print('onMessage: $message');
-      },
+      // /// Called when the app is in the background and we click on a notification
+    // onResume: (Map<String, dynamic> message) async {
+    //   print('onMessage: $message');
+    // },
 
-      /// Called when the app has been closed completely and it's opened
-      /// from the push notification
-      onLaunch: (Map<String, dynamic> message) async {
-        print('onMessage: $message');
-      },
-      onBackgroundMessage: myBackgroundMessageHandler,
-    );
+      // /// Called when the app has been closed completely and it's opened
+    // /// from the push notification
+    // onLaunch: (Map<String, dynamic> message) async {
+    //   print('onMessage: $message');
+    // },
+    // onBackgroundMessage: myBackgroundMessageHandler,
+    // );
 
     super.initState();
   }
 
   _saveDeviceToken() async {
-    final FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    final User user = FirebaseAuth.instance.currentUser;
 
     String fcmToken = await _fcm.getToken();
 
     if (fcmToken != null) {
-      var tokenRef = Firestore.instance
+      var tokenRef = FirebaseFirestore.instance
           .collection('users')
-          .document(user.uid)
+          .doc(user.uid)
           .collection('tokens')
-          .document(fcmToken);
+          .doc(fcmToken);
 
-      await tokenRef.setData({
+      await tokenRef.set({
         'token': fcmToken,
         'createdAt': FieldValue.serverTimestamp(),
         'platform':

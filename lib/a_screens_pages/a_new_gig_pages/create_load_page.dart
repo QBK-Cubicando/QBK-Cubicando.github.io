@@ -69,7 +69,7 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
     });
 
     blocRowFetchedList =
-        DatabaseService(uidLoad: widget.uidLoad).getLoadListOncePRUEBA();
+        DatabaseService(uidLoad: widget.uidLoad).getLoadListOnce();
 
     _fetchBlocRowListFromFirebase();
   }
@@ -452,7 +452,7 @@ class _CreateLoadPageState extends State<CreateLoadPage> {
 
                       ///Set the OFFLINE list of cases to firebase
                       await DatabaseService(uidLoad: widget.uidLoad)
-                          .updateNewLoadListDataPRUEBA(
+                          .updateNewLoadListData(
                         loadName: widget.nameLoad,
                         mapOfFlightCasesOnList: totalFlightCaseLists,
                         listBlocRow: blocRowList,

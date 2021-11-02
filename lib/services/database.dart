@@ -80,7 +80,7 @@ class DatabaseService {
   ///Users Collection
 
   final CollectionReference usersCollection =
-      Firestore.instance.collection('users');
+      FirebaseFirestore.instance.collection('users');
 
   Future<void> setUserData(
     String name,
@@ -91,7 +91,7 @@ class DatabaseService {
     Image profileImage,
     String email,
   ) async {
-    return await usersCollection.document(userUid).setData({
+    return await usersCollection.doc(userUid).set({
       'name': name,
       'userUid': userUid,
       'dateOfBirth': DateFormat('yyyy-MM-dd').format(dateOfBirth),
@@ -112,7 +112,7 @@ class DatabaseService {
     Image profileImage,
     String email,
   ) async {
-    return await usersCollection.document(userUid).updateData({
+    return await usersCollection.doc(userUid).update({
       'name': name,
       'userUid': userUid,
       'dateOfBirth': DateFormat('yyyy-MM-dd').format(dateOfBirth),
@@ -126,14 +126,15 @@ class DatabaseService {
   //user info from snapshot
 
   UserData _userInfoFromSnapshot(DocumentSnapshot snapshot) {
+    var data = snapshot.data() as Map<String, dynamic>;
     return UserData(
       uid: userUid,
-      name: snapshot.data['name'],
-      dateOfBirth: DateFormat('yyyy-MM-dd').parse(snapshot.data['dateOfBirth']),
-      city: snapshot.data['city'],
-      phone: snapshot.data['phone'] ?? '',
-      speciality: snapshot.data['speciality'],
-      email: snapshot.data['email'],
+      name: data['name'],
+      dateOfBirth: DateFormat('yyyy-MM-dd').parse(data['dateOfBirth']),
+      city: data['city'],
+      phone: data['phone'] ?? '',
+      speciality: data['speciality'],
+      email: data['email'],
       //profileImage: ,
     );
   }
@@ -141,10 +142,7 @@ class DatabaseService {
   //get user stream
 
   Stream<UserData> get userData {
-    return usersCollection
-        .document(userUid)
-        .snapshots()
-        .map(_userInfoFromSnapshot);
+    return usersCollection.doc(userUid).snapshots().map(_userInfoFromSnapshot);
   }
 
   ///gigs data
@@ -160,10 +158,7 @@ class DatabaseService {
     String color,
     int crew,
   }) async {
-    return await Firestore.instance
-        .collection('gigs')
-        .document(uidGig)
-        .setData({
+    return await FirebaseFirestore.instance.collection('gigs').doc(uidGig).set({
       'nameGig': nameGig,
       'userUid': userUid,
       'uidGig': uidGig,
@@ -182,12 +177,12 @@ class DatabaseService {
     int crew,
     String gig,
   }) async {
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection('users')
-        .document(user)
+        .doc(user)
         .collection('calendarGigs')
-        .document(gig)
-        .updateData({
+        .doc(gig)
+        .update({
       'crew': crew,
     });
   }
@@ -197,10 +192,10 @@ class DatabaseService {
     String user,
   }) async {
     await updateCrewNumberCalendarGig(crew: crew, user: user, gig: uidGig);
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection('gigs')
-        .document(uidGig)
-        .updateData({
+        .doc(uidGig)
+        .update({
       'crew': crew,
     });
   }
@@ -215,10 +210,10 @@ class DatabaseService {
     String color,
     int crew,
   }) async {
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection('gigs')
-        .document(uidGig)
-        .updateData({
+        .doc(uidGig)
+        .update({
       'nameGig': nameGig,
       'startDate': DateFormat('yyyy-MM-dd').format(startDate),
       'endDate': DateFormat('yyyy-MM-dd').format(endDate),
@@ -231,43 +226,44 @@ class DatabaseService {
 
   //gig info from snapshot
   NewGig _gigInfoFromSnapshot(DocumentSnapshot snapshot) {
+    var data = snapshot.data() as Map<String, dynamic>;
     return NewGig(
-      uidGig: snapshot.documentID,
-      nameGig: snapshot.data['nameGig'],
-      startDate: DateFormat('yyyy-MM-dd').parse(snapshot.data['startDate']),
-      endDate: DateFormat('yyyy-MM-dd').parse(snapshot.data['endDate']),
-      location: snapshot.data['location'],
-      notes: snapshot.data['notes'] ?? 'No notes',
-      color: snapshot.data['color'],
-      crew: snapshot.data['crew'] != null ? snapshot.data['crew'] : 1,
+      uidGig: snapshot.id,
+      nameGig: data['nameGig'],
+      startDate: DateFormat('yyyy-MM-dd').parse(data['startDate']),
+      endDate: DateFormat('yyyy-MM-dd').parse(data['endDate']),
+      location: data['location'],
+      notes: data['notes'] ?? 'No notes',
+      color: data['color'],
+      crew: data['crew'] != null ? data['crew'] : 1,
     );
   }
 
   // get gigs info
 
   // Stream<NewGig> get gigInfo {
-  //   return Firestore.instance
+  //   return FirebaseFirestore.instance
   //       .collection('gigs')
-  //       .document(uidGig)
+  //       .doc(uidGig)
   //       .snapshots()
   //       .map(_gigInfoFromSnapshot);
   // }
 
   // list of gigs
   List<NewGig> _gigListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.documents.map(_gigInfoFromSnapshot).toList();
+    return snapshot.docs.map(_gigInfoFromSnapshot).toList();
   }
 
   // get gigs stream
   Stream<List<NewGig>> get gigList {
     if (sharedGigs) {
-      return Firestore.instance
+      return FirebaseFirestore.instance
           .collection('gigs')
           .where(crewMemberData, isEqualTo: !pending)
           .snapshots()
           .map(_gigListFromSnapshot);
     } else {
-      return Firestore.instance
+      return FirebaseFirestore.instance
           .collection('gigs')
           .where('userUid', isEqualTo: userUid)
           .orderBy('startDate', descending: true)
@@ -280,69 +276,71 @@ class DatabaseService {
 
   void deleteGig() async {
     String uidCreator;
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('gigs')
-        .document(uidGig)
+        .doc(uidGig)
         .get()
         .then((val) {
-      var value = val.data['userUid'];
+      var v = val.data() as Map<String, dynamic>;
+      var value = v['userUid'];
       uidCreator = value;
     });
     if (userUid == uidCreator) {
       ///Delete Gig Crew
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection('gigs')
-          .document(uidGig)
+          .doc(uidGig)
           .collection('crew')
-          .getDocuments()
+          .get()
           .then((snapshot) {
-        for (DocumentSnapshot ds in snapshot.documents) {
+        for (DocumentSnapshot ds in snapshot.docs) {
           ds.reference.delete();
         }
       });
 
       ///Delete Gig Loads
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection('loads')
-          .getDocuments()
+          .get()
           .then((snapshot) {
-        List<DocumentSnapshot> allLoads = snapshot.documents;
-        List<DocumentSnapshot> filteredLoads = allLoads
-            .where((document) => document.data['uidGig'] == uidGig)
-            .toList();
+        List<DocumentSnapshot> allLoads = snapshot.docs;
+        List<DocumentSnapshot> filteredLoads = allLoads.where((document) {
+          var doc = document.data() as Map<String, dynamic>;
+          return doc['uidGig'] == uidGig;
+        }).toList();
         for (DocumentSnapshot ds in filteredLoads) {
           ds.reference.delete();
         }
       });
 
       ///Delete Gig
-      await Firestore.instance.collection('gigs').document(uidGig).delete();
+      await FirebaseFirestore.instance.collection('gigs').doc(uidGig).delete();
 
       /// Delete calendar gig
       await usersCollection
-          .document(userUid)
+          .doc(userUid)
           .collection('calendarGigs')
-          .document(uidGig)
+          .doc(uidGig)
           .delete();
     } else {
       /// Delete calendar gig
       await usersCollection
-          .document(userUid)
+          .doc(userUid)
           .collection('calendarGigs')
-          .document(uidGig)
+          .doc(uidGig)
           .delete();
 
       ///Delete crew name from gig
-      await Firestore.instance.collection('gigs').document(uidGig).updateData({
+      await FirebaseFirestore.instance.collection('gigs').doc(uidGig).update({
         crewMemberData: FieldValue.delete(),
       });
 
       ///Delete crew name from crew gig
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection('gigs')
-          .document(uidGig)
+          .doc(uidGig)
           .collection('crew')
-          .document(crewMemberData)
+          .doc(crewMemberData)
           .delete();
     }
   }
@@ -360,10 +358,10 @@ class DatabaseService {
     int crew,
   }) async {
     return await usersCollection
-        .document(userUid)
+        .doc(userUid)
         .collection('calendarGigs')
-        .document(uidGig)
-        .setData({
+        .doc(uidGig)
+        .set({
       'uidGig': uidGig,
       'calendarGigName': nameGig,
       'startDate': DateFormat('yyyy-MM-dd').format(startDate),
@@ -385,10 +383,10 @@ class DatabaseService {
     int crew,
   }) async {
     return await usersCollection
-        .document(userUid)
+        .doc(userUid)
         .collection('calendarGigs')
-        .document(uidGig)
-        .updateData({
+        .doc(uidGig)
+        .update({
       'uidGig': uidGig,
       'calendarGigName': nameGig,
       'startDate': DateFormat('yyyy-MM-dd').format(startDate),
@@ -401,28 +399,27 @@ class DatabaseService {
 
   // Calendar gigs from snapshot
   CalendarGig _calendarGigInfoFromSnapshot(DocumentSnapshot snapshot) {
+    var data = snapshot.data() as Map<String, dynamic>;
     return CalendarGig(
-      uidGig: snapshot.data['uidGig'],
-      calendarGigName: snapshot.data['calendarGigName'],
-      startDate: DateFormat('yyyy-MM-dd').parse(snapshot.data['startDate']),
-      endDate: DateFormat('yyyy-MM-dd').parse(snapshot.data['endDate']),
-      location: snapshot.data['location'] != null
-          ? snapshot.data['location']
-          : 'Location',
-      crew: snapshot.data['crew'] != null ? snapshot.data['crew'] : 1,
-      color: snapshot.data['color'],
+      uidGig: data['uidGig'],
+      calendarGigName: data['calendarGigName'],
+      startDate: DateFormat('yyyy-MM-dd').parse(data['startDate']),
+      endDate: DateFormat('yyyy-MM-dd').parse(data['endDate']),
+      location: data['location'] != null ? data['location'] : 'Location',
+      crew: data['crew'] != null ? data['crew'] : 1,
+      color: data['color'],
     );
   }
 
   // gigs for calendar
   List<CalendarGig> _calendarGigListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.documents.map(_calendarGigInfoFromSnapshot).toList();
+    return snapshot.docs.map(_calendarGigInfoFromSnapshot).toList();
   }
 
   //stream gigs for calendar
   Stream<List<CalendarGig>> get gigListForCalendar {
     return usersCollection
-        .document(userUid)
+        .doc(userUid)
         .collection('calendarGigs')
         .snapshots()
         .map(_calendarGigListFromSnapshot);
@@ -441,7 +438,7 @@ class DatabaseService {
     DateTime e = DateTime(ye, mo, 1);
 
     return usersCollection
-        .document(userUid)
+        .doc(userUid)
         .collection('calendarGigs')
         .where('startDate',
             isGreaterThanOrEqualTo: DateFormat('yyyy-MM-dd').format(s),
@@ -449,36 +446,6 @@ class DatabaseService {
         .snapshots()
         .map(_calendarGigListFromSnapshot);
   }
-
-  // /// Get Crew Number Once
-  // Future totalCrewOnce(gigUid) async {
-  //   var respectsQuery = Firestore.instance
-  //       .collection('gig')
-  //       .document(gigUid)
-  //       .collection('crew');
-  //   var querySnapshot = await respectsQuery.getDocuments();
-  //   var totalEquals = querySnapshot.documents.length;
-  //   return totalEquals;
-  // }
-
-  ///Crew List Data Fetch Once
-
-  // Future getCrewListOnce({
-  //   String uidGig,
-  // }) async {
-  //   try {
-  //     final QuerySnapshot qSnap = await Firestore.instance
-  //         .collection('gigs')
-  //         .document(uidGig)
-  //         .collection('crew')
-  //         .getDocuments();
-  //     final int documents = qSnap.documents.length;
-
-  //     return documents;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
 
   /// Crew data for Gig
 
@@ -492,21 +459,22 @@ class DatabaseService {
   }) async {
     if (isCrewPage == true) {
       String uidCreator;
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection('gigs')
-          .document(uidGig)
+          .doc(uidGig)
           .get()
           .then((val) {
-        var value = val.data['userUid'];
+        var v = val.data() as Map<String, dynamic>;
+        var value = v['userUid'];
         uidCreator = value;
       });
 
-      CollectionReference crewCollection = Firestore.instance
+      CollectionReference crewCollection = FirebaseFirestore.instance
           .collection('gigs')
-          .document(uidGig)
+          .doc(uidGig)
           .collection('crew');
 
-      await crewCollection.document(uidCrewGig).setData({
+      await crewCollection.doc(uidCrewGig).set({
         'uidGig': uidGig,
         'nameCrew': nameCrew,
         'permission': permission,
@@ -517,21 +485,21 @@ class DatabaseService {
 
       ///Sets a field in the gig with crew members uid to search
       uidCreator != uidCrewGig
-          ? await Firestore.instance
+          ? await FirebaseFirestore.instance
               .collection('gigs')
-              .document(uidGig)
-              .updateData({
+              .doc(uidGig)
+              .update({
               crewMemberData: false,
             })
           : null;
     } else {
       if (!pending) {
-        CollectionReference friendCollection = Firestore.instance
+        CollectionReference friendCollection = FirebaseFirestore.instance
             .collection('users')
-            .document(userUid)
+            .doc(userUid)
             .collection('friends');
 
-        await friendCollection.document(crewMemberData).setData({
+        await friendCollection.doc(crewMemberData).set({
           'name': nameCrew,
           'speciality': speciality,
           'friendUid': crewMemberData,
@@ -539,20 +507,20 @@ class DatabaseService {
           'userUid': userUid,
         });
         // DELETE PENDING
-        Firestore.instance
+        FirebaseFirestore.instance
             .collection('users')
-            .document(userUid)
+            .doc(userUid)
             .collection('pending')
-            .document(crewMemberData)
+            .doc(crewMemberData)
             .delete();
       } else {
-        CollectionReference pendingCollection = Firestore.instance
+        CollectionReference pendingCollection = FirebaseFirestore.instance
             .collection('users')
-            .document(userUid)
+            .doc(userUid)
             .collection('pending');
 
         ///Set a "Pending Response" Friend
-        await pendingCollection.document(crewMemberData).setData({
+        await pendingCollection.doc(crewMemberData).set({
           'name': nameCrew,
           'speciality': speciality,
           'waitingFriendsAnswer': waitingFriendsAnswer,
@@ -562,17 +530,17 @@ class DatabaseService {
         });
 
         ///Set a "Friend Request" to a Friend
-        await Firestore.instance
+        await FirebaseFirestore.instance
             .collection('users')
-            .document(userUid)
+            .doc(userUid)
             .get()
             .then((val) async {
-          await Firestore.instance
+          await FirebaseFirestore.instance
               .collection('users')
-              .document(crewMemberData)
+              .doc(crewMemberData)
               .collection('pending')
-              .document(userUid)
-              .setData({
+              .doc(userUid)
+              .set({
             'name': val['name'],
             'speciality': val['speciality'],
             'waitingFriendsAnswer': false,
@@ -592,12 +560,12 @@ class DatabaseService {
     String speciality,
   }) async {
     ///Add Friend own
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
-        .document(userUid)
+        .doc(userUid)
         .collection('friends')
-        .document(crewMemberData)
-        .setData({
+        .doc(crewMemberData)
+        .set({
       'name': name,
       'city': city,
       'friendUid': crewMemberData,
@@ -606,17 +574,17 @@ class DatabaseService {
     });
 
     ///Add Friend to Friend
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
-        .document(userUid)
+        .doc(userUid)
         .get()
         .then((val) async {
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection('users')
-          .document(crewMemberData)
+          .doc(crewMemberData)
           .collection('friends')
-          .document(userUid)
-          .setData({
+          .doc(userUid)
+          .set({
         'name': val['name'],
         'city': val['city'],
         'friendUid': crewMemberData,
@@ -626,44 +594,46 @@ class DatabaseService {
     });
 
     /// Delete Pending own
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
-        .document(userUid)
+        .doc(userUid)
         .collection('pending')
-        .document(crewMemberData)
+        .doc(crewMemberData)
         .delete();
 
     /// Delete Pending for Friend
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
-        .document(crewMemberData)
+        .doc(crewMemberData)
         .collection('pending')
-        .document(userUid)
+        .doc(userUid)
         .delete();
   }
 
   /// get crew permission for a gig
   getCrewPermission() async {
     String uidCreator;
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('gigs')
-        .document(uidGig)
+        .doc(uidGig)
         .get()
         .then((val) {
-      var value = val.data['userUid'];
+      var v = val.data() as Map<String, dynamic>;
+      var value = v['userUid'];
       uidCreator = value;
     });
 
     if (uidCreator != crewMemberData) {
-      return Firestore.instance
+      return FirebaseFirestore.instance
           .collection('gigs')
-          .document(uidGig)
+          .doc(uidGig)
           .collection('crew')
-          .document(crewMemberData)
+          .doc(crewMemberData)
           .get()
           .then((val) {
-        var permission = val.data['permission'];
-        var index = val.data['index'];
+        var v = val.data() as Map<String, dynamic>;
+        var permission = v['permission'];
+        var index = v['index'];
 
         return [permission, index];
       });
@@ -674,41 +644,40 @@ class DatabaseService {
 
   // get crew member data
   NewCrewMember _gigInfoNewCrewMemberFromSnapshot(DocumentSnapshot snapshot) {
+    var data = snapshot.data() as Map<String, dynamic>;
     return NewCrewMember(
-      uidCrewMember: snapshot.documentID,
-      nameCrew: snapshot.data['nameCrew'],
-      permission: snapshot.data['permission'],
-      index: snapshot.data['index'],
-      city: snapshot.data['city'],
-      speciality: snapshot.data['speciality'] == null
-          ? 'RANDOM'
-          : snapshot.data['speciality'],
+      uidCrewMember: snapshot.id,
+      nameCrew: data['nameCrew'],
+      permission: data['permission'],
+      index: data['index'],
+      city: data['city'],
+      speciality: data['speciality'] == null ? 'RANDOM' : data['speciality'],
     );
   }
 
   // get crew member stream
   Stream<NewCrewMember> get gigCrewMemberData {
-    CollectionReference crewCollection = Firestore.instance
+    CollectionReference crewCollection = FirebaseFirestore.instance
         .collection('gigs')
-        .document(uidGig)
+        .doc(uidGig)
         .collection('crew');
 
     return crewCollection
-        .document(uidCrewGig)
+        .doc(uidCrewGig)
         .snapshots()
         .map(_gigInfoNewCrewMemberFromSnapshot);
   }
 
   // crew member list
   List<NewCrewMember> _gigListCrewMembers(QuerySnapshot snapshot) {
-    return snapshot.documents.map(_gigInfoNewCrewMemberFromSnapshot).toList();
+    return snapshot.docs.map(_gigInfoNewCrewMemberFromSnapshot).toList();
   }
 
   // get crew member list stream
   Stream<List<NewCrewMember>> get gigCrewMemberList {
-    CollectionReference crewCollection = Firestore.instance
+    CollectionReference crewCollection = FirebaseFirestore.instance
         .collection('gigs')
-        .document(uidGig)
+        .doc(uidGig)
         .collection('crew');
 
     return crewCollection.snapshots().map(_gigListCrewMembers);
@@ -720,74 +689,66 @@ class DatabaseService {
       int crew;
       //Get creators uid
       String uidCreator;
-      await Firestore.instance
+      await FirebaseFirestore.instance
           .collection('gigs')
-          .document(uidGig)
+          .doc(uidGig)
           .get()
           .then((val) {
-        var value = val.data['userUid'];
+        var v = val.data() as Map<String, dynamic>;
+        var value = val['userUid'];
         uidCreator = value;
-        crew = val.data['crew'];
+        crew = v['crew'];
       });
 
       //Substract one from crew
       updateCrewNumberGig(crew: crew - 1, user: userUid);
 
-      CollectionReference crewCollection = Firestore.instance
+      CollectionReference crewCollection = FirebaseFirestore.instance
           .collection('gigs')
-          .document(uidGig)
+          .doc(uidGig)
           .collection('crew');
 
       if (uidCreator != uidCrewGig) {
         //Delete from Gig's Crew
-        await crewCollection.document(uidCrewGig).delete();
+        await crewCollection.doc(uidCrewGig).delete();
         //Delete from Gig
-        await Firestore.instance
-            .collection('gigs')
-            .document(uidGig)
-            .updateData({
+        await FirebaseFirestore.instance.collection('gigs').doc(uidGig).update({
           crewMemberData: FieldValue.delete(),
         });
         //Delete Calendar Gig for friend
 
-        await Firestore.instance
+        await FirebaseFirestore.instance
             .collection('users')
-            .document(uidCrewGig)
+            .doc(uidCrewGig)
             .collection('calendarGigs')
-            .document(uidGig)
+            .doc(uidGig)
             .delete();
       }
     } else {
-      Firestore.instance
+      FirebaseFirestore.instance
           .collection('users')
-          .document(userUid)
+          .doc(userUid)
           .collection('friends')
-          .document(crewMemberData)
+          .doc(crewMemberData)
           .delete();
     }
   }
 
   // check for Loader and refresh Loader from Gig
   checkForIsLoader() async {
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('gigs')
-        .document(uidGig)
+        .doc(uidGig)
         .collection('crew')
         .where('permission', isEqualTo: 'Loader')
-        .getDocuments()
+        .get()
         .then((val) async {
-      if (val.documents.length > 0) {
-        await Firestore.instance
-            .collection('gigs')
-            .document(uidGig)
-            .updateData({
+      if (val.docs.length > 0) {
+        await FirebaseFirestore.instance.collection('gigs').doc(uidGig).update({
           'isLoader': true,
         });
       } else {
-        await Firestore.instance
-            .collection('gigs')
-            .document(uidGig)
-            .updateData({
+        await FirebaseFirestore.instance.collection('gigs').doc(uidGig).update({
           'isLoader': false,
         });
       }
@@ -795,14 +756,14 @@ class DatabaseService {
   }
 
   Future<bool> checkForLoaderToAdd() async {
-    return await Firestore.instance
+    return await FirebaseFirestore.instance
         .collection('gigs')
-        .document(uidGig)
+        .doc(uidGig)
         .collection('crew')
         .where('permission', isEqualTo: 'Loader')
-        .getDocuments()
+        .get()
         .then((val) async {
-      if (val.documents.length > 0) {
+      if (val.docs.length > 0) {
         return true;
       } else {
         return false;
@@ -816,17 +777,17 @@ class DatabaseService {
   Future<void> setFriendsList({
     List friendsList,
   }) async {
-    CollectionReference friendsCollection = Firestore.instance
+    CollectionReference friendsCollection = FirebaseFirestore.instance
         .collection('users')
-        .document(userUid)
+        .doc(userUid)
         .collection('friends');
 
     if (friendsList.length > 1) {
-      await friendsCollection.document('friends').updateData({
+      await friendsCollection.doc('friends').update({
         'friendsList': friendsList,
       });
     } else {
-      await friendsCollection.document('friends').setData({
+      await friendsCollection.doc('friends').set({
         'friendsList': friendsList,
       });
     }
@@ -834,27 +795,28 @@ class DatabaseService {
 
   // get crew member data
   NewFriend _infoNewCrewMemberFromSnapshot(DocumentSnapshot snapshot) {
+    var data = snapshot.data() as Map<String, dynamic>;
     return NewFriend(
-      uid: snapshot.documentID,
-      name: snapshot.data['name'],
-      email: snapshot.data['email'],
-      phone: snapshot.data['phone'],
-      city: snapshot.data['city'],
-      speciality: snapshot.data['speciality'],
+      uid: snapshot.id,
+      name: data['name'],
+      email: data['email'],
+      phone: data['phone'],
+      city: data['city'],
+      speciality: data['speciality'],
     );
   }
 
   // list of crew friends
   List<NewFriend> _crewListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.documents.map(_infoNewCrewMemberFromSnapshot).toList();
+    return snapshot.docs.map(_infoNewCrewMemberFromSnapshot).toList();
   }
 
   // get friends stream
   Stream<List<NewFriend>> get crewMemberList {
     if (isCrewPage == true) {
-      return Firestore.instance
+      return FirebaseFirestore.instance
           .collection('users')
-          .document(userUid)
+          .doc(userUid)
           .collection('friends')
           .where('name', isGreaterThanOrEqualTo: crewMemberData)
           .snapshots()
@@ -862,23 +824,23 @@ class DatabaseService {
     } else {
       if (searchingFriends == false) {
         if (!pending) {
-          CollectionReference friendsCollection = Firestore.instance
+          CollectionReference friendsCollection = FirebaseFirestore.instance
               .collection('users')
-              .document(userUid)
+              .doc(userUid)
               .collection('friends');
 
           return friendsCollection.snapshots().map(_crewListFromSnapshot);
         } else {
-          return Firestore.instance
+          return FirebaseFirestore.instance
               .collection('users')
-              .document(userUid)
+              .doc(userUid)
               .collection('pending')
               .where('waitingFriendsAnswer', isEqualTo: waitingFriendsAnswer)
               .snapshots()
               .map(_crewListFromSnapshot);
         }
       } else {
-        return Firestore.instance
+        return FirebaseFirestore.instance
             .collection('users')
             .where('email', isGreaterThanOrEqualTo: crewMemberData)
             .snapshots()
@@ -890,14 +852,14 @@ class DatabaseService {
   // get friends stream
   // Stream<List<NewFriend>> get searchCrewMemberList {
   //   if (crewMemberData != null) {
-  //     return Firestore.instance
+  //     return FirebaseFirestore.instance
   //         .collection('users')
   //         .where('email', isEqualTo: crewMemberData)
   //         .snapshots()
   //         .map(_crewListFromSnapshot);
   //   } else {
   //     //TODO: Find another way to return a "null" list
-  //     return Firestore.instance
+  //     return FirebaseFirestore.instance
   //         .collection('users')
   //         .where('userUid', isEqualTo: '1')
   //         .snapshots()
@@ -907,69 +869,69 @@ class DatabaseService {
 
   ///List of FlightCases Created
 
-  Future<void> updateNewLoadListData({
-    List<FlightCase> flightCasesOnList,
-    int flightCasesLoaded,
-    String loadName,
-  }) async {
-    flightCasesToMap(FlightCase flightCaseForMap) {
-      return {
-        'index': flightCaseForMap.index,
-        'name': flightCaseForMap.nameFlightCase,
-        'quantity': flightCaseForMap.quantity,
-        'type': flightCaseForMap.typeFlightCase,
-        'loaded': flightCaseForMap.loaded,
-        'stack': flightCaseForMap.stack,
-        'wheels': flightCaseForMap.wheels,
-        'tilt': flightCaseForMap.tilt,
-        'color': flightCaseForMap.color
-        //TODO: add 'category': flightCaseForMap.category,
-      };
-    }
+  // Future<void> updateNewLoadListData({
+  //   List<FlightCase> flightCasesOnList,
+  //   int flightCasesLoaded,
+  //   String loadName,
+  // }) async {
+  //   flightCasesToMap(FlightCase flightCaseForMap) {
+  //     return {
+  //       'index': flightCaseForMap.index,
+  //       'name': flightCaseForMap.nameFlightCase,
+  //       'quantity': flightCaseForMap.quantity,
+  //       'type': flightCaseForMap.typeFlightCase,
+  //       'loaded': flightCaseForMap.loaded,
+  //       'stack': flightCaseForMap.stack,
+  //       'wheels': flightCaseForMap.wheels,
+  //       'tilt': flightCaseForMap.tilt,
+  //       'color': flightCaseForMap.color
+  //       //TODO: add 'category': flightCaseForMap.category,
+  //     };
+  //   }
 
-    await Firestore.instance.collection('loads').document(uidLoad).updateData({
-      'totalCases': flightCasesOnList.length,
-      'loadedCases': flightCasesLoaded,
-      'loadList': flightCasesOnList.map(flightCasesToMap).toList(),
-    });
-  }
+  //   await FirebaseFirestore.instance.collection('loads').doc(uidLoad).update({
+  //     'totalCases': flightCasesOnList.length,
+  //     'loadedCases': flightCasesLoaded,
+  //     'loadList': flightCasesOnList.map(flightCasesToMap).toList(),
+  //   });
+  // }
 
   ///Load List Data Fetch Once
 
-  Future<List<FlightCase>> getLoadListOnce() {
-    try {
-      return Firestore.instance
-          .collection('loads')
-          .document(uidLoad)
-          .get()
-          .then((data) async {
-        List loadListOfMaps = data['loadList'];
+  // Future<List<FlightCase>> getLoadListOnce() {
+  //   try {
+  //     return FirebaseFirestore.instance
+  //         .collection('loads')
+  //         .doc(uidLoad)
+  //         .get()
+  //         .then((data) async {
+  //       List loadListOfMaps = data['loadList'];
 
-        List<FlightCase> loadList = loadListOfMaps
-            .map((element) => FlightCase(
-                  index: element['index'],
-                  nameFlightCase: element['name'],
-                  quantity: element['quantity'],
-                  typeFlightCase: element['type'],
-                  loaded: element['loaded'],
-                  stack: element['stack'],
-                  wheels: element['wheels'],
-                  tilt: element['tilt'],
-                  color: element['color'],
-                  //TODO: add category: snapshot.data['category'],
-                ))
-            .toList();
+  //       List<FlightCase> loadList = loadListOfMaps
+  //           .map((element) => FlightCase(
+  //                 index: element['index'],
+  //                 nameFlightCase: element['name'],
+  //                 quantity: element['quantity'],
+  //                 typeFlightCase: element['type'],
+  //                 loaded: element['loaded'],
+  //                 stack: element['stack'],
+  //                 wheels: element['wheels'],
+  //                 tilt: element['tilt'],
+  //                 color: element['color'],
+  //                 //TODO: add category: data['category'],
+  //               ))
+  //           .toList();
 
-        return loadList;
-      });
-    } catch (e) {
-      return null;
-    }
-  }
+  //       return loadList;
+  //     });
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
 
   ///List of FlightCases Created
 
-  Future<void> updateNewLoadListDataPRUEBA({
+  Future<void> updateNewLoadListData({
     Map<String, List<FlightCase>> mapOfFlightCasesOnList,
     List<BlocRow> listBlocRow,
     Map<String, dynamic> idAndBlockRow,
@@ -1016,7 +978,7 @@ class DatabaseService {
     // print(totalFlightCases);
     // print(mapOfFlightCasesOnList);
 
-    await Firestore.instance.collection('loads').document(uidLoad).updateData({
+    await FirebaseFirestore.instance.collection('loads').doc(uidLoad).update({
       'totalCases': totalFlightCases,
       'loadedCases': flightCasesLoaded,
       'loadList': listBlocRow.map(blocRowToMap).toList(),
@@ -1025,10 +987,10 @@ class DatabaseService {
   }
 
   // Get Loaded Cases and Total Cases
-  Future<List<int>> getTotalAndLoadedCasesPRUEBA() {
-    return Firestore.instance
+  Future<List<int>> getTotalAndLoadedCases() {
+    return FirebaseFirestore.instance
         .collection('loads')
-        .document(uidLoad)
+        .doc(uidLoad)
         .get()
         .then((data) async {
       int loadedCases = data['loadedCases'];
@@ -1040,16 +1002,16 @@ class DatabaseService {
 
   ///Load List Data Fetch Once
 
-  Future<List<BlocRow>> getLoadListOncePRUEBA() {
-    return Firestore.instance
+  Future<List<BlocRow>> getLoadListOnce() {
+    return FirebaseFirestore.instance
         .collection('loads')
-        .document(uidLoad)
+        .doc(uidLoad)
         .get()
         .then((data) async {
       List loadListOfBlocRows = data['loadList'];
       idAndBlocRow = data['idAndBlocRow'];
-      int loadedCases = data['loadedcases'];
-      int totalCases = data['totalCases'];
+      // int loadedCases = data['loadedCases'];
+      // int totalCases = data['totalCases'];
 
       // Fetch Load List
       test(List<dynamic> list) {
@@ -1064,7 +1026,7 @@ class DatabaseService {
                   wheels: element['wheels'],
                   tilt: element['tilt'],
                   color: element['color'],
-                  //TODO: add category: snapshot.data['category'],
+                  //TODO: add category: data['category'],
                 ))
             .toList();
         return flightCaseList;
@@ -1115,7 +1077,7 @@ class DatabaseService {
   //     stack: element['stack'],
   //     wheels: element['wheels'],
   //     tilt: element['tilt'],
-  //     //TODO: add category: snapshot.data['category'],
+  //     //TODO: add category: data['category'],
   //   );
   // }
 
@@ -1124,9 +1086,10 @@ class DatabaseService {
   Future<void> setLoadData({
     String nameLoad,
   }) async {
-    CollectionReference loadCollection = Firestore.instance.collection('loads');
+    CollectionReference loadCollection =
+        FirebaseFirestore.instance.collection('loads');
 
-    await loadCollection.document(uidLoad).setData({
+    await loadCollection.doc(uidLoad).set({
       'uidGig': uidGig,
       'userUid': userUid,
       'nameLoad': nameLoad,
@@ -1139,31 +1102,30 @@ class DatabaseService {
 
   // load data from snapshot
   Load _loadInfoFromSnapshot(DocumentSnapshot snapshot) {
+    var data = snapshot.data() as Map<String, dynamic>;
     return Load(
-      uidLoad: snapshot.documentID,
-      nameLoad: snapshot.data['nameLoad'],
-      index: snapshot.data['index'],
+      uidLoad: snapshot.id,
+      nameLoad: data['nameLoad'],
+      index: data['index'],
     );
   }
 
   //get load stream
   Stream<Load> get loadData {
-    CollectionReference loadCollection = Firestore.instance.collection('loads');
-    return loadCollection
-        .document(uidLoad)
-        .snapshots()
-        .map(_loadInfoFromSnapshot);
+    CollectionReference loadCollection =
+        FirebaseFirestore.instance.collection('loads');
+    return loadCollection.doc(uidLoad).snapshots().map(_loadInfoFromSnapshot);
   }
 
   // load list data
   List<Load> _loadsList(QuerySnapshot snapshot) {
-    return snapshot.documents.map(_loadInfoFromSnapshot).toList();
+    return snapshot.docs.map(_loadInfoFromSnapshot).toList();
   }
 
   // get loads list stream
 
   Stream<List<Load>> get loadListData {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('loads')
         .where('uidGig', isEqualTo: uidGig)
         .snapshots()
@@ -1172,15 +1134,19 @@ class DatabaseService {
 
   // delete load
   void deleteLoad() async {
-    CollectionReference loadCollection = Firestore.instance.collection('loads');
+    CollectionReference loadCollection =
+        FirebaseFirestore.instance.collection('loads');
 
-    await loadCollection.document(uidLoad).delete();
+    await loadCollection.doc(uidLoad).delete();
   }
 
   // Listen for a change in refresh
 
   Stream get refreshLoad {
-    return Firestore.instance.collection('loads').document(uidLoad).snapshots();
+    return FirebaseFirestore.instance
+        .collection('loads')
+        .doc(uidLoad)
+        .snapshots();
   }
 
   /// Own Flight Case Data
@@ -1192,12 +1158,12 @@ class DatabaseService {
       bool tilt,
       bool stack,
       String color}) async {
-    CollectionReference ownListCollection = Firestore.instance
+    CollectionReference ownListCollection = FirebaseFirestore.instance
         .collection('users')
-        .document(userUid)
+        .doc(userUid)
         .collection('ownCases');
 
-    await ownListCollection.document().setData({
+    await ownListCollection.doc().set({
       'nameFlightCase': nameFlightCase,
       'typeFlightCase': typeFlightCase,
       'wheels': wheels,
@@ -1216,11 +1182,11 @@ class DatabaseService {
     bool stack,
     String color,
   }) async {
-    CollectionReference flightCaseCollection = Firestore.instance
+    CollectionReference flightCaseCollection = FirebaseFirestore.instance
         .collection('users')
-        .document(userUid)
+        .doc(userUid)
         .collection('ownCases');
-    await flightCaseCollection.document(uidFlightCase).updateData({
+    await flightCaseCollection.doc(uidFlightCase).update({
       'nameFlightCase': nameFlightCase,
       'wheels': wheels,
       'tilt': tilt,
@@ -1230,34 +1196,34 @@ class DatabaseService {
   }
 
   Stream<FlightCase> get ownCasesInfo {
-    return Firestore.instance
+    return FirebaseFirestore.instance
         .collection('gigs')
-        .document(uidGig)
+        .doc(uidGig)
         .snapshots()
         .map(_flightCaseInfoFromSnapshot);
   }
 
   // list of gigs
   List<FlightCase> _ownCasesListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.documents.map(_flightCaseInfoFromSnapshot).toList();
+    return snapshot.docs.map(_flightCaseInfoFromSnapshot).toList();
   }
 
   //  get own case list data
   Stream<List<FlightCase>> get ownCaseListData {
-    CollectionReference ownCaseCollection = Firestore.instance
+    CollectionReference ownCaseCollection = FirebaseFirestore.instance
         .collection('users')
-        .document(userUid)
+        .doc(userUid)
         .collection('ownCases');
 
     return ownCaseCollection.snapshots().map(_ownCasesListFromSnapshot);
   }
 
   void deleteOwnCase(String uidOwnCase) async {
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
-        .document(userUid)
+        .doc(userUid)
         .collection('ownCases')
-        .document(uidOwnCase)
+        .doc(uidOwnCase)
         .delete();
   }
 
@@ -1275,11 +1241,11 @@ class DatabaseService {
   //     bool loaded,
   //     String color}) async {
   //   //TODO: Maybe can delete uidFlightCase
-  //   CollectionReference flightCaseCollection = Firestore.instance
+  //   CollectionReference flightCaseCollection = FirebaseFirestore.instance
   //       .collection('loads')
-  //       .document(uidLoad)
+  //       .doc(uidLoad)
   //       .collection('loadList');
-  //   await flightCaseCollection.document(uidFlightCase).setData({
+  //   await flightCaseCollection.doc(uidFlightCase).set({
   //     'nameFlightCase': nameFlightCase,
   //     'typeFlightCase': typeFlightCase,
   //     'quantity': quantity,
@@ -1294,42 +1260,43 @@ class DatabaseService {
 
   // flight case from snapshot
   FlightCase _flightCaseInfoFromSnapshot(DocumentSnapshot snapshot) {
+    var data = snapshot.data() as Map<String, dynamic>;
     return FlightCase(
-        uidFlightCase: snapshot.documentID,
-        nameFlightCase: snapshot.data['nameFlightCase'],
-        typeFlightCase: snapshot.data['typeFlightCase'],
-        quantity: snapshot.data['quantity'],
-        wheels: snapshot.data['wheels'],
-        tilt: snapshot.data['tilt'],
-        stack: snapshot.data['stack'],
-        index: snapshot.data['index'],
-        loaded: snapshot.data['loaded'],
-        color: snapshot.data['color']);
+        uidFlightCase: snapshot.id,
+        nameFlightCase: data['nameFlightCase'],
+        typeFlightCase: data['typeFlightCase'],
+        quantity: data['quantity'],
+        wheels: data['wheels'],
+        tilt: data['tilt'],
+        stack: data['stack'],
+        index: data['index'],
+        loaded: data['loaded'],
+        color: data['color']);
   }
 
   // get flight case data
   // Stream<FlightCase> get flightCaseData {
-  //   CollectionReference flightCaseCollection = Firestore.instance
+  //   CollectionReference flightCaseCollection = FirebaseFirestore.instance
   //       .collection('loads')
-  //       .document(uidLoad)
+  //       .doc(uidLoad)
   //       .collection('loadList');
   //
   //   return flightCaseCollection
-  //       .document(uidFlightCase)
+  //       .doc(uidFlightCase)
   //       .snapshots()
   //       .map(_flightCaseInfoFromSnapshot);
   // }
 
   // flight case list data
   List<FlightCase> _flightCaseListData(QuerySnapshot snapshot) {
-    return snapshot.documents.map(_flightCaseInfoFromSnapshot).toList();
+    return snapshot.docs.map(_flightCaseInfoFromSnapshot).toList();
   }
 
   //  get flight case list data
   Stream<List<FlightCase>> get flightCaseListData {
-    CollectionReference flightCaseCollection = Firestore.instance
+    CollectionReference flightCaseCollection = FirebaseFirestore.instance
         .collection('loads')
-        .document(uidLoad)
+        .doc(uidLoad)
         .collection('loadList');
 
     if (isLoadPage == false) {
@@ -1350,35 +1317,35 @@ class DatabaseService {
   }
 
   void deleteFlightCase() async {
-    CollectionReference flightCaseCollection = Firestore.instance
+    CollectionReference flightCaseCollection = FirebaseFirestore.instance
         .collection('loads')
-        .document(uidLoad)
+        .doc(uidLoad)
         .collection('loadList');
 
-    await flightCaseCollection.document(uidFlightCase).delete();
+    await flightCaseCollection.doc(uidFlightCase).delete();
   }
 
   //replace index in all cases
   // Future<void> setIndex({int index}) async {
-  //   CollectionReference flightCaseCollection = Firestore.instance
+  //   CollectionReference flightCaseCollection = FirebaseFirestore.instance
   //       .collection('loads')
-  //       .document(uidLoad)
+  //       .doc(uidLoad)
   //       .collection('loadList');
   //
   //   await flightCaseCollection
-  //       .document(uidFlightCase)
-  //       .updateData({'index': index});
+  //       .doc(uidFlightCase)
+  //       .update({'index': index});
   // }
 
   // Future<void> setLoaded({bool loaded}) async {
-  //   CollectionReference flightCaseCollection = Firestore.instance
+  //   CollectionReference flightCaseCollection = FirebaseFirestore.instance
   //       .collection('loads')
-  //       .document(uidLoad)
+  //       .doc(uidLoad)
   //       .collection('loadList');
   //
   //   await flightCaseCollection
-  //       .document(uidFlightCase)
-  //       .updateData({'loaded': loaded});
+  //       .doc(uidFlightCase)
+  //       .update({'loaded': loaded});
   // }
 
   /// New My Case data
@@ -1392,13 +1359,13 @@ class DatabaseService {
   //   bool stack,
   // }) async {
   //   CollectionReference myCaseCollection =
-  //       Firestore.instance.collection('cases');
+  //       FirebaseFirestore.instance.collection('cases');
   //
   //   await myCaseCollection
-  //       .document('${userUid}Cases')
+  //       .doc('${userUid}Cases')
   //       .collection('cases')
-  //       .document()
-  //       .setData({
+  //       .doc()
+  //       .set({
   //     'nameFlightCase': nameFlightCase,
   //     'typeFlightCase': typeFlightCase,
   //     'wheels': wheels,
@@ -1410,17 +1377,17 @@ class DatabaseService {
 // replace index in all cases
 //  replaceIndexForward() async {
 //    CollectionReference flightCaseCollection =
-//    usersCollection.document(userUid).collection('gigs')
-//        .document(uidGig).collection('loads').document(uidLoad).collection('loadList');
+//    usersCollection.doc(userUid).collection('gigs')
+//        .doc(uidGig).collection('loads').doc(uidLoad).collection('loadList');
 //
-//   await flightCaseCollection.getDocuments()
+//   await flightCaseCollection.get()
 //       .then((snapshot) {
-//         snapshot.documents.forEach((flightCase) {
+//         snapshot.docs.forEach((flightCase) {
 //
 //           int index = flightCase.data['quantity'];
 //
-//           flightCaseCollection.document(flightCase.documentID)
-//                 .updateData({'quantity' : 0});
+//           flightCaseCollection.doc(flightCase.id)
+//                 .update({'quantity' : 0});
 //
 //   }
 //
@@ -1428,8 +1395,8 @@ class DatabaseService {
 
 //           for(final flightCase in snapshot.documents){
 //
-//               flightCaseCollection.document(flightCase.documentID)
-//                   .updateData({'quantity' : flightCase.data['quantity']});
+//               flightCaseCollection.doc(flightCase.id)
+//                   .update({'quantity' : flightCase.data['quantity']});
 //           }
 //
 //         }

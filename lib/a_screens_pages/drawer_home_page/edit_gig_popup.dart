@@ -352,12 +352,13 @@ class _EditGigPopupState extends State<EditGigPopup> {
                             color: kyellowQBK,
                             onPress: () async {
                               int crew;
-                              await Firestore.instance
+                              await FirebaseFirestore.instance
                                   .collection('gigs')
-                                  .document(uidGig)
+                                  .doc(uidGig)
                                   .get()
                                   .then((val) {
-                                crew = val.data['crew'];
+                                var v = val.data() as Map<String, dynamic>;
+                                crew = v['crew'];
                               });
                               if (_formKeyEditGig.currentState.validate()) {
                                 ///Update Gig's Data

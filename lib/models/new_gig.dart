@@ -128,10 +128,10 @@ class NewGigTile extends StatelessWidget {
                                   color: Colors.greenAccent,
                                   onPress: () async {
                                     ///Accepting Gig
-                                    await Firestore.instance
+                                    await FirebaseFirestore.instance
                                         .collection('gigs')
-                                        .document(gig.uidGig)
-                                        .updateData({
+                                        .doc(gig.uidGig)
+                                        .update({
                                       '${user.uid}': true,
                                     });
 
@@ -263,10 +263,10 @@ class NewGigTile extends StatelessWidget {
                                 color: Colors.greenAccent,
                                 onPress: () async {
                                   ///Accepting Gig
-                                  await Firestore.instance
+                                  await FirebaseFirestore.instance
                                       .collection('gigs')
-                                      .document(gig.uidGig)
-                                      .updateData({
+                                      .doc(gig.uidGig)
+                                      .update({
                                     '${user.uid}': true,
                                   });
 

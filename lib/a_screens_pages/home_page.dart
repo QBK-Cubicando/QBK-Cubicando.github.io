@@ -312,8 +312,8 @@ class _QBKHomePageState extends State<QBKHomePage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Container(
-                                      // height: displayHeight(context) * 0.7,
-                                      // width: displayWidth(context) * 0.9,
+                                      height: displayHeight(context) * 0.7,
+                                      width: displayWidth(context) * 0.9,
 
                                       child: QBKCalendar(),
                                     ), //Calendar

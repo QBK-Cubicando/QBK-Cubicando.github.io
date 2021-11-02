@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qbk_simple_app/a_screens_pages/drawer_home_page/my_cases.dart';
@@ -23,7 +24,11 @@ import 'a_screens_pages/registration_information_page.dart';
 import 'services/wrapper_widget.dart';
 
 ///Read but not Documentated
-void main() => runApp(QBKApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(QBKApp());
+} 
 
 class QBKApp extends StatelessWidget {
   @override

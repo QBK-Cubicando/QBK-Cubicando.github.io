@@ -211,10 +211,10 @@ class CopyLoadPage extends StatelessWidget {
 //   //   ///Just to update the loads that don't have total case option
 //   //   try {
 //   //     if (init = true) {
-//   //       Firestore.instance
+//   //       FirebaseFirestore.instance
 //   //           .collection('loads')
-//   //           .document(widget.uidLoad)
-//   //           .updateData({
+//   //           .doc(widget.uidLoad)
+//   //           .update({
 //   //         'totalCases': flightCaseTotalList.length,
 //   //         'loadedCases': flightCaseLoadedList.length == null
 //   //             ? 0
@@ -370,10 +370,10 @@ class CopyLoadPage extends StatelessWidget {
 //       );
 //       blocRowTotalList.clear();
 
-//       await Firestore.instance
+//       await FirebaseFirestore.instance
 //           .collection('loads')
-//           .document(widget.uidLoad)
-//           .updateData({'refresh': false});
+//           .doc(widget.uidLoad)
+//           .update({'refresh': false});
 //     } else {
 //       // flightCaseLoadedList.clear();
 //       // flightCaseNotLoadedList.clear();
@@ -391,10 +391,10 @@ class CopyLoadPage extends StatelessWidget {
 //     //       flightCasesLoaded: flightCaseLoadedList.length,
 //     //     );
 //     //   }
-//     //   await Firestore.instance
+//     //   await FirebaseFirestore.instance
 //     //       .collection('loads')
-//     //       .document(widget.uidLoad)
-//     //       .updateData({'refresh': true});
+//     //       .doc(widget.uidLoad)
+//     //       .update({'refresh': true});
 //     // } else if ((fetchedLoadedCasesLength > flightCaseLoadedList.length &&
 //     //         fetchedLoadedCasesLength != flightCaseTotalList.length) ||
 //     //     fetchedLoadedCasesLength == flightCaseTotalList.length &&
@@ -403,18 +403,18 @@ class CopyLoadPage extends StatelessWidget {
 //     //   flightCaseNotLoadedList.clear(); don't do this, replace the list don't clear.
 //     // _fetchLoadListFromFirebase();
 
-//     //   await Firestore.instance
+//     //   await FirebaseFirestore.instance
 //     //       .collection('loads')
-//     //       .document(widget.uidLoad)
-//     //       .updateData({'refresh': false});
+//     //       .doc(widget.uidLoad)
+//     //       .update({'refresh': false});
 //     // }
 //   }
 
 //   ///Gets the loader
 //   _getLoader() async {
-//     futureLoader = Firestore.instance
+//     futureLoader = FirebaseFirestore.instance
 //         .collection('loads')
-//         .document(widget.uidLoad)
+//         .doc(widget.uidLoad)
 //         .get()
 //         .then((val) {
 //       return val.data['loader'];
@@ -434,10 +434,10 @@ class CopyLoadPage extends StatelessWidget {
 //   _setLoader(loaderFunction) async {
 //     if (loaderFunction == null || loaderFunction == 'No Loader') {
 //       if (widget.permission == 'Admin' || widget.permission == 'Loader') {
-//         await Firestore.instance
+//         await FirebaseFirestore.instance
 //             .collection('loads')
-//             .document(widget.uidLoad)
-//             .updateData({
+//             .doc(widget.uidLoad)
+//             .update({
 //           'loader': widget.userUid,
 //         });
 //         loader = widget.userUid;
@@ -447,10 +447,10 @@ class CopyLoadPage extends StatelessWidget {
 
 //   ///Clears the loader
 //   _clearLoader() async {
-//     await Firestore.instance
+//     await FirebaseFirestore.instance
 //         .collection('loads')
-//         .document(widget.uidLoad)
-//         .updateData({
+//         .doc(widget.uidLoad)
+//         .update({
 //       'loader': 'No Loader',
 //       'refresh': false,
 //     });
@@ -468,18 +468,18 @@ class CopyLoadPage extends StatelessWidget {
 //             ),
 //             onPressed: () async {
 //               if (fetchedLoadedCasesLength < totalCases) {
-//                 await Firestore.instance
+//                 await FirebaseFirestore.instance
 //                     .collection('loads')
-//                     .document(widget.uidLoad)
-//                     .updateData({'refresh': true});
+//                     .doc(widget.uidLoad)
+//                     .update({'refresh': true});
 
 //                 _refreshLoad();
 
 //                 Timer(Duration(seconds: 5), () async {
-//                   await Firestore.instance
+//                   await FirebaseFirestore.instance
 //                       .collection('loads')
-//                       .document(widget.uidLoad)
-//                       .updateData({'refresh': false});
+//                       .doc(widget.uidLoad)
+//                       .update({'refresh': false});
 //                 });
 //               }
 //             },
@@ -762,10 +762,10 @@ class CopyLoadPage extends StatelessWidget {
 //                                           if (casesLoaded == totalCases &&
 //                                               casesLeft == 0) {
 //                                             _resetAndExit();
-//                                             await Firestore.instance
+//                                             await FirebaseFirestore.instance
 //                                                 .collection('loads')
-//                                                 .document(widget.uidLoad)
-//                                                 .updateData({'refresh': false});
+//                                                 .doc(widget.uidLoad)
+//                                                 .update({'refresh': false});
 //                                             if (loader == user.uid) {
 //                                               _clearLoader();
 //                                             }
