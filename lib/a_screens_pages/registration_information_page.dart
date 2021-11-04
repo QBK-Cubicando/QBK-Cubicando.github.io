@@ -108,7 +108,7 @@ class _RegistrationInformationPageState
                           key: _formKey,
                           child: Column(
                             children: <Widget>[
-                              Top_QBK(),
+                              TopQBK(),
                               SizedBox(
                                 height: 10.0,
                               ),

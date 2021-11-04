@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:qbk_simple_app/ui/sizes-helpers.dart';
 import 'package:qbk_simple_app/utilities/constants.dart';
 
-class Top_QBK extends StatelessWidget {
-  const Top_QBK({
-    Key key,
-  }) : super(key: key);
+class TopQBK extends StatelessWidget {
+  final nav;
+  const TopQBK({Key key, this.nav}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +19,11 @@ class Top_QBK extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () => Navigator.pop(context),
+          onTap: () {
+            nav != null
+                ? Navigator.pushNamed(context, nav)
+                : Navigator.pop(context);
+          },
           child: Align(
             alignment: Alignment.centerLeft,
             child: Container(

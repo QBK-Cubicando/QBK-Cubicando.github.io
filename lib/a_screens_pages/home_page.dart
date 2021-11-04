@@ -75,156 +75,156 @@ class _QBKHomePageState extends State<QBKHomePage> {
                     drawer: Container(
                       width: displayWidth(context) * 0.7,
                       child: Drawer(
-                        child: Container(
-                          color: Colors.black,
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(
-                                height: displayHeight(context) * 0.02,
-                              ),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(2),
-                                child: Container(
+                        child: SingleChildScrollView(
+                          child: Container(
+                            color: Colors.black,
+                            child: Column(
+                              children: <Widget>[
+                                SizedBox(
+                                  height: displayHeight(context) * 0.02,
+                                ),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(2),
+                                  child: Container(
+                                    color: Colors.black,
+                                    height: displayHeight(context) * 0.2,
+                                    child: Image.asset(
+                                        'images/logo_sin_escrita_qbk.png'),
+                                  ),
+                                ),
+                                // Profile Picture
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    userData.name,
+                                    style: kTextStyle(context),
+                                  ),
+                                ),
+                                //Name
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    userData.speciality ?? 'Random',
+                                    style: kTextStyle(context),
+                                  ),
+                                ),
+                                // Speciality
+
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                      vertical: 20.0, horizontal: 15.0),
                                   color: Colors.black,
-                                  height: displayHeight(context) * 0.2,
-                                  child:
-                                      Image.asset(
-                                      'images/logo_sin_escrita_qbk.png'),
-                                ),
-                              ),
-                              // Profile Picture
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                          
-                                  userData.name,
-                                  style: kTextStyle(context),
-                              
-                                ),
-                              ),
-                              //Name
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  userData.speciality ?? 'Random',
-                                  style: kTextStyle(context)
-                                      ,
-                                ),
-                              ),
-                              // Speciality
-                              
-                              Container(
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 20.0, horizontal: 15.0),
-                                color: Colors.black,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: <Widget>[
-                                    GestureDetector(
-                                      onTap: () => Navigator.pushNamed(
-                                          context, MyGigs.id),
-                                      child: NotificationStack(
-                                        userUid: user.uid,
-                                        notificationType: 'gigs',
-                                        icon: SelectionMenuButton(
-                                          text: 'GIGS',
-                                          color: kgreenQBK,
-                                          onPress: () => Navigator.pushNamed(
-                                              context, MyGigs.id),
-                                        ),
-                                      ),
-                                    ),
-                                    //My Gigs
-                                    GestureDetector(
-                                      onTap: () => Navigator.pushNamed(
-                                          context, MyCases.id),
-                                      child: SelectionMenuButton(
-                                        text: 'CASES',
-                                        color: kredQBK,
-                                        onPress: () => Navigator.pushNamed(
-                                            context, MyCases.id),
-                                      ),
-                                    ),
-                                    //My Cases
-                                    GestureDetector(
-                                      onTap: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => MyFriends(
-                                                userUid: userData.uid)),
-                                      ),
-                                      child: NotificationStack(
-                                        userUid: user.uid,
-                                        notificationType: 'friends',
-                                        icon: SelectionMenuButton(
-                                          text: 'CREW',
-                                          color: kblueQBK,
-                                          onPress: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => MyFriends(
-                                                    userUid: userData.uid)),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        onTap: () => Navigator.pushNamed(
+                                            context, MyGigs.id),
+                                        child: NotificationStack(
+                                          userUid: user.uid,
+                                          notificationType: 'gigs',
+                                          icon: SelectionMenuButton(
+                                            text: 'GIGS',
+                                            color: kgreenQBK,
+                                            onPress: () => Navigator.pushNamed(
+                                                context, MyGigs.id),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    // My Friends
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.pushNamed(
-                                            context, SettingsPage.id);
-                                      },
-                                      child: SelectionMenuButton(
-                                        text: 'PROFILE',
-                                        color: kpurpleQBK,
-                                        onPress: () {
+                                      //My Gigs
+                                      GestureDetector(
+                                        onTap: () => Navigator.pushNamed(
+                                            context, MyCases.id),
+                                        child: SelectionMenuButton(
+                                          text: 'CASES',
+                                          color: kredQBK,
+                                          onPress: () => Navigator.pushNamed(
+                                              context, MyCases.id),
+                                        ),
+                                      ),
+                                      //My Cases
+                                      GestureDetector(
+                                        onTap: () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => MyFriends(
+                                                  userUid: userData.uid)),
+                                        ),
+                                        child: NotificationStack(
+                                          userUid: user.uid,
+                                          notificationType: 'friends',
+                                          icon: SelectionMenuButton(
+                                            text: 'CREW',
+                                            color: kblueQBK,
+                                            onPress: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MyFriends(
+                                                          userUid:
+                                                              userData.uid)),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      // My Friends
+                                      GestureDetector(
+                                        onTap: () {
                                           Navigator.pushNamed(
                                               context, SettingsPage.id);
                                         },
+                                        child: SelectionMenuButton(
+                                          text: 'PROFILE',
+                                          color: kpurpleQBK,
+                                          onPress: () {
+                                            Navigator.pushNamed(
+                                                context, SettingsPage.id);
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                    //Modify Profile
-                                    SelectionMenuButton(
-                                      text: 'SIGN OUT',
-                                      color: Colors.grey.shade500,
-                                      onPress: () {
-                                        _auth.signOut();
-                                        Navigator.pushNamed(
-                                            context, SignInPage.id);
-                                      },
-                                    )
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.01,
-                              ),
-                              Container(
-                                height: displayHeight(context) * 0.06,
-                                width: displayWidth(context) * 0.6,
-                                decoration: BoxDecoration(
-                                    color: Colors.black,
-                                    border: Border.all(),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20))),
-                                child: Center(
-                                  child: InkWell(
-                                    child: Text(
-                                      'Share with a friend',
-                                      style: kTextStyle(context)
-                                          .copyWith(color: Colors.blueAccent),
-                                    ),
-                                    onTap: () => share(context),
+                                      //Modify Profile
+                                      SelectionMenuButton(
+                                        text: 'SIGN OUT',
+                                        color: Colors.grey.shade500,
+                                        onPress: () {
+                                          _auth.signOut();
+                                          Navigator.pushNamed(
+                                              context, SignInPage.id);
+                                        },
+                                      )
+                                    ],
                                   ),
                                 ),
-                              ), //Menu Drawer Options
-                            ],
+                                SizedBox(
+                                  height: displayHeight(context) * 0.01,
+                                ),
+                                Container(
+                                  height: displayHeight(context) * 0.06,
+                                  width: displayWidth(context) * 0.6,
+                                  decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      border: Border.all(),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20))),
+                                  child: Center(
+                                    child: InkWell(
+                                      child: Text(
+                                        'Share with a friend',
+                                        style: kTextStyle(context)
+                                            .copyWith(color: Colors.blueAccent),
+                                      ),
+                                      onTap: () => share(context),
+                                    ),
+                                  ),
+                                ), //Menu Drawer Options
+                              ],
+                            ),
                           ),
                         ),
                       ),

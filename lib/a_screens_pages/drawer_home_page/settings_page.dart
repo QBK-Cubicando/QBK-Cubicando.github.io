@@ -75,7 +75,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         width: displayWidth(context) * 0.85,
                         child: Column(
                           children: <Widget>[
-                            Top_QBK(),
+                            TopQBK(nav: QBKHomePage.id),
                             SizedBox(
                               height: 10.0,
                             ),

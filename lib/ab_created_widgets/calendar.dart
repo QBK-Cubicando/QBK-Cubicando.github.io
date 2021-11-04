@@ -304,6 +304,8 @@ class _CalendarGigState extends State<CalendarGig> {
           nameGig: widget.calendarGig.calendarGigName,
           uidGig: widget.calendarGig.uidGig,
           userUid: user.uid,
+          
+          
           startDate:
               DateFormat('dd-MM-yyyy').format(widget.calendarGig.startDate),
           //startDate: widget.calendarGig.startDate,

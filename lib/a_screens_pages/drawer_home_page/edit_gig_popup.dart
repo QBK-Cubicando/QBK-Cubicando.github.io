@@ -67,11 +67,11 @@ class _EditGigPopupState extends State<EditGigPopup> {
 
   List<bool> isSelected = [false, true, false, false, false];
 
+  static final GlobalKey<FormState> _formKeyEditGig = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserData>(context);
-
-    final _formKeyEditGig = GlobalKey<FormState>();
 
     List<ColorGig_QBK> _colors = [
       ColorGig_QBK(

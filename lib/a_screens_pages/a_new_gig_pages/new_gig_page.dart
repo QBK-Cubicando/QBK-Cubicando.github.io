@@ -259,6 +259,7 @@ class _NewGigPageState extends State<NewGigPage> {
                             ],
                           ), // Location
                           Container(
+                            
                             // color: Colors.white,
                             child: ToggleButtons(
                               children: _colors,
@@ -408,7 +409,7 @@ class ColorGig_QBK extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: displayWidth(context) * 0.02),
+      margin: EdgeInsets.symmetric(horizontal: displayWidth(context) * 0.005),
       padding: radius != null ? EdgeInsets.all(radius) : EdgeInsets.all(25),
       decoration: BoxDecoration(
         shape: BoxShape.circle,

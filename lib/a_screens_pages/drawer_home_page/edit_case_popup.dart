@@ -46,6 +46,9 @@ class _EditCasePopupState extends State<EditCasePopup> {
     }
   }
 
+  static final GlobalKey<FormState> _formKeyEditOwnCase =
+      GlobalKey<FormState>();
+
   ///Set Gig's Data from firebase
   @override
   void initState() {
@@ -64,7 +67,7 @@ class _EditCasePopupState extends State<EditCasePopup> {
   Widget build(BuildContext context) {
     final user = Provider.of<UserData>(context);
 
-    final _formKeyEditOwnCase = GlobalKey<FormState>();
+    
 
     void _deleteOwnCase() async {
       DatabaseService(userUid: user.uid)

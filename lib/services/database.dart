@@ -254,6 +254,26 @@ class DatabaseService {
     return snapshot.docs.map(_gigInfoFromSnapshot).toList();
   }
 
+  Future<NewGig> getGigOnce() {
+    return FirebaseFirestore.instance
+        .collection('gigs')
+        .doc(uidGig)
+        .get()
+        .then((data) async {
+      NewGig gig = NewGig(
+        uidGig: uidGig,
+        nameGig: data['nameGig'],
+        startDate: DateFormat('yyyy-MM-dd').parse(data['startDate']),
+        endDate: DateFormat('yyyy-MM-dd').parse(data['endDate']),
+        location: data['location'],
+        notes: data['notes'] ?? 'No notes',
+        color: data['color'],
+        crew: data['crew'] != null ? data['crew'] : 1,
+      );
+      return gig;
+    });
+  }
+
   // get gigs stream
   Stream<List<NewGig>> get gigList {
     if (sharedGigs) {
@@ -867,7 +887,7 @@ class DatabaseService {
   //   }
   // }
 
-  ///List of FlightCases Created
+  // ///List of FlightCases Created
 
   // Future<void> updateNewLoadListData({
   //   List<FlightCase> flightCasesOnList,
@@ -1009,8 +1029,11 @@ class DatabaseService {
         .get()
         .then((data) async {
       List loadListOfBlocRows = data['loadList'];
+
       idAndBlocRow = data['idAndBlocRow'];
+
       // int loadedCases = data['loadedCases'];
+
       // int totalCases = data['totalCases'];
 
       // Fetch Load List
@@ -1029,6 +1052,7 @@ class DatabaseService {
                   //TODO: add category: data['category'],
                 ))
             .toList();
+
         return flightCaseList;
       }
 

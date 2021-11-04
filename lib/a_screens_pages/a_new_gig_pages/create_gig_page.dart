@@ -34,16 +34,12 @@ class CreateGigPage extends StatefulWidget {
     this.nameGig,
     this.startDate,
     this.userUid,
-    this.gig, 
-    
   });
 
   final String nameGig;
   final String startDate;
   final String uidGig;
   final String userUid;
-  final NewGig gig;
-  
 
   @override
   _CreateGigPageState createState() => _CreateGigPageState();
@@ -59,8 +55,8 @@ class _CreateGigPageState extends State<CreateGigPage> {
   int index = 1;
   List permissionAndIndex;
   var futurePermissionAndIndex;
-
-  Color color = Colors.grey.shade300; 
+  Future<NewGig> fetchedGig;
+  NewGig gig;
 
   _setPermissionAndIndex() async {
     if (futurePermissionAndIndex != null) {
@@ -74,12 +70,36 @@ class _CreateGigPageState extends State<CreateGigPage> {
     setState(() {});
   }
 
+  _fetchGigFromFirebase() async {
+    gig = await fetchedGig;
+  }
+
+  Color _gigColor() {
+    // print(widget.calendarGig.color);
+    if (gig.color == 'red') {
+      return kredQBK;
+    } else if (gig.color == 'blue') {
+      return kblueQBK;
+    } else if (gig.color == 'green') {
+      return kgreenQBK;
+    } else if (gig.color == 'purple') {
+      return kpurpleQBK;
+    } else if (gig.color == 'orange') {
+      return Colors.orangeAccent.shade200;
+    } else {
+      return Colors.grey.shade50;
+    }
+  }
+
   @override
   void initState() {
     futurePermissionAndIndex =
         DatabaseService(crewMemberData: widget.userUid, uidGig: widget.uidGig)
             .getCrewPermission();
     _setPermissionAndIndex();
+
+    fetchedGig = DatabaseService(uidGig: widget.uidGig).getGigOnce();
+    _fetchGigFromFirebase();
     super.initState();
   }
 
@@ -169,159 +189,171 @@ class _CreateGigPageState extends State<CreateGigPage> {
                                 index: index,
                               ),
                             ),
-                            
-                            Expanded(
-                              
-                              child: GestureDetector(
-                                child: Container(
-                                  color: kredQBK,
-                                    height: displayHeight(context) * 0.13,
-                                    width: displayWidth(context) * 0.1,
-                                    child:
-                                        Icon(Icons.add_circle_outline_sharp)),
-                                onTap: () {
-                                  if (loadList.length < 3) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return Form(
-                                            key: _formKey,
-                                            child: Container(
-                                              height:
-                                                  displayHeight(context) * 0.5,
-                                              width:
-                                                  displayWidth(context) * 0.7,
-                                              child: AlertDialog(
-                                                title: Column(
-                                                  children: <Widget>[
-                                                    Center(
-                                                        child: Text(
-                                                      'New Load',
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: kTextStyle(context)
-                                                          .copyWith(
-                                                              color:
-                                                                  Colors.black),
-                                                    )),
-                                                    SizedBox(height: 10.0),
-                                                    TextFieldQBK(
-                                                      maxLength: 6,
-                                                      hintText: 'Name Load',
-                                                      onChanged: (value) {
-                                                        setState(() {
-                                                          nameLoad = value;
-                                                        });
-                                                      },
-                                                      validator: (value) => value
-                                                              .isEmpty
-                                                          ? 'Type a valid Name'
-                                                          : null,
+                            permission == "Admin"
+                                ? Expanded(
+                                    child: GestureDetector(
+                                      child: Container(
+                                          color: kredQBK,
+                                          height: displayHeight(context) * 0.13,
+                                          width: displayWidth(context) * 0.1,
+                                          child: Icon(
+                                              Icons.add_circle_outline_sharp)),
+                                      onTap: () {
+                                        if (loadList.length < 3) {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return Form(
+                                                  key: _formKey,
+                                                  child: Container(
+                                                    height:
+                                                        displayHeight(context) *
+                                                            0.5,
+                                                    width:
+                                                        displayWidth(context) *
+                                                            0.7,
+                                                    child: AlertDialog(
+                                                      title: Column(
+                                                        children: <Widget>[
+                                                          Center(
+                                                              child: Text(
+                                                            'New Load',
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: kTextStyle(
+                                                                    context)
+                                                                .copyWith(
+                                                                    color: Colors
+                                                                        .black),
+                                                          )),
+                                                          SizedBox(
+                                                              height: 10.0),
+                                                          TextFieldQBK(
+                                                            maxLength: 6,
+                                                            hintText:
+                                                                'Name Load',
+                                                            onChanged: (value) {
+                                                              setState(() {
+                                                                nameLoad =
+                                                                    value;
+                                                              });
+                                                            },
+                                                            validator:
+                                                                (value) => value
+                                                                        .isEmpty
+                                                                    ? 'Type a valid Name'
+                                                                    : null,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      actions: <Widget>[
+                                                        Row(
+                                                          children: [
+                                                            Container(
+                                                              width: displayWidth(
+                                                                      context) *
+                                                                  0.35,
+                                                              child:
+                                                                  SelectionButton(
+                                                                text: 'BACK',
+                                                                color:
+                                                                    kyellowQBK,
+                                                                onPress: () =>
+                                                                    Navigator.pop(
+                                                                        context),
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              width: displayWidth(
+                                                                      context) *
+                                                                  0.06,
+                                                            ),
+                                                            Container(
+                                                              width: displayWidth(
+                                                                      context) *
+                                                                  0.35,
+                                                              child:
+                                                                  SelectionButton(
+                                                                text: 'SAVE',
+                                                                color:
+                                                                    kyellowQBK,
+                                                                onPress:
+                                                                    () async {
+                                                                  if (_formKey
+                                                                      .currentState
+                                                                      .validate()) {
+                                                                    await DatabaseService(
+                                                                            userUid:
+                                                                                user.uid,
+                                                                            uidGig: widget.uidGig,
+                                                                            uidLoad: '${user.uid}${widget.uidGig}$nameLoad')
+                                                                        .setLoadData(
+                                                                      nameLoad:
+                                                                          nameLoad,
+                                                                    );
+                                                                    await Navigator.push(
+                                                                        context,
+                                                                        MaterialPageRoute(builder:
+                                                                            (context) {
+                                                                      return CreateLoadPage(
+                                                                        uidGig:
+                                                                            widget.uidGig,
+                                                                        nameGig:
+                                                                            widget.nameGig,
+                                                                        nameLoad:
+                                                                            nameLoad,
+                                                                        uidLoad:
+                                                                            '${user.uid}${widget.uidGig}$nameLoad',
+                                                                      );
+                                                                    }));
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  }
+                                                                },
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
-                                                actions: <Widget>[
-                                                  Row(
-                                                    children: [
-                                                      Container(
-                                                        width: displayWidth(
-                                                                context) *
-                                                            0.35,
-                                                        child: SelectionButton(
-                                                          text: 'BACK',
-                                                          color: kyellowQBK,
-                                                          onPress: () =>
-                                                              Navigator.pop(
-                                                                  context),
+                                                  ),
+                                                );
+                                              });
+                                        } else {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return Center(
+                                                  child: Material(
+                                                    child: Container(
+                                                      color: Colors.grey,
+                                                      height: displayHeight(
+                                                              context) *
+                                                          0.2,
+                                                      width: displayWidth(
+                                                              context) *
+                                                          0.7,
+                                                      child: Center(
+                                                        child: Text(
+                                                          'You reached the max loads for this Gig',
+                                                          style: kTextStyle(
+                                                                  context)
+                                                              .copyWith(
+                                                                  color: Colors
+                                                                      .black),
+                                                          textAlign:
+                                                              TextAlign.center,
                                                         ),
                                                       ),
-                                                      SizedBox(
-                                                        width: displayWidth(
-                                                                context) *
-                                                            0.06,
-                                                      ),
-                                                      Container(
-                                                        width: displayWidth(
-                                                                context) *
-                                                            0.35,
-                                                        child: SelectionButton(
-                                                          text: 'SAVE',
-                                                          color: kyellowQBK,
-                                                          onPress: () async {
-                                                            if (_formKey
-                                                                .currentState
-                                                                .validate()) {
-                                                              await DatabaseService(
-                                                                      userUid: user
-                                                                          .uid,
-                                                                      uidGig: widget
-                                                                          .uidGig,
-                                                                      uidLoad:
-                                                                          '${user.uid}${widget.uidGig}$nameLoad')
-                                                                  .setLoadData(
-                                                                nameLoad:
-                                                                    nameLoad,
-                                                              );
-                                                              await Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) {
-                                                                return CreateLoadPage(
-                                                                  uidGig: widget
-                                                                      .uidGig,
-                                                                  nameGig: widget
-                                                                      .nameGig,
-                                                                  nameLoad:
-                                                                      nameLoad,
-                                                                  uidLoad:
-                                                                      '${user.uid}${widget.uidGig}$nameLoad',
-                                                                );
-                                                              }));
-                                                              Navigator.pop(
-                                                                  context);
-                                                            }
-                                                          },
-                                                        ),
-                                                      ),
-                                                    ],
+                                                    ),
                                                   ),
-                                                  
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        });
-                                  } else {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return Center(
-                                            child: Material(
-                                              child: Container(
-                                                color: Colors.grey,
-                                                height: displayHeight(context) *
-                                                    0.2,
-                                                width:
-                                                    displayWidth(context) * 0.7,
-                                                child: Center(
-                                                  child: Text(
-                                                    'You reached the max loads for this Gig',
-                                                    style: kTextStyle(context)
-                                                        .copyWith(
-                                                            color:
-                                                                Colors.black),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        });
-                                  }
-                                },
-                              ),
-                            ),
+                                                );
+                                              });
+                                        }
+                                      },
+                                    ),
+                                  )
+                                : Container(),
                           ],
                         );
                       } else {
@@ -336,7 +368,6 @@ class _CreateGigPageState extends State<CreateGigPage> {
                                       .copyWith(color: Colors.black),
                                 ),
                               ),
-                              
                             ),
                             GestureDetector(
                               child: Container(
@@ -385,7 +416,6 @@ class _CreateGigPageState extends State<CreateGigPage> {
                                               ),
                                               actions: <Widget>[
                                                 Row(
-                                                  
                                                   children: [
                                                     Container(
                                                       width: displayWidth(
@@ -450,7 +480,6 @@ class _CreateGigPageState extends State<CreateGigPage> {
                                                     ),
                                                   ],
                                                 ),
-                                                
                                               ],
                                             ),
                                           ),
@@ -482,181 +511,167 @@ class _CreateGigPageState extends State<CreateGigPage> {
                                 }
                               },
                             ),
-                            
                           ],
                         );
                       }
                     }
 
-                    return permission == 'Admin'
-                        ? Scaffold(
-                            body: SingleChildScrollView(
-                              child: SafeArea(
-                                child: Center(
-                                  child: Container(
-                                    width: displayWidth(context) * 0.95,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Top_QBK(),
-                                        Column(
-                                          children: <Widget>[
-                                            SizedBox(
-                                              height: 5,
-                                            ),
+                    return Scaffold(
+                      body: SingleChildScrollView(
+                        child: SafeArea(
+                          child: Center(
+                            child: Container(
+                              width: displayWidth(context) * 0.95,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  TopQBK(
+                                    nav: QBKHomePage.id,
+                                  ),
+                                  Column(
+                                    children: <Widget>[
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Container(
+                                        color: Colors.white,
+                                        child: ExpansionTile(
+                                          initiallyExpanded: true,
+                                          textColor: Colors.black,
+                                          title: Row(
+                                            children: [
+                                              Icon(Icons.music_note_rounded),
+                                              Text(
+                                                widget.nameGig,
+                                                style:
+                                                    kButtonsTextStyle(context),
+                                              )
+                                            ],
+                                          ),
+                                          backgroundColor: kgreenQBK,
+                                          collapsedBackgroundColor: kgreenQBK,
+                                          children: [
                                             Container(
+                                              width: double.infinity,
+                                              height:
+                                                  displayHeight(context) * 0.3,
                                               color: Colors.white,
-                                              child: ExpansionTile(
-                                                initiallyExpanded: true,
-                                                textColor: Colors.black,
-                                                title: Row(
-                                                  children: [
-                                                    Icon(Icons
-                                                        .music_note_rounded),
-                                                    Text(
-                                                      widget.nameGig,
-                                                      style: kButtonsTextStyle(
-                                                          context),
-                                                    )
-                                                  ],
-                                                ),
-                                                backgroundColor: kgreenQBK,
-                                                collapsedBackgroundColor:
-                                                    kgreenQBK,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal:
+                                                      displayWidth(context) *
+                                                          0.05),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
-                                                  Container(
-                                                    width: double.infinity,
-                                                    height:
-                                                        displayHeight(context) *
-                                                            0.3,
-                                                    color: Colors.white,
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal:
-                                                            displayWidth(
-                                                                    context) *
-                                                                0.05),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Container(
-                                                              width: 13,
-                                                              height: 13,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                      shape: BoxShape
-                                                                          .circle,
-                                                                      color:
-                                                                          color),
-                                                            ),
-                                                            SizedBox(
-                                                              width: 5,
-                                                            ),
-                                                            //TODO: CHANGE THIS TO COMPARE START AND END DATE
-                                                            widget.startDate !=
-                                                                    null
-                                                                ? Text(
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        width: 13,
+                                                        height: 13,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                color:
+                                                                    _gigColor()),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      //TODO: CHANGE THIS TO COMPARE START AND END DATE
+                                                      widget.startDate != null
+                                                          ? Text(
                                                               widget.startDate,
                                                               style: TextStyle(
                                                                   fontSize: 20),
                                                             )
-                                                                : Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Container(
-                                                                          child:
-                                                                              Text('From: ${widget.startDate}')),
-                                                                      Container(
-                                                                          child:
-                                                                              Text('To: ${widget.gig.endDate}'))
-                                                                    ],
-                                                                  ),
-                                                          ],
-                                                        ),
-                                                        Text('Location',
-                                                            style: TextStyle(
-                                                                fontSize: 18)),
-                                                        SizedBox(
-                                                          height: 10,
-                                                        ),
-                                                        Text(
-                                                          'Notes:',
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        SingleChildScrollView(
-                                                          child: Text(
-                                                              'Notas del Bolo'),
-                                                        )
-                                                      ],
-                                                    ),
+                                                          : Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Container(
+                                                                    child: Text(
+                                                                        'From: ${widget.startDate}')),
+                                                                Container(
+                                                                    child: Text(
+                                                                        'To: ${gig.endDate}'))
+                                                              ],
+                                                            ),
+                                                    ],
                                                   ),
+                                                  Text(gig.location,
+                                                      style: TextStyle(
+                                                          fontSize: 18)),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    'Notes:',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  SingleChildScrollView(
+                                                    child: Text(gig.notes),
+                                                  )
                                                 ],
                                               ),
                                             ),
-                                            SizedBox(
-                                              height: 5.0,
-                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 5.0,
+                                      ),
+                                      Container(
+                                        color: Colors.white,
+                                        child: ExpansionTile(
+                                          textColor: Colors.black,
+                                          backgroundColor: kblueQBK,
+                                          collapsedBackgroundColor: kblueQBK,
+                                          title: Row(
+                                            children: [
+                                              Icon(Icons.person),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    'CREW',
+                                                    style: kButtonsTextStyle(
+                                                        context),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 20,
+                                                  ),
+                                                  Text(
+                                                      '(${newCrewMember.length} people)')
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          children: [
                                             Container(
                                               color: Colors.white,
-                                              
-                                              child: ExpansionTile(
-                                                textColor: Colors.black,
-                                                backgroundColor: kblueQBK,
-                                                collapsedBackgroundColor:
-                                                    kblueQBK,
-                                                title: Row(
-                                                  children: [
-                                                    Icon(Icons.person),
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          'CREW',
-                                                          style:
-                                                              kButtonsTextStyle(
-                                                                  context),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 20,
-                                                        ),
-                                                        Text(
-                                                            '(${newCrewMember.length} people)')
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
+                                              width: double.infinity,
+                                              padding: EdgeInsets.all(8),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
                                                 children: [
                                                   Container(
-                                                    color: Colors.white,
-                                                    width: double.infinity,
-                                                    padding: EdgeInsets.all(8),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .end,
-                                                      children: [
-                                                     
-                                                        Container(
-                                                          child:
-                                                              _crewListIsEmpty(
-                                                                  'Admin'),
-                                                        ),
-                                                        SizedBox(
-                                                          height: 8,
-                                                        ),
-                                                        Center(
+                                                    child: _crewListIsEmpty(
+                                                        permission),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 8,
+                                                  ),
+                                                  permission == "Admin"
+                                                      ? Center(
                                                           child:
                                                               GestureDetector(
                                                             child: Container(
-                                                            color: kblueQBK,
+                                                                color: kblueQBK,
                                                                 height: displayHeight(
                                                                         context) *
                                                                     0.13,
@@ -666,7 +681,7 @@ class _CreateGigPageState extends State<CreateGigPage> {
                                                                 child: Icon(Icons
                                                                     .add_circle_outline_sharp)),
                                                             onTap: () =>
-                                                            Navigator.push(
+                                                                Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
                                                                 builder: (context) => CrewQBK(
@@ -682,131 +697,54 @@ class _CreateGigPageState extends State<CreateGigPage> {
                                                               ),
                                                             ),
                                                           ),
-                                                        ),
-                                                       
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 5.0,
-                                            ),
-                                            Container(
-                                              color: Colors.white,
-                                              child: ExpansionTile(
-                                                initiallyExpanded: true,
-                                                textColor: Colors.black,
-                                                backgroundColor: kredQBK,
-                                                collapsedBackgroundColor:
-                                                    kredQBK,
-                                                title: Row(
-                                                  children: [
-                                                    Icon(Icons
-                                                        .bus_alert_outlined),
-                                                    Text(
-                                                      'LOADS',
-                                                      style: kButtonsTextStyle(
-                                                          context),
-                                                    ),
-                                                  ],
-                                                ),
-                                                children: [
-                                                  Container(
-                                                    color: Colors.white,
-                                                    width: double.infinity,
-                                                    padding: EdgeInsets.all(8),
-                                                    child: _loadListIsEmpty(),
-                                                  ),
+                                                        )
+                                                      : Container(),
                                                 ],
                                               ),
                                             ),
                                           ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                      SizedBox(
+                                        height: 5.0,
+                                      ),
+                                      Container(
+                                        color: Colors.white,
+                                        child: ExpansionTile(
+                                          initiallyExpanded: true,
+                                          textColor: Colors.black,
+                                          backgroundColor: kredQBK,
+                                          collapsedBackgroundColor: kredQBK,
+                                          title: Row(
+                                            children: [
+                                              Icon(Icons
+                                                  .directions_bus_filled_outlined),
+                                              Text(
+                                                'LOADS',
+                                                style:
+                                                    kButtonsTextStyle(context),
+                                              ),
+                                            ],
+                                          ),
+                                          children: [
+                                            Container(
+                                              color: Colors.white,
+                                              width: double.infinity,
+                                              padding: EdgeInsets.all(8),
+                                              child: _loadListIsEmpty(),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
+                                ],
                               ),
                             ),
-                          )
-                        : UpperBar(
-                            text: 'Create Gig',
-                            onBackGoTo: QBKHomePage(),
-                            body: Center(
-                              child: Container(
-                                width: displayWidth(context),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Container(
-                                          padding: EdgeInsets.all(15.0),
-                                          child: Text(
-                                            widget.nameGig.length > 10
-                                                ? widget.nameGig
-                                                    .substring(0, 10)
-                                                : widget.nameGig,
-                                            style: kTextStyle(context),
-                                          ),
-                                        ), //Gig's Name
-                                        Container(
-                                          padding: EdgeInsets.all(15.0),
-                                          child: Text(
-                                            widget.startDate,
-                                            style: kTextStyle(context),
-                                          ),
-                                        ), // Gig's Date
-                                      ],
-                                    ), //Name and Day of the Gig//Buttons
-                                    SizedBox(
-                                      height: 15.0,
-                                    ),
-
-                                    Container(
-                                      width: displayWidth(context) * 0.85,
-                                      height: displayHeight(context) * 0.18,
-                                      padding: EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                      ),
-                                      child: _loadListIsEmpty(),
-                                    ), //Where all the loads go
-                                    Container(
-                                      padding: EdgeInsets.all(8),
-                                      width: displayWidth(context) * 0.85,
-                                      height: displayHeight(context) * 0.18,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                      ),
-                                      child: _crewListIsEmpty('Just Read'),
-                                    ), //Where all the participants go
-                                    SelectionButton(
-                                      text: 'I\'m Ready !',
-                                      width: displayWidth(context) * 0.85,
-                                      color: Colors.green,
-                                      onPress: () {
-                                        Navigator.pushNamed(
-                                            context, QBKHomePage.id);
-                                      },
-                                    ),
-                                    SizedBox(
-                                      height: 5.0,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
+                          ),
+                        ),
+                      ),
+                    );
                   } else {
                     return Loading();
                   }
@@ -820,4 +758,3 @@ class _CreateGigPageState extends State<CreateGigPage> {
         });
   }
 }
-

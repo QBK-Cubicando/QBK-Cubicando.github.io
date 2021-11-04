@@ -341,7 +341,7 @@ class PopupOwnCases extends StatefulWidget {
 }
 
 class _PopupOwnCasesState extends State<PopupOwnCases> {
-  final _formKey = GlobalKey<FormState>();
+  static final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final dateTimeNow =
       DateFormat('yyyyy.MMMMM.dd GGG hh:mm:ss aaa').format(DateTime.now());

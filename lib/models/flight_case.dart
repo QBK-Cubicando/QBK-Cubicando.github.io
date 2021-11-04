@@ -148,7 +148,8 @@ class FlightCaseOnLoadList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(5.0),
+      margin: EdgeInsets.all(1.5),
+      padding: EdgeInsets.all(3.0),
       height: displayHeight(context) * 0.15,
       width: displayWidth(context) * 0.225,
       decoration: BoxDecoration(
@@ -159,6 +160,7 @@ class FlightCaseOnLoadList extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Container(
+            
             width: double.infinity,
             decoration: BoxDecoration(
               color: Colors.grey.shade300,
@@ -168,7 +170,7 @@ class FlightCaseOnLoadList extends StatelessWidget {
               child: Text(
                 '$index:${flightCase.nameFlightCase}',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: displayWidth(context) * 0.045),
+                style: TextStyle(fontSize: displayWidth(context) * 0.04),
               ),
             ),
           ),

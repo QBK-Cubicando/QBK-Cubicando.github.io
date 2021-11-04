@@ -278,7 +278,8 @@ class NewGigTile extends StatelessWidget {
                                       nameGig: gig.nameGig,
                                       startDate: gig.startDate,
                                       endDate: gig.endDate,
-                                      location: gig.location);
+                                      location: gig.location,
+                                      color: gig.color);
                                   Navigator.pop(context);
                                 },
                               ),
